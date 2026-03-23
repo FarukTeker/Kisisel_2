@@ -1,0 +1,152 @@
+\documentclass[12pt]{article} % Note: Changed from 14pt to 12pt as standard article class supports 10pt, 11pt, 12pt
+
+% Standard template packages
+\usepackage{graphics}
+\usepackage{epsfig}
+\usepackage{times}
+\usepackage{amsmath}
+\usepackage{subcaption}
+\usepackage{multirow}
+\usepackage{gensymb}
+\usepackage{array}
+\usepackage{float}
+\usepackage{indentfirst}
+\newcolumntype{P}[1]{>{\centering\arraybackslash}p{#1}}
+\usepackage{booktabs, makecell}
+\usepackage{diagbox}
+\floatstyle{plaintop}
+\restylefloat{table}
+
+% --- UNIVERSAL PREAMBLE BLOCK (Self-Contained Fonts & Layout) ---
+\usepackage[english, bidi=basic, provide=*]{babel}
+\usepackage{fontspec}
+\babelprovide[import, onchar=ids fonts]{english}
+\babelfont{rm}{Noto Sans}
+\usepackage{enumitem}
+\usepackage{tabularx}
+
+% Page geometry from template
+\topmargin      0.0in
+\headheight     0.0in
+\headsep        0.0in
+\oddsidemargin  0.0in
+\evensidemargin 0.0in
+\textheight     9.0in
+\textwidth      6.5in
+
+\title{{\bf CENG318 Human Computer Interaction\\ Project Proposal \\ Spring 2024} \\
+	\it Project Title: NewsPress Widget Studio: A Three-Tiered Personalization System for Subscription-Based Media Platforms}
+
+\date{\today}
+
+\begin{document}
+
+\pagestyle{plain}
+\pagenumbering{roman}
+\maketitle
+
+\begin{figure}[H]
+  \centering
+  \framebox{\parbox{0.5\textwidth}{\centering
+    \vspace{2cm}
+    \textbf{IYTE Logo Placeholder} \\
+    \small\textit{(External images are omitted for compilation)}
+    \vspace{2cm}
+  }}
+\end{figure}
+
+\textbf{Group Members}
+\begin{itemize}
+	\item Student\_1 full name \& Id
+	\item Student\_2 full name \& Id 
+	\item Student\_3 full name \& Id
+\end{itemize}
+
+\cleardoublepage
+\pagenumbering{arabic}
+
+\begin{abstract}
+This project proposes a three-tiered widget system aimed at personalizing the user experience for subscription-based newspaper and magazine platforms. The primary research question explores how to build a progressive personalization architecture for subscribers with varying levels of technical proficiency. The scope of the project includes designing a scalable widget engine capable of managing three independent tiers, developing a Content Agent that combines section extraction and intent detection, and providing dynamic presentation layers over the same data foundation based on distinct user profiles. Ultimately, this approach aims to solve the ongoing user retention challenges in the digital media industry by enhancing content discovery and interface customizability.
+\end{abstract}
+
+\cleardoublepage
+
+\section{Introduction}
+While subscription rates in the digital publishing sector are increasing, platforms continue to struggle with user retention. A significant portion of digital media subscribers terminate their subscriptions within the first year. A primary driver of this churn is the lack of adequate personalization in content discovery and interface layout. This project introduces ``NewsPress Widget Studio,'' a progressive, three-tiered widget architecture designed to cater to users ranging from casual readers to advanced researchers, enabling them to construct highly customized news consumption dashboards.
+
+\section{Problem Definition}
+Current digital media systems exhibit several critical shortcomings regarding personalization. First, almost all subscribers are presented with the same static homepage layout, meaning the editorial hierarchy cannot be personalized to individual tastes. Second, users are unable to prioritize or pin their preferred news categories to the forefront of their interface. Finally, advanced users—such as researchers, academicians, or financial analysts—often wish to track only specific components of an article (e.g., the methodology, financial graphs, or executive summary), but current platforms do not support section-level content extraction and tracking.
+
+\section{Literature Review}
+The difficulty of user retention in digital media has been well documented. According to \cite{reuters2023}, subscription fatigue and lack of perceived ongoing value are major contributors to high churn rates. To combat this, recommender systems have been heavily integrated into news platforms. As surveyed by \cite{li2022}, while algorithmic personalization effectively filters content, it rarely allows users to structurally manipulate the User Interface (UI).
+
+To address UI manipulation, this project incorporates the ``Progressive Disclosure'' UX design pattern \cite{nielsen}, structuring the experience into three tiers so as not to overwhelm non-technical users. Furthermore, the implementation of our proposed AI Content Agent relies on recent advancements in Large Language Models (LLMs), utilizing tool use and function calling \cite{anthropic2024} to accurately extract specific article sections based on user intent. This combination of progressive UI and agent-based section extraction forms the novel contribution of our approach.
+
+\section{Stages}
+The proposed approach consists of a three-tiered architecture. Each tier corresponds to a different user profile and technical comfort level.
+
+\begin{itemize}
+    \item \textbf{Tier 1 — Ready-to-Go:} Designed for new subscribers. Users simply select from publisher-curated, one-click theme packages (e.g., Economy, Sports, Lifestyle).
+    \item \textbf{Tier 2 — Template Builder:} Designed for accustomed readers. Users are provided with a drag-and-drop editor and a library of pre-built widgets (currency trackers, weather, breaking news) to organize their personal page.
+    \item \textbf{Tier 3 — Free Canvas + Agent:} Designed for advanced users. It features an empty canvas where users can position widgets freely. A critical component here is the \textit{Content Agent}. The agent parses the user's widget configuration, extracts intent via natural language queries, queries the CMS API, and extracts only the relevant section of an article (e.g., summary, charts) to be injected into the widget.
+\end{itemize}
+
+\section{Tools, Software, Hardware}
+The project will be developed using the following tools and technologies:
+\begin{itemize}
+    \item \textbf{Frontend (User Interface):} React.js, CSS Grid, and HTML5 Drag \& Drop API for the widget canvas and layout registration system.
+    \item \textbf{Backend (Widget Engine):} Node.js, WebSockets for real-time widget updates, and Redis for caching.
+    \item \textbf{Content Agent (AI Layer):} Python, LangChain, and an LLM API (such as OpenAI or Anthropic) utilizing function calling for intent and section extraction.
+    \item \textbf{API \& Integration Layer:} REST/GraphQL to simulate a Publisher CMS adapter and manage paywall gates.
+\end{itemize}
+
+\section{Experiments \& Results, Test Phases}
+The performance and success of the proposed system will be measured using the following experimental setup and metrics:
+\begin{itemize}
+    \item \textbf{Tier Transition Rate:} Tracking the percentage of users who voluntarily upgrade from Tier 1 to Tier 2, and from Tier 2 to Tier 3 over time.
+    \item \textbf{Widget Usage Distribution:} Analyzing which widget types are actively utilized and which are frequently discarded by users.
+    \item \textbf{Agent Accuracy Rate:} Measuring the precision of the Content Agent by evaluating the percentage of times the extracted article sections align with user expectations (measured via user feedback buttons).
+    \item \textbf{Session Duration (A/B Testing):} Comparing the average page session duration and retention rates between a control group (standard static page) and the experimental group (personalized widget dashboard).
+\end{itemize}
+
+\section{Weekly Schedule}
+The project will be executed in four primary phases, illustrated in the schedule below.
+
+\vspace{0.5cm}
+\begin{table}[H]
+\centering
+\caption{Gantt Chart / Project Schedule}
+\begin{tabularx}{\textwidth}{l l X}
+\toprule
+\textbf{Phase} & \textbf{Duration} & \textbf{Scope \& Deliverables} \\
+\midrule
+\textbf{Phase 1} & Weeks 1--3 & \textbf{Tier 1 (Ready-to-Go):} Theme system, user preference database setup, and onboarding flow. \\
+\addlinespace
+\textbf{Phase 2} & Weeks 4--7 & \textbf{Tier 2 (Template Builder):} Widget library development, drag-and-drop editor implementation, layout saving system. \\
+\addlinespace
+\textbf{Phase 3} & Weeks 8--11 & \textbf{Tier 3 (Free Canvas + Agent):} Content agent integration, LLM section extraction pipeline, shareable dashboard URLs. \\
+\addlinespace
+\textbf{Phase 4} & Weeks 12--14 & \textbf{Testing \& Analytics:} A/B testing, widget usage metrics analysis, agent query refinement, and final report preparation. \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+% Using standard thebibliography environment to keep the document self-contained
+% and compile properly without external .bib files.
+\begin{thebibliography}{9}
+
+\bibitem{reuters2023}
+Reuters Institute, \emph{Digital News Report — Subscription \& Retention Trends}, 2023--2024.
+
+\bibitem{li2022}
+Y. Li, et al., ``Personalization in News Recommender Systems: A Survey,'' \emph{Journal of Digital Media}, 2022.
+
+\bibitem{anthropic2024}
+Anthropic, \emph{Tool Use \& Function Calling Documentation}, 2024. [Online]. Available: https://docs.anthropic.com
+
+\bibitem{nielsen}
+Nielsen Norman Group, \emph{Progressive Disclosure (UX Design Pattern)}. [Online]. Available: https://www.nngroup.com/articles/progressive-disclosure/
+
+\end{thebibliography}
+
+\end{document}
