@@ -1,6 +1,7 @@
-\documentclass[12pt]{article} % Note: Changed from 14pt to 12pt as standard article class supports 10pt, 11pt, 12pt
+\documentclass[14pt]{article}
 
 % Standard template packages
+\usepackage{graphicx}
 \usepackage{graphics}
 \usepackage{epsfig}
 \usepackage{times}
@@ -16,12 +17,15 @@
 \usepackage{diagbox}
 \floatstyle{plaintop}
 \restylefloat{table}
+\usepackage{url}
+\usepackage{natbib}
+\usepackage{pgfgantt}
+\usepackage{xcolor}
 
 % --- UNIVERSAL PREAMBLE BLOCK (Self-Contained Fonts & Layout) ---
-\usepackage[english, bidi=basic, provide=*]{babel}
+\usepackage[english]{babel}
 \usepackage{fontspec}
-\babelprovide[import, onchar=ids fonts]{english}
-\babelfont{rm}{Noto Sans}
+\setmainfont{Helvetica Neue}
 \usepackage{enumitem}
 \usepackage{tabularx}
 
@@ -34,8 +38,8 @@
 \textheight     9.0in
 \textwidth      6.5in
 
-\title{{\bf CENG318 Human Computer Interaction\\ Project Proposal \\ Spring 2024} \\
-	\it Project Title: NewsPress Widget Studio: A Three-Tiered Personalization System for Subscription-Based Media Platforms}
+\title{{\bf CENG318 Human Computer Interaction\\ Project Proposal \\ Spring 2025} \\[0.5em]
+    \it Project Title: Ki\c{s}isel: A Widget-Based Adaptive News Aggregation and Social Curation Platform}
 
 \date{\today}
 
@@ -47,106 +51,390 @@
 
 \begin{figure}[H]
   \centering
-  \framebox{\parbox{0.5\textwidth}{\centering
-    \vspace{2cm}
-    \textbf{IYTE Logo Placeholder} \\
-    \small\textit{(External images are omitted for compilation)}
-    \vspace{2cm}
-  }}
+  \includegraphics[scale=0.35]{iyte_logo}
 \end{figure}
 
 \textbf{Group Members}
 \begin{itemize}
-	\item Student\_1 full name \& Id
-	\item Student\_2 full name \& Id 
-	\item Student\_3 full name \& Id
+    \item Sübhan Akbenli \quad 300201129
+    \item Berkay Fehmi Tekin \quad 300201090
+    \item Zübeyir Almaho \quad 300201023
+    \item Yasin Sezgin \quad 300201007
+    \item Ömer Faruk Teker \quad 300201077
 \end{itemize}
 
 \cleardoublepage
 \pagenumbering{arabic}
 
 \begin{abstract}
-This project proposes a three-tiered widget system aimed at personalizing the user experience for subscription-based newspaper and magazine platforms. The primary research question explores how to build a progressive personalization architecture for subscribers with varying levels of technical proficiency. The scope of the project includes designing a scalable widget engine capable of managing three independent tiers, developing a Content Agent that combines section extraction and intent detection, and providing dynamic presentation layers over the same data foundation based on distinct user profiles. Ultimately, this approach aims to solve the ongoing user retention challenges in the digital media industry by enhancing content discovery and interface customizability.
+This project proposes \textbf{Ki\c{s}isel}, a widget-based, adaptive news aggregation and social curation platform designed to combat information overload, algorithmic filter bubbles, and the lack of user agency in modern digital reading. Shifting the paradigm from passive consumption to active ``gatewatching,'' Ki\c{s}isel allows users to build shareable ``personal newspapers'' using customizable spatial grids and AI-driven progressive summarization. Crucially, the system introduces rich-text Editorial Widgets, empowering users to embed personal commentary directly into their feeds. This proposal outlines the platform's theoretical HCI foundations, a four-stage user-centered design methodology, its full-stack architecture, and a mixed-methods usability evaluation plan designed to validate its impact on reading depth and user agency.
 \end{abstract}
 
 \cleardoublepage
 
+\setcounter{section}{-1}
+
+%% ─────────────────────────────────────────────────────────────────────────────
 \section{Introduction}
-While subscription rates in the digital publishing sector are increasing, platforms continue to struggle with user retention. A significant portion of digital media subscribers terminate their subscriptions within the first year. A primary driver of this churn is the lack of adequate personalization in content discovery and interface layout. This project introduces ``NewsPress Widget Studio,'' a progressive, three-tiered widget architecture designed to cater to users ranging from casual readers to advanced researchers, enabling them to construct highly customized news consumption dashboards.
+%% ─────────────────────────────────────────────────────────────────────────────
 
-\section{Problem Definition}
-Current digital media systems exhibit several critical shortcomings regarding personalization. First, almost all subscribers are presented with the same static homepage layout, meaning the editorial hierarchy cannot be personalized to individual tastes. Second, users are unable to prioritize or pin their preferred news categories to the forefront of their interface. Finally, advanced users—such as researchers, academicians, or financial analysts—often wish to track only specific components of an article (e.g., the methodology, financial graphs, or executive summary), but current platforms do not support section-level content extraction and tracking.
+Mainstream news aggregators typically rely on opaque algorithms that reduce users to passive consumers. This paradigm creates three critical human-computer interaction (HCI) challenges: cognitive fatigue from information overload, ideological isolation driven by filter bubbles~\cite{pariser2011}, and a profound lack of authorial agency. Furthermore, existing interfaces treat news consumption as an isolated, ephemeral task rather than a collaborative, shareable experience~\cite{schneider2017}.
 
+To address these gaps, this project introduces \textbf{Ki\c{s}isel}, a desktop-first, widget-based social curation platform. Grounded in the HCI principles of user control, adaptive interfaces, and designed serendipity, Ki\c{s}isel empowers readers to become active commentators, or ``gatewatchers''~\cite{bruns2005}. By leveraging AI-generated summaries to manage cognitive load and introducing a dedicated Editorial Widget ecosystem, users can curate news streams, draft personal commentary, and publish their customized layouts as shareable digital newspapers. This document details the problem space, theoretical background, system architecture, and rigorous evaluation strategy for a platform that redefines digital reading from a passive feed into a user-owned information architecture.
+
+%% ─────────────────────────────────────────────────────────────────────────────
+\section{Problem Statement}
+%% ─────────────────────────────────────────────────────────────────────────────
+
+The contemporary news consumer inhabits a paradox: while access to information has never been greater, the capacity for meaningful engagement has never been more constrained. Mainstream platforms such as Google News, Apple News, and Flipboard impose algorithmic curation upon passive users, systematically removing agency over how, what, and how deeply one reads. Simultaneously, static, one-size-fits-all layouts fail to accommodate the cognitive diversity of readers---a casual browser and a deep researcher are forced into identical interface structures, despite fundamentally divergent information needs.
+
+Four overlapping problems define this design space:
+
+\paragraph{Information Overload and Cognitive Fatigue.}
+The sheer volume of daily news exceeds the cognitive capacity of any individual reader. Without tools to modulate the depth and density of content, users experience what scholars term \emph{news fatigue}---a withdrawal from news consumption driven not by disinterest, but by interface-induced exhaustion~\cite{newman2022}. The paradox is that abundance, when unmediated, becomes its own barrier.
+
+\paragraph{Passive Consumption and the Filter Bubble Effect.}
+When layout and content selection are entirely controlled by opaque platform algorithms, users become progressively confined to content that mirrors and reinforces existing interests and beliefs. Pariser~\cite{pariser2011} coined \emph{filter bubble} to describe this phenomenon; subsequent empirical work confirms that such systems amplify negative news cycles and reduce exposure to ideologically diverse content. Critically, the problem is not personalization itself---it is non-negotiable personalization that removes user agency.
+
+\paragraph{Lack of User Voice and Authorial Agency.}
+Existing news platforms position users as consumers, not contributors. A reader who wishes to contextualize an article, offer critical commentary, or annotate a story for their community has no native mechanism to do so within the interface. This one-directional consumption model represents a missed opportunity for deeper engagement. The ability to add personal commentary transforms reading from a passive act into an active, meaning-making practice---yet this capacity remains conspicuously absent from mainstream news aggregation.
+
+\paragraph{Lack of Shareable, User-Owned Information Architectures.}
+Existing platforms treat news layouts as ephemeral UI states, not as persistent, shareable artifacts. No dominant platform allows a user to construct a curated news experience as a document---something that can be shared, remixed, or subscribed to by others. The social curation literature identifies this as a significant gap: collaborative and social dimensions of news curation remain underexplored in desktop-first interface design~\cite{schneider2017,villi2012}.
+
+This project proposes Ki\c{s}isel as a widget-based, desktop-first social curation platform that addresses these four problems through: (1) full user control over layout composition, (2) structural serendipity mechanisms to counter filter bubbles, (3) AI-generated summaries with source attribution as the primary reading unit, (4) adaptive reading modes that match interface density to user intent, (5) user-authored editorial commentary as a first-class content type, and (6) shareable personal newspapers as persistent social artifacts that position users as curators rather than consumers.
+
+%% ─────────────────────────────────────────────────────────────────────────────
 \section{Literature Review}
-The difficulty of user retention in digital media has been well documented. According to \cite{reuters2023}, subscription fatigue and lack of perceived ongoing value are major contributors to high churn rates. To combat this, recommender systems have been heavily integrated into news platforms. As surveyed by \cite{li2022}, while algorithmic personalization effectively filters content, it rarely allows users to structurally manipulate the User Interface (UI).
+%% ─────────────────────────────────────────────────────────────────────────────
 
-To address UI manipulation, this project incorporates the ``Progressive Disclosure'' UX design pattern \cite{nielsen}, structuring the experience into three tiers so as not to overwhelm non-technical users. Furthermore, the implementation of our proposed AI Content Agent relies on recent advancements in Large Language Models (LLMs), utilizing tool use and function calling \cite{anthropic2024} to accurately extract specific article sections based on user intent. This combination of progressive UI and agent-based section extraction forms the novel contribution of our approach.
+\subsection{Widget-Based Dashboard Customization}
 
-\section{Stages}
-The proposed approach consists of a three-tiered architecture. Each tier corresponds to a different user profile and technical comfort level.
+The widget-based dashboard paradigm has been extensively studied in enterprise and productivity contexts. Research by Sloep et al.~\cite{sloep2011} on the \emph{AWESOME} awareness dashboard established that widget-based personal environments empower users to self-organize information according to individual cognitive priorities---a finding that directly motivates the modular layout design of this platform. Effective customization requires: organization of data by user-defined importance, freedom to change representational form, and a widget bank with consistent sizing constraints---principles that map directly to the proposed drag-and-drop widget system.
 
-\begin{itemize}
-    \item \textbf{Tier 1 — Ready-to-Go:} Designed for new subscribers. Users simply select from publisher-curated, one-click theme packages (e.g., Economy, Sports, Lifestyle).
-    \item \textbf{Tier 2 — Template Builder:} Designed for accustomed readers. Users are provided with a drag-and-drop editor and a library of pre-built widgets (currency trackers, weather, breaking news) to organize their personal page.
-    \item \textbf{Tier 3 — Free Canvas + Agent:} Designed for advanced users. It features an empty canvas where users can position widgets freely. A critical component here is the \textit{Content Agent}. The agent parses the user's widget configuration, extracts intent via natural language queries, queries the CMS API, and extracts only the relevant section of an article (e.g., summary, charts) to be injected into the widget.
+UX best-practice literature consistently recommends drag-and-drop interfaces for widget placement, support for saving multiple custom views, and avoidance of information overload through controlled widget density. Crucially, Norman's~\cite{norman2013} principle of \emph{user control and freedom} underpins the entire customization paradigm: users must feel that the interface is \emph{their} space, not a space they are merely permitted to occupy.
+
+\smallskip
+\noindent\textbf{Design Implication:} The platform's grid system should offer meaningful size flexibility (compact / standard / wide widget modes) to accommodate both information-dense power users and lighter casual readers within the same layout framework.
+
+\subsection{Filter Bubbles and Serendipitous Discovery}
+
+Pariser's~\cite{pariser2011} filter bubble thesis remains the most cited theoretical anchor in personalized news research. Empirical follow-up studies have complicated the picture---M\"{o}ller et al.\ (2018) found that \emph{self-selected} personalization (where users choose their own topics) produces less ideological isolation than algorithmic personalization---but the risk of echo chambers is particularly pronounced when users are \emph{unaware} that filtering is occurring.
+
+The proposed solution---a mandatory \emph{Popular News} and \emph{Random News} section within the customizable layout---is grounded in the HCI concept of \textbf{serendipitous information encountering}~\cite{mccaypeet2015}. Serendipity in information systems is not accidental; it must be \emph{designed}. McCay-Peet and Toms define it as a system property that facilitates ``unexpected, positive discoveries'' by deliberately exposing users to content outside their established interest graph. The Popular\,+\,Random section resolves the tension between \emph{perceived relevance} and \emph{peripheral awareness} by making the serendipity mechanism transparent and user-visible rather than hidden in the algorithm.
+
+\smallskip
+\noindent\textbf{Design Implication:} The Popular and Random widgets should be non-removable or gently nudged as default components in new layouts, framing serendipity as a feature rather than an opt-in afterthought.
+
+\subsection{AI Summarization as Primary Reading Unit}
+\label{sec:aisum}
+
+The use of AI-generated article summaries as the \emph{primary interface unit}---with click-through to the original source---positions this platform at the intersection of cognitive load theory and human-AI interaction design.
+
+Miller's (1956) law of cognitive load and Sweller's (1988) Cognitive Load Theory both establish that human working memory is limited. A feed of full articles exceeds this capacity; a feed of well-structured summaries that allow self-paced depth control does not. This ``progressive disclosure'' model---where users skim a summary and choose whether to engage with the full source---is a well-established information architecture pattern~\cite{nielsen2006}.
+
+The AI summarization layer introduces a critical trust dimension. Darejeh et al.~\cite{darejeh2024} note that while AI tools can dramatically reduce content processing time, interfaces that fail to make AI involvement \emph{visible} risk eroding user trust when errors occur. The mitigation is built into the design contract itself: \textbf{summaries are clearly labeled as AI-generated previews, and the canonical source is always one click away.} This preserves source authority while reducing the friction of initial engagement.
+
+Furthermore, the summary-first model directly addresses the \emph{news fatigue} problem. Newman et al.'s Reuters Institute Digital News Report~\cite{newman2022} found that the primary driver of news avoidance is not distrust of media, but the \emph{emotionally draining} and \emph{time-consuming} nature of news consumption.
+
+\smallskip
+\noindent\textbf{Design Implication:} Each summary card should visually distinguish the AI-generated summary layer from source metadata (publication name, date, author), reinforcing that the summary is a navigational aid, not the authoritative text.
+
+\subsection{Adaptive Reading Modes}
+
+The concept of adaptive interfaces---systems that adjust their presentation in response to user context or stated intent---has a substantial HCI literature rooted in Benyon and Murray's (1993) foundational work on user modeling. In the context of news reading, the key contextual dimension is \emph{reading intent}: a user scanning headlines during a commute has fundamentally different cognitive needs than a user doing background research.
+
+Shneiderman's~\cite{shneiderman1996} Visual Information Seeking mantra---\emph{overview first, zoom and filter, then details on demand}---maps precisely onto the three reading modes proposed for this platform: headline/summary mode (overview), standard card mode (zoom), and full-context mode with related articles (details on demand). This three-tier model has been validated in news interface contexts by Diakopoulos et al.\ (2012), who found that users significantly prefer interfaces that allow them to modulate reading depth rather than committing to a single level of engagement.
+
+\smallskip
+\noindent\textbf{Design Implication:} Mode switching should be a persistent, low-friction UI control---ideally a keyboard shortcut as well as a visible toggle---and the selected mode should persist across sessions as a user preference, not reset on each visit.
+
+\subsection{Shareable Personal Newspapers as Social Artifacts}
+
+The most novel contribution of this platform is the framing of a personal news layout as a \emph{shareable social artifact}, positioning the project at the intersection of social computing and personal information management research.
+
+Schneider et al.~\cite{schneider2017} studied the \emph{Acropolis} platform---a social computing environment for collaborative news curation---and found that the ability to build and share narrative structures around news significantly increased civic engagement and reading depth. Their design recommendations include: clear attribution of curation decisions, easy remix mechanics, and asymmetric collaboration support (viewers can subscribe without needing to curate themselves).
+
+The broader social curation literature~\cite{villi2012} establishes that \emph{user-distributed content}---the act of selecting and reframing content for a social audience---is a distinct and meaningful form of news participation. By allowing users to publish their widget layout as a named, subscribable newspaper, the platform transforms its users from consumers into curators, which Bruns~\cite{bruns2005} terms \emph{gatewatchers} in his theory of networked journalism.
+
+\smallskip
+\noindent\textbf{Design Implication:} Shared newspapers should have a persistent public URL, a visual ``cover'' that reflects the layout and topic mix, and a one-click subscribe mechanism that lets visitors adopt the layout or follow the curated content feed.
+
+\subsection{The Curator as Commentator}
+
+Bruns~\cite{bruns2005} introduced the concept of \emph{gatewatchers} in networked journalism---users who actively select, reframe, and contextualize content for their social audiences, distinct from passive consumers or algorithmic sharers. Villi~\cite{villi2012} further establishes that user-distributed content represents a distinct and meaningful form of news participation. By allowing users to attach their own editorial commentary to articles within their personal newspapers, Ki\c{s}isel transforms users from consumers into curators and commentators, activating the social and authorial dimensions of news engagement that existing platforms suppress.
+
+\smallskip
+\noindent\textbf{Design Implication:} Editorial commentary must be integrated as a native widget type, enabling users to add rich-text annotations that appear alongside the articles they curate, with clear attribution of authorship.
+
+%% ─────────────────────────────────────────────────────────────────────────────
+\section{Project Stages}
+%% ─────────────────────────────────────────────────────────────────────────────
+
+The project follows a four-stage iterative design process, consistent with the double diamond model widely adopted in HCI research (Design Council, 2005). Each stage produces a concrete deliverable that informs the next.
+
+\paragraph{Stage 1 --- Discovery \& Requirements (Weeks 1--2).}
+The first stage establishes the user research foundation. Through competitive analysis of existing platforms (Google News, Feedly, Flipboard, Artifact) and a structured user survey ($n \geq 10$), we identify how target users currently consume news, what frustrations they encounter, and what customization behaviors they perform manually. Survey findings are synthesized into at least three user personas---crucially including the ``Thought Leader/Commentator'' persona who requires advanced tools for annotation and public sharing. Task analysis will cover primary flows: composing a layout, discovering serendipitous content, switching reading modes, authoring personal commentary, and sharing a newspaper.
+
+\paragraph{Stage 2 --- Design \& Prototyping (Weeks 3--4).}
+With requirements established, the design stage proceeds in two steps. Week~3 focuses on lo-fi wireframe sketches and system architecture decisions (data flow, component hierarchy, API contracts). Week~4 moves directly into code-based rapid prototyping: React scaffolding, a basic widget grid, routing, and initial state management. Design decisions are explicitly mapped to the literature: serendipity sections are anchored to McCay-Peet \& Toms~\cite{mccaypeet2015}; the reading mode hierarchy follows Shneiderman's~\cite{shneiderman1996} model; the shareable newspaper URL pattern draws on Schneider et al.~\cite{schneider2017}; and the prominent placement of editorial tools is grounded in Bruns'~\cite{bruns2005} gatewatching theory.
+
+\paragraph{Stage 3 --- Implementation (Weeks 5--7).}
+Implementation spans three focused weeks. Week~5 covers backend and data layer: NestJS API setup, PostgreSQL schema, Redis caching, RSS feed ingestion pipeline, and AI summarization API integration. Week~6 focuses on the frontend: reading mode context provider, Editorial Widget, the Popular/Random section, and UI polishing with real RSS seed data. Week~7 is reserved for full-stack integration and QA: end-to-end flow testing, cross-component state verification, and resolution of integration bugs before the handoff to usability testing.
+
+\noindent\textit{Key deliverables:} deployed functional prototype (localhost or Vercel staging), component library, API integration, seeded database.
+
+\paragraph{Stage 4 --- Evaluation \& Iteration (Weeks 8--10).}
+The functional prototype is evaluated through a moderated usability study. Findings are categorized using Nielsen's (1994) severity ratings, and a final iteration round addresses critical and major usability issues before the final submission. Quantitative metrics (task completion rate, time-on-task, SUS score) and qualitative findings (think-aloud observations, post-test interviews) are synthesized into the final evaluation report.
+
+To ensure scientific rigor, authorial agency and user engagement will be measured through objective behavioral metrics:
+\begin{itemize}[noitemsep]
+    \item \textbf{Widget Adoption Rate:} The percentage of users who voluntarily incorporate the editorial widget into their custom layout during free-exploration tasks.
+    \item \textbf{Commentary Task Performance:} Task completion rates and time-on-task for successfully authoring and saving a brief (1--2 sentence) note.
+    \item \textbf{Sharing Inclusion Rate:} The proportion of generated public ``newspaper'' links that include user-authored text alongside aggregated news links, providing quantifiable evidence of the transition from passive consumer to active curator.
 \end{itemize}
 
-\section{Tools, Software, Hardware}
-The project will be developed using the following tools and technologies:
-\begin{itemize}
-    \item \textbf{Frontend (User Interface):} React.js, CSS Grid, and HTML5 Drag \& Drop API for the widget canvas and layout registration system.
-    \item \textbf{Backend (Widget Engine):} Node.js, WebSockets for real-time widget updates, and Redis for caching.
-    \item \textbf{Content Agent (AI Layer):} Python, LangChain, and an LLM API (such as OpenAI or Anthropic) utilizing function calling for intent and section extraction.
-    \item \textbf{API \& Integration Layer:} REST/GraphQL to simulate a Publisher CMS adapter and manage paywall gates.
-\end{itemize}
+\noindent\textit{Key deliverables:} usability study report, severity-rated issue list, iterated prototype, final presentation.
 
-\section{Experiments \& Results, Test Phases}
-The performance and success of the proposed system will be measured using the following experimental setup and metrics:
-\begin{itemize}
-    \item \textbf{Tier Transition Rate:} Tracking the percentage of users who voluntarily upgrade from Tier 1 to Tier 2, and from Tier 2 to Tier 3 over time.
-    \item \textbf{Widget Usage Distribution:} Analyzing which widget types are actively utilized and which are frequently discarded by users.
-    \item \textbf{Agent Accuracy Rate:} Measuring the precision of the Content Agent by evaluating the percentage of times the extracted article sections align with user expectations (measured via user feedback buttons).
-    \item \textbf{Session Duration (A/B Testing):} Comparing the average page session duration and retention rates between a control group (standard static page) and the experimental group (personalized widget dashboard).
-\end{itemize}
+%% ─────────────────────────────────────────────────────────────────────────────
+\section{System Architecture and Tools}
+%% ─────────────────────────────────────────────────────────────────────────────
 
-\section{Weekly Schedule}
-The project will be executed in four primary phases, illustrated in the schedule below.
+\subsection{Frontend}
 
-\vspace{0.5cm}
+The platform is a desktop-first single-page application built with \textbf{React} and \textbf{TypeScript}. The widget grid system is implemented using \textbf{React Grid Layout}, which provides drag-and-drop placement, resize handles, and persistent layout serialization. Component state is managed with \textbf{Zustand} for lightweight global state (current reading mode, active layout, user preferences) and \textbf{TanStack Query} for server state and feed caching.
+
+The adaptive reading mode system operates as a React context provider that wraps all widget components, injecting a \texttt{readingMode} value (\texttt{headline | summary | full}) which each widget consumes to adjust its render depth. Mode switching is therefore a single state change that propagates to all widgets simultaneously---no re-fetch required.
+
+\subsection{Backend \& Data Layer}
+
+The backend is a lightweight \textbf{NestJS} API responsible for user authentication, layout persistence, newspaper sharing (generating public slugs), and RSS feed aggregation. News content is pulled from real RSS feeds across configurable source categories. Feed data is cached in \textbf{Redis} with a short TTL (15--30\,min) to avoid hammering sources and to ensure Popular section ranking reflects genuine recency.
+
+The Popular News section is ranked by a composite score: recency $\times$ estimated engagement (based on cross-source publication frequency of the same story). The Random News section samples uniformly from the full feed corpus, intentionally bypassing user preference data.
+
+\subsection{AI Summarization}
+
+Each feed item is passed through an \textbf{LLM summarization pipeline} (OpenAI GPT-4o-mini or a self-hosted Mistral variant) to generate a 2--3 sentence summary. Summaries are generated on ingest and cached alongside the article metadata, so the UI never blocks on AI generation latency. Each summary card visually distinguishes the AI layer (summary text) from source metadata (publication, author, date), preserving source authority as discussed in Section~\ref{sec:aisum}.
+
+\subsection{Newspaper Sharing}
+
+A user's widget layout---including source configuration, widget positions, sizes, and reading mode preference---is serialized as a JSON document and stored with a unique public slug (\texttt{/newspaper/:slug}). Visitors to a shared newspaper see a read-only version of the layout with live-updated content. A one-click ``Use this layout'' button lets visitors fork the layout into their own account.
+
+\subsection{Technology Stack Summary}
+
 \begin{table}[H]
 \centering
-\caption{Gantt Chart / Project Schedule}
-\begin{tabularx}{\textwidth}{l l X}
+\caption{Technology Stack}
+\renewcommand{\arraystretch}{1.25}
+\begin{tabularx}{\textwidth}{l X}
 \toprule
-\textbf{Phase} & \textbf{Duration} & \textbf{Scope \& Deliverables} \\
+\textbf{Layer} & \textbf{Technology} \\
 \midrule
-\textbf{Phase 1} & Weeks 1--3 & \textbf{Tier 1 (Ready-to-Go):} Theme system, user preference database setup, and onboarding flow. \\
-\addlinespace
-\textbf{Phase 2} & Weeks 4--7 & \textbf{Tier 2 (Template Builder):} Widget library development, drag-and-drop editor implementation, layout saving system. \\
-\addlinespace
-\textbf{Phase 3} & Weeks 8--11 & \textbf{Tier 3 (Free Canvas + Agent):} Content agent integration, LLM section extraction pipeline, shareable dashboard URLs. \\
-\addlinespace
-\textbf{Phase 4} & Weeks 12--14 & \textbf{Testing \& Analytics:} A/B testing, widget usage metrics analysis, agent query refinement, and final report preparation. \\
+Frontend framework    & React + TypeScript \\
+Widget grid           & React Grid Layout \\
+State management      & Zustand + TanStack Query \\
+Backend               & NestJS \\
+Database              & PostgreSQL (layouts, users) \\
+Cache                 & Redis (feed data) \\
+AI summarization      & OpenAI API (GPT-4o-mini) \\
+Feed ingestion        & RSS parser + cron jobs \\
+Deployment            & Vercel (frontend) + Railway / Render (backend) \\
 \bottomrule
 \end{tabularx}
 \end{table}
 
-% Using standard thebibliography environment to keep the document self-contained
-% and compile properly without external .bib files.
-\begin{thebibliography}{9}
+%% ─────────────────────────────────────────────────────────────────────────────
+\section{Experiments and Test Results}
+%% ─────────────────────────────────────────────────────────────────────────────
 
-\bibitem{reuters2023}
-Reuters Institute, \emph{Digital News Report — Subscription \& Retention Trends}, 2023--2024.
+\subsection{Evaluation Strategy}
 
-\bibitem{li2022}
-Y. Li, et al., ``Personalization in News Recommender Systems: A Survey,'' \emph{Journal of Digital Media}, 2022.
+The evaluation follows a \textbf{mixed-methods usability study} design, combining quantitative performance metrics with qualitative observational data. This approach is consistent with Lazar et al.\ (2017) recommendations for HCI evaluation studies, which argue that task metrics alone are insufficient to capture the full user experience---particularly for exploratory, open-ended interfaces like a customizable dashboard.
 
-\bibitem{anthropic2024}
-Anthropic, \emph{Tool Use \& Function Calling Documentation}, 2024. [Online]. Available: https://docs.anthropic.com
+All testing is conducted with the functional Stage~3 prototype on desktop (minimum 1280\,px viewport). Participants are recruited from the university student population ($n = 8$--$10$), representing the target demographic of news-reading desktop users. Sessions are conducted remotely via screen share or in-person, with screen recording and audio consent obtained.
 
-\bibitem{nielsen}
-Nielsen Norman Group, \emph{Progressive Disclosure (UX Design Pattern)}. [Online]. Available: https://www.nngroup.com/articles/progressive-disclosure/
+\subsection{Usability Testing Protocol}
 
-\end{thebibliography}
+Each session consists of four parts:
+
+\paragraph{Part 1 --- Pre-test questionnaire (5 min).}
+Participants complete a short questionnaire on their current news consumption habits, platform preferences, and self-reported comfort with customizable interfaces, providing baseline data for interpreting task performance.
+
+\paragraph{Part 2 --- Scenario-based tasks (25 min).}
+Participants are given six structured scenarios derived from the Stage~1 task analysis (Table~\ref{tab:tasks}).
+
+\begin{table}[H]
+\centering
+\caption{Usability Test Tasks}
+\label{tab:tasks}
+\renewcommand{\arraystretch}{1.3}
+\begin{tabularx}{\textwidth}{l X X}
+\toprule
+\textbf{Task} & \textbf{Scenario Description} & \textbf{Primary Metric} \\
+\midrule
+T1 --- Layout composition    & Build a layout that reflects your ideal morning news read  & Time-on-task, error count \\
+T2 --- Reading mode switch   & Switch all widgets to headline-only mode                   & Completion rate, discoverability \\
+T3 --- Serendipity engagement& Find a news item outside your usual interests using the platform & Success rate, widget used \\
+T4 --- Source navigation     & Read the full article for a story that interests you       & Click path, time to source \\
+T5 --- Newspaper sharing     & Share your layout with a friend and show them how to subscribe & Completion rate, errors \\
+T6 --- Editorial creation    & Add an Editorial widget, write a brief comment, and save it & Completion rate, errors \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+The \textbf{think-aloud protocol} is used throughout, with the facilitator prompting participants to verbalize their reasoning without providing guidance.
+
+\paragraph{Part 3 --- System Usability Scale (5 min).}
+Upon task completion, participants complete the 10-item SUS questionnaire~\cite{brooke1996}. The SUS provides a standardized, single-number usability score (0--100) enabling cross-study comparison. A target score of $\geq 68$ (the industry average) is set as the minimum acceptable threshold; a score of $\geq 80$ is the project's stretch target.
+
+\paragraph{Part 4 --- Semi-structured post-test interview (5 min).}
+Participants are asked open-ended questions targeting the three core design decisions: widget customization freedom, the serendipity sections, and the reading mode system. Interview responses are transcribed and analyzed using affinity diagramming to surface recurring themes.
+
+\subsection{Metrics Summary}
+
+\begin{table}[H]
+\centering
+\caption{Evaluation Metrics and Targets}
+\renewcommand{\arraystretch}{1.3}
+\begin{tabularx}{\textwidth}{l X l}
+\toprule
+\textbf{Metric} & \textbf{Measurement Method} & \textbf{Target} \\
+\midrule
+Task completion rate           & Observed pass/fail per task                              & $\geq 80\%$ across all tasks \\
+Time-on-task (T1)              & Stopwatch from task prompt to declared completion        & $< 3$ min \\
+SUS score                      & Standard 10-item questionnaire                           & $\geq 68$ (stretch: $\geq 80$) \\
+Error rate                     & Count of incorrect actions per task                      & $\leq 2$ errors avg.\ on T2, T5 \\
+Serendipity engagement rate    & \% of participants who click a Popular or Random item    & $\geq 40\%$ \\
+Discoverability of mode switcher & \% who locate the control without prompting            & $\geq 70\%$ \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\subsection{Analysis Plan}
+
+Quantitative data (task completion, time, SUS) will be reported descriptively (mean, standard deviation) given the small sample size---inferential statistics are not appropriate at $n < 15$. Usability issues identified in the think-aloud and interview data will be categorized using \textbf{Nielsen's (1994) severity ratings} ($0 =$ not a usability problem $\rightarrow$ $4 =$ usability catastrophe). Issues rated 3 or 4 will be addressed in the Stage~4 iteration round before final submission.
+
+%% ─────────────────────────────────────────────────────────────────────────────
+\section{Weekly Schedule}
+%% ─────────────────────────────────────────────────────────────────────────────
+
+\begin{table}[H]
+\centering
+\caption{10-Week Project Schedule}
+\renewcommand{\arraystretch}{1.35}
+\begin{tabularx}{\textwidth}{c l X X}
+\toprule
+\textbf{Week} & \textbf{Phase} & \textbf{Goals} & \textbf{Deliverables} \\
+\midrule
+1
+  & Discovery
+  & Competitive analysis of 4 platforms (Google News, Feedly, Flipboard, Artifact); design and distribute user survey ($n \geq 10$); initial research gap documentation
+  & Competitive analysis report, survey instrument \\
+2
+  & Requirements
+  & Analyze survey results; synthesize 3 user personas (including Thought Leader/Commentator); map primary task flows; finalize feature scope
+  & Personas, task flow diagrams, finalized feature list \\
+3
+  & Lo-fi Design \& Architecture
+  & Sketch lo-fi wireframes for all core flows; define system architecture, component hierarchy, API contracts, and data models
+  & Lo-fi wireframe set, system architecture diagram, API contract document \\
+4
+  & Rapid Prototyping
+  & Code-based rapid prototyping: React scaffolding, basic widget grid, routing, global state management skeleton, and Editorial Widget mockup
+  & Interactive coded prototype covering all 6 primary task flows \\
+5
+  & Implementation --- Backend
+  & NestJS API setup; PostgreSQL schema; Redis caching layer; RSS feed ingestion pipeline; newspaper sharing slug generation; AI summarization API integration
+  & Functional backend, API integrations, seeded database, working summarization pipeline \\
+6
+  & Implementation --- Frontend
+  & Reading mode context provider; drag-and-drop widget grid; Editorial Widget; Popular and Random sections; UI polishing with live RSS seed data
+  & Fully functional frontend connected to backend; all 6 task flows operational \\
+7
+  & Integration \& QA
+  & Full-stack integration testing; end-to-end flow verification; cross-component state audits; resolution of integration bugs; staging deployment
+  & Stable integrated prototype deployed on Vercel + Railway staging, QA report \\
+8
+  & Usability Testing
+  & Recruit 8--10 participants; conduct moderated think-aloud usability sessions (T1--T6); collect SUS questionnaires and session recordings
+  & Raw session recordings, SUS score sheets, interview transcripts \\
+9
+  & Analysis \& Iteration
+  & Transcribe and affinity-diagram interview data; severity-rate all issues per Nielsen (1994); fix all issues rated $\geq 3$; re-test critical fixes
+  & Severity-rated issue log, iterated prototype, regression test results \\
+10
+  & Final Report \& Presentation
+  & Synthesize quantitative and qualitative evaluation findings; compile final evaluation report; prepare and rehearse presentation deck
+  & Final evaluation report, presentation slides, submitted project artefacts \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\subsection*{Gantt Chart}
+
+\definecolor{phaseA}{HTML}{4472C4}
+\definecolor{phaseB}{HTML}{ED7D31}
+\definecolor{phaseC}{HTML}{70AD47}
+\definecolor{phaseD}{HTML}{FF0000}
+\definecolor{groupbg}{HTML}{D9D9D9}
+
+\begin{figure}[H]
+\centering
+\begin{ganttchart}[
+  hgrid,
+  vgrid={*{9}{draw=gray!40, dashed}},
+  x unit          = 1.15cm,
+  y unit title    = 0.65cm,
+  y unit chart    = 0.58cm,
+  title height    = 1,
+  title/.append style    = {fill=gray!25, draw=gray!60},
+  title label font       = \small\bfseries,
+  group/.append style    = {fill=groupbg, draw=black},
+  group label font       = \small\bfseries,
+  group peaks tip position = 0,
+  bar height      = 0.55,
+  bar label font  = \small,
+  bar top shift   = 0.2,
+  milestone/.append style = {fill=black},
+  link/.style     = {-latex, rounded corners=2pt},
+]{1}{10}
+  %% Title row
+  \gantttitle{\textbf{Project Timeline (10 Weeks)}}{10} \\
+  \gantttitlelist{1,2,3,4,5,6,7,8,9,10}{1} \\
+
+  %% ── Phase 1: Discovery & Requirements ──────────────────────────────────
+  \ganttgroup{Phase 1 \quad Discovery \& Requirements}{1}{2} \\
+  \ganttbar[bar/.append style={fill=phaseA!70}]{Competitive Analysis}{1}{1} \\
+  \ganttbar[bar/.append style={fill=phaseA!70}]{User Survey Design \& Distribution}{1}{2} \\
+  \ganttbar[bar/.append style={fill=phaseA!70}]{Personas \& Task Flow Analysis}{2}{2} \\
+
+  %% ── Phase 2: Design & Prototyping ───────────────────────────────────────
+  \ganttgroup{Phase 2 \quad Design \& Prototyping}{3}{4} \\
+  \ganttbar[bar/.append style={fill=phaseB!70}]{Lo-fi Wireframes \& Architecture}{3}{3} \\
+  \ganttbar[bar/.append style={fill=phaseB!70}]{Rapid Coded Prototype}{4}{4} \\
+
+  %% ── Phase 3: Implementation ─────────────────────────────────────────────
+  \ganttgroup{Phase 3 \quad Implementation}{5}{7} \\
+  \ganttbar[bar/.append style={fill=phaseC!80}]{Backend, DB \& AI Pipeline}{5}{5} \\
+  \ganttbar[bar/.append style={fill=phaseC!80}]{Frontend \& Widget System}{6}{6} \\
+  \ganttbar[bar/.append style={fill=phaseC!80}]{Integration \& QA}{7}{7} \\
+
+  %% ── Phase 4: Evaluation ─────────────────────────────────────────────────
+  \ganttgroup{Phase 4 \quad Evaluation \& Reporting}{8}{10} \\
+  \ganttbar[bar/.append style={fill=phaseD!60}]{Usability Testing Sessions}{8}{8} \\
+  \ganttbar[bar/.append style={fill=phaseD!60}]{Analysis \& Iteration}{9}{9} \\
+  \ganttbar[bar/.append style={fill=phaseD!60}]{Final Report \& Presentation}{10}{10} \\
+
+  %% ── Milestones ──────────────────────────────────────────────────────────
+  \ganttmilestone{Requirements Locked}{2} \\
+  \ganttmilestone{Prototype Ready}{4} \\
+  \ganttmilestone{Staging Deployed}{7} \\
+  \ganttmilestone{Final Submission}{10}
+\end{ganttchart}
+\caption{Gantt chart showing the four project phases across ten weeks. Milestones mark key hand-off points between phases.}
+\end{figure}
+
+\bibliographystyle{chicago}
+\bibliography{references}
 
 \end{document}
