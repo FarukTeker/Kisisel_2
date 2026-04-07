@@ -58,7 +58,7 @@
 \begin{itemize}
     \item Sübhan Akbenli \quad 300201129
     \item Berkay Fehmi Tekin \quad 300201090
-    \item Zübeyir Almaho \quad 300201023
+    \item Zübeyr Almaho \quad 300201023
     \item Yasin Sezgin \quad 300201007
     \item Ömer Faruk Teker \quad 300201077
 \end{itemize}
@@ -71,7 +71,6 @@ This project proposes \textbf{Ki\c{s}isel}, a widget-based, adaptive news aggreg
 \end{abstract}
 
 \cleardoublepage
-
 
 %% ─────────────────────────────────────────────────────────────────────────────
 \section{Introduction}
@@ -115,6 +114,17 @@ UX best-practice literature consistently recommends drag-and-drop interfaces for
 
 \smallskip
 \noindent\textbf{Design Implication:} The platform's grid system should offer meaningful size flexibility (compact / standard / wide widget modes) to accommodate both information-dense power users and lighter casual readers within the same layout framework.
+
+\subsection{Lessons from Widget-Based Productivity and Time Management Applications}
+
+Beyond research dashboards, the widget-based customization paradigm has achieved widespread consumer adoption through productivity and time management applications. Platforms such as Notion, Todoist, and Trello allow users to compose personal dashboards from modular, repositionable components---calendars, task lists, kanban boards, and habit trackers---each serving a distinct informational function within a unified workspace~\cite{bødker2016}. The success of these tools demonstrates that users are both willing and able to invest effort in layout composition when the resulting artifact directly reflects their personal workflow.
+
+Several design patterns from this domain are directly transferable to the news curation context proposed by Ki\c{s}isel. First, \emph{progressive complexity}: Notion and similar tools expose simple defaults while allowing power users to add components incrementally, avoiding the ``blank canvas'' paralysis that undermines adoption of overly flexible interfaces~\cite{mackay1991}. Second, \emph{persistent layout state}: productivity dashboards save user configurations across sessions, treating the layout itself as a first-class artifact rather than a transient UI state---a principle that directly informs the shareable newspaper model. Third, \emph{mixed-content widgets}: Notion's ability to intermix text blocks, embedded databases, and media previews within a single page validates the feasibility of combining news summary widgets with user-authored editorial commentary widgets in a single layout.
+
+However, a critical distinction separates productivity dashboards from the proposed platform: productivity tools organize \emph{user-generated tasks}, whereas Ki\c{s}isel organizes \emph{externally sourced, continuously updated content}. This introduces unique challenges around content freshness, source attribution, and the cognitive load of an ever-changing information stream---challenges that the adaptive reading modes and AI summarization layers are specifically designed to address.
+
+\smallskip
+\noindent\textbf{Design Implication:} The platform should adopt the progressive complexity and persistent layout patterns proven by productivity tools, while introducing content-aware affordances (freshness indicators, source badges, summary depth controls) that address the distinct demands of live news aggregation.
 
 \subsection{Filter Bubbles and Serendipitous Discovery}
 
@@ -314,6 +324,37 @@ Discoverability of mode switcher & \% who locate the control without prompting  
 Quantitative data (task completion, time, SUS) will be reported descriptively (mean, standard deviation) given the small sample size---inferential statistics are not appropriate at $n < 15$. Usability issues identified in the think-aloud and interview data will be categorized using \textbf{Nielsen's (1994) severity ratings} ($0 =$ not a usability problem $\rightarrow$ $4 =$ usability catastrophe). Issues rated 3 or 4 will be addressed in the Stage~4 iteration round before final submission.
 
 %% ─────────────────────────────────────────────────────────────────────────────
+\section{Team Responsibilities}
+%% ─────────────────────────────────────────────────────────────────────────────
+
+Table~\ref{tab:responsibilities} outlines the primary responsibility assignments for each team member across the four project phases.
+
+\begin{table}[H]
+\centering
+\caption{Team Member Responsibilities}
+\label{tab:responsibilities}
+\renewcommand{\arraystretch}{1.3}
+\begin{tabularx}{\textwidth}{l X}
+\toprule
+\textbf{Team Member} & \textbf{Primary Responsibilities} \\
+\midrule
+Sübhan Akbenli (300201129)
+  & Frontend development (React widget grid, reading mode context provider); UI/UX polishing; drag-and-drop interaction implementation \\
+Berkay Fehmi Tekin (300201090)
+  & Backend development (NestJS API, PostgreSQL schema, Redis caching); RSS feed ingestion pipeline; newspaper sharing slug generation \\
+Zübeyir Almaho (300201023)
+  & AI summarization pipeline integration (OpenAI API); Editorial Widget implementation; content ranking algorithm (Popular/Random sections) \\
+Yasin Sezgin (300201007)
+  & User research lead (survey design, persona synthesis, task flow analysis); usability testing facilitation; evaluation report compilation \\
+Ömer Faruk Teker (300201077)
+  & System architecture \& DevOps (deployment pipeline, Vercel/Railway staging); integration \& QA; lo-fi wireframes and design documentation \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\noindent All team members participate collaboratively in literature review, competitive analysis, and the final presentation preparation. Cross-functional code reviews are conducted weekly to ensure shared ownership of the codebase.
+
+%% ─────────────────────────────────────────────────────────────────────────────
 \section{Weekly Schedule}
 %% ─────────────────────────────────────────────────────────────────────────────
 
@@ -425,13 +466,21 @@ Quantitative data (task completion, time, SUS) will be reported descriptively (m
   \ganttbar[bar/.append style={fill=phaseD!60}]{Final Report \& Presentation}{10}{10} \\
 
   %% ── Milestones ──────────────────────────────────────────────────────────
-  \ganttmilestone{Requirements Locked}{2} \\
-  \ganttmilestone{Prototype Ready}{4} \\
-  \ganttmilestone{Staging Deployed}{7} \\
-  \ganttmilestone{Final Submission}{10}
+  \ganttmilestone{M1: Requirements Locked}{2} \\
+  \ganttmilestone{M2: Prototype Ready}{4} \\
+  \ganttmilestone{M3: Staging Deployed}{7} \\
+  \ganttmilestone{M4: Final Submission}{10}
 \end{ganttchart}
 \caption{Gantt chart showing the four project phases across ten weeks. Milestones mark key hand-off points between phases.}
 \end{figure}
+
+\noindent\textbf{Milestone Acceptance Criteria:}
+\begin{itemize}[noitemsep]
+    \item \textbf{M1 --- Requirements Locked (Week 2):} All three user personas finalized and approved; feature scope document signed off by all team members; task flow diagrams cover all six primary user flows.
+    \item \textbf{M2 --- Prototype Ready (Week 4):} Interactive coded prototype demonstrates all six task flows (T1--T6) with placeholder data; internal walkthrough completed with zero blocking issues.
+    \item \textbf{M3 --- Staging Deployed (Week 7):} Full-stack prototype deployed to staging environment (Vercel + Railway); all API endpoints functional; real RSS feed data seeded; end-to-end smoke test passed for all six task flows.
+    \item \textbf{M4 --- Final Submission (Week 10):} Usability evaluation report complete; all severity~3+ issues resolved; final presentation deck rehearsed; all project artifacts submitted.
+\end{itemize}
 
 \bibliographystyle{chicago}
 \bibliography{references}
