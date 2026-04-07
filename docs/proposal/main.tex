@@ -28,6 +28,7 @@
 \setmainfont{Helvetica Neue}
 \usepackage{enumitem}
 \usepackage{tabularx}
+\usepackage{longtable}
 
 % Page geometry from template
 \topmargin      0.0in
@@ -358,14 +359,24 @@ Yasin Sezgin (300201007)
 \section{Weekly Schedule}
 %% ─────────────────────────────────────────────────────────────────────────────
 
-\begin{table}[H]
-\centering
-\caption{10-Week Project Schedule}
-\renewcommand{\arraystretch}{1.35}
-\begin{tabularx}{\textwidth}{c l X X}
+{\small
+\renewcommand{\arraystretch}{1.2}
+\begin{longtable}{@{}>{\centering\arraybackslash}p{0.06\textwidth} p{0.20\textwidth} p{0.34\textwidth} p{0.30\textwidth}@{}}
+\caption{10-Week Project Schedule}\\
 \toprule
 \textbf{Week} & \textbf{Phase} & \textbf{Goals} & \textbf{Deliverables} \\
 \midrule
+\endfirsthead
+
+\multicolumn{4}{l}{\textit{Table 5 continued}} \\
+\toprule
+\textbf{Week} & \textbf{Phase} & \textbf{Goals} & \textbf{Deliverables} \\
+\midrule
+\endhead
+
+\bottomrule
+\endfoot
+
 1
   & Discovery
   & Competitive analysis of 4 platforms (Google News, Feedly, Flipboard, Artifact); design and distribute user survey ($n \geq 10$); initial research gap documentation
@@ -406,9 +417,8 @@ Yasin Sezgin (300201007)
   & Final Report \& Presentation
   & Synthesize quantitative and qualitative evaluation findings; compile final evaluation report; prepare and rehearse presentation deck
   & Final evaluation report, presentation slides, submitted project artefacts \\
-\bottomrule
-\end{tabularx}
-\end{table}
+\end{longtable}
+}
 
 \subsection*{Gantt Chart}
 
