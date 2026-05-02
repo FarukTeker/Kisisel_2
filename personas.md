@@ -2,6 +2,8 @@
 
 Bu personelar, `survey/mock_data_results.md` dosyasındaki 15 kişilik kullanıcı anketinden türetilmiştir. Örneklem üniversite öğrencisi ağırlıklıdır: katılımcıların %86'sı 18-24 yaş aralığındadır. Bu nedenle personelar özellikle genç yetişkinlerin haber tüketim alışkanlıklarını, sosyal medya merkezli gündem takibini, bilgi yorgunluğunu ve kişisel gazete fikrine yönelik farklı katılım seviyelerini temsil eder.
 
+**Metod Notu:** Bu personelar, survey verisine dayanan kompozit karakterlerdir. Yaş, haber kaynağı, okuma biçimi, bilgi yoğunluğu, AI özet tercihi, serendipity beklentisi ve paylaşım davranışı gibi temel özellikler anket bulgularına dayanmaktadır. Kulüp rolü, günlük rutin, spesifik ilgi alanları ve örnek kullanım senaryoları gibi anlatısal detaylar ise personayı daha gerçekçi ve tasarım açısından daha kullanışlı hale getirmek için eklenmiştir.
+
 ## Survey'den Çıkan Ana Kullanıcı Segmentleri
 
 Anket sonuçları üç güçlü davranış örüntüsü göstermektedir:
