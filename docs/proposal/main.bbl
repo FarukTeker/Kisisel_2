@@ -1,53 +1,40 @@
 \begin{thebibliography}{}
 
-\bibitem[\protect\citeauthoryear{B{\o}dker and Klokmose}{B{\o}dker and
-  Klokmose}{2016}]{bodker2016}
+\bibitem[\protect\citeauthoryear{B{\o}dker and Klokmose}{B{\o}dker and Klokmose}{2016}]{bodker2016}
 B{\o}dker, S. and C.~N. Klokmose (2016).
-\newblock Pieces to pathways: Exploring the design space of tools for creative
-  work.
-\newblock In {\em Proceedings of the 9th Nordic Conference on Human-Computer
-  Interaction (NordiCHI)}. ACM.
+\newblock Pieces to pathways: Exploring the design space of tools for creative work.
+\newblock In {\em Proceedings of the 9th Nordic Conference on Human-Computer Interaction (NordiCHI)}. ACM.
 
 \bibitem[\protect\citeauthoryear{Brooke}{Brooke}{1996}]{brooke1996}
 Brooke, J. (1996).
 \newblock {SUS}---{A} quick and dirty usability scale.
-\newblock In P.~W. Jordan, B.~Thomas, B.~A. Weerdmeester, and I.~L. McClelland
-  (Eds.), {\em Usability Evaluation in Industry}, pp.\  189--194. London:
-  Taylor \& Francis.
+\newblock In P.~W. Jordan, B.~Thomas, B.~A. Weerdmeester, and I.~L. McClelland (Eds.), {\em Usability Evaluation in Industry}, pp.\  189--194. London: Taylor \& Francis.
 
 \bibitem[\protect\citeauthoryear{Bruns}{Bruns}{2005}]{bruns2005}
 Bruns, A. (2005).
 \newblock {\em Gatewatching: Collaborative Online News Production}.
 \newblock New York: Peter Lang.
 
-\bibitem[\protect\citeauthoryear{Darejeh, Marcus, Mohammadi, and
-  Sweller}{Darejeh et~al.}{2024}]{darejeh2024}
+\bibitem[\protect\citeauthoryear{Darejeh, Marcus, Mohammadi, and Sweller}{Darejeh et~al.}{2024}]{darejeh2024}
 Darejeh, A., N.~Marcus, G.~Mohammadi, and J.~Sweller (2024).
-\newblock A critical analysis of cognitive load measurement methods for
-  evaluating the usability of different types of interfaces: guidelines and
-  framework for {Human-Computer Interaction}.
+\newblock A critical analysis of cognitive load measurement methods for evaluating the usability of different types of interfaces: guidelines and framework for {Human-Computer Interaction}.
 \newblock arXiv preprint.
 \newblock arXiv:2402.11820.
 
 \bibitem[\protect\citeauthoryear{Mackay}{Mackay}{1991}]{mackay1991}
 Mackay, W.~E. (1991).
 \newblock Triggers and barriers to customizing software.
-\newblock {\em Proceedings of the SIGCHI Conference on Human Factors in
-  Computing Systems\/}, 153--160.
+\newblock {\em Proceedings of the SIGCHI Conference on Human Factors in Computing Systems\/}, 153--160.
 
-\bibitem[\protect\citeauthoryear{McCay-Peet and Toms}{McCay-Peet and
-  Toms}{2015}]{mccaypeet2015}
+\bibitem[\protect\citeauthoryear{McCay-Peet and Toms}{McCay-Peet and Toms}{2015}]{mccaypeet2015}
 McCay-Peet, L. and E.~G. Toms (2015).
 \newblock Investigating serendipity: How it unfolds and what may influence it.
-\newblock {\em Journal of the Association for Information Science and
-  Technology\/}~{\em 66\/}(5), 1040--1053.
+\newblock {\em Journal of the Association for Information Science and Technology\/}~{\em 66\/}(5), 1040--1053.
 
-\bibitem[\protect\citeauthoryear{Newman, Fletcher, Robertson, Eddy, and
-  Nielsen}{Newman et~al.}{2022}]{newman2022}
+\bibitem[\protect\citeauthoryear{Newman, Fletcher, Robertson, Eddy, and Nielsen}{Newman et~al.}{2022}]{newman2022}
 Newman, N., R.~Fletcher, C.~T. Robertson, K.~Eddy, and R.~K. Nielsen (2022).
 \newblock Reuters institute digital news report 2022.
-\newblock Technical report, Reuters Institute for the Study of Journalism,
-  Oxford.
+\newblock Technical report, Reuters Institute for the Study of Journalism, Oxford.
 
 \bibitem[\protect\citeauthoryear{Nielsen}{Nielsen}{2006}]{nielsen2006}
 Nielsen, J. (2006).
@@ -64,36 +51,24 @@ Pariser, E. (2011).
 \newblock {\em The Filter Bubble: What the Internet is Hiding from You}.
 \newblock New York: Penguin Press.
 
-\bibitem[\protect\citeauthoryear{Schneider, Oliveira, and de~Souza}{Schneider
-  et~al.}{2017}]{schneider2017}
+\bibitem[\protect\citeauthoryear{Schneider, Oliveira, and de~Souza}{Schneider et~al.}{2017}]{schneider2017}
 Schneider, D., L.~F. Oliveira, and J.~de~Souza (2017).
-\newblock Designing, building and evaluating a social news curation
-  environment.
-\newblock In {\em Proceedings of the ACM Conference on Computer-Supported
-  Cooperative Work and Social Computing (CSCW)}. ACM.
+\newblock Designing, building and evaluating a social news curation environment.
+\newblock In {\em Proceedings of the ACM Conference on Computer-Supported Cooperative Work and Social Computing (CSCW)}. ACM.
 
 \bibitem[\protect\citeauthoryear{Shneiderman}{Shneiderman}{1996}]{shneiderman1996}
 Shneiderman, B. (1996).
-\newblock The eyes have it: A task by data type taxonomy for information
-  visualizations.
-\newblock In {\em Proceedings of the IEEE Symposium on Visual Languages}, pp.\
-  336--343. IEEE.
+\newblock The eyes have it: A task by data type taxonomy for information visualizations.
+\newblock In {\em Proceedings of the IEEE Symposium on Visual Languages}, pp.\  336--343. IEEE.
 
-\bibitem[\protect\citeauthoryear{Sloep, Bittencourt, Duval, Eisenstadt, Gruber,
-  Haake, Scott, Seaton, Sharples, Shum, and Tiropanis}{Sloep
-  et~al.}{2011}]{sloep2011}
-Sloep, P., I.~I. Bittencourt, E.~Duval, M.~Eisenstadt, M.~Gruber, J.~Haake,
-  P.~Scott, D.~Seaton, M.~Sharples, S.~B. Shum, and T.~Tiropanis (2011).
-\newblock {AWESOME}: A widget-based dashboard for awareness-support in research
-  networks.
-\newblock In {\em Proceedings of the 1st Workshop on Awareness and Reflection
-  in Personal Learning Environments}.
+\bibitem[\protect\citeauthoryear{Sloep, Bittencourt, Duval, Eisenstadt, Gruber, Haake, Scott, Seaton, Sharples, Shum, and Tiropanis}{Sloep et~al.}{2011}]{sloep2011}
+Sloep, P., I.~I. Bittencourt, E.~Duval, M.~Eisenstadt, M.~Gruber, J.~Haake, P.~Scott, D.~Seaton, M.~Sharples, S.~B. Shum, and T.~Tiropanis (2011).
+\newblock {AWESOME}: A widget-based dashboard for awareness-support in research networks.
+\newblock In {\em Proceedings of the 1st Workshop on Awareness and Reflection in Personal Learning Environments}.
 
 \bibitem[\protect\citeauthoryear{Villi}{Villi}{2012}]{villi2012}
 Villi, M. (2012).
-\newblock Social curation in audience communities: {UDC} (user-distributed
-  content) in the networked media ecosystem.
-\newblock {\em Participations: Journal of Audience \& Reception Studies\/}~{\em
-  9\/}(2).
+\newblock Social curation in audience communities: {UDC} (user-distributed content) in the networked media ecosystem.
+\newblock {\em Participations: Journal of Audience \& Reception Studies\/}~{\em 9\/}(2).
 
 \end{thebibliography}
