@@ -238,25 +238,7 @@ export default function Feed() {
         })}
       </div>
 
-      {/* Helper Text Overlay (Floating Purple Text) */}
-      <div style={{
-        position: 'fixed',
-        top: '30%',
-        left: '50%',
-        transform: 'translate(-50%, -50%)',
-        textAlign: 'center',
-        pointerEvents: 'none',
-        zIndex: 5,
-        color: '#6366f1',
-        fontFamily: 'sans-serif'
-      }}>
-        <h2 style={{ fontSize: '1.65rem', fontWeight: '900', margin: 0, textShadow: '0 2px 4px rgba(255,255,255,0.8)' }}>
-          A free 2d space which we can go t any direction in x,y
-        </h2>
-        <p style={{ fontSize: '1.35rem', fontWeight: '800', margin: '0.5rem 0 0 0', textShadow: '0 2px 4px rgba(255,255,255,0.8)' }}>
-          we can discover other's shared newspapers
-        </p>
-      </div>
+
 
       {/* Static Floating Back Button (Circular Dark Grey with White Arrow) */}
       <Link 
