@@ -28,6 +28,7 @@ export const mockArticles: NewsArticle[] = [
     author: "Jane Doe",
     date: "2026-05-31",
     category: "Technology",
+    imageUrl: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=600&auto=format&fit=crop&q=60"
   },
   {
     id: "2",
@@ -37,6 +38,7 @@ export const mockArticles: NewsArticle[] = [
     author: "John Smith",
     date: "2026-05-30",
     category: "Finance",
+    imageUrl: "https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=600&auto=format&fit=crop&q=60"
   },
   {
     id: "3",
@@ -46,6 +48,7 @@ export const mockArticles: NewsArticle[] = [
     author: "Alice Johnson",
     date: "2026-05-29",
     category: "Food",
+    imageUrl: "https://images.unsplash.com/photo-1556910103-1c02745aae4d?w=600&auto=format&fit=crop&q=60"
   },
   {
     id: "4",
@@ -55,6 +58,27 @@ export const mockArticles: NewsArticle[] = [
     author: "Dr. Robert Lee",
     date: "2026-05-28",
     category: "Science",
+    imageUrl: "https://images.unsplash.com/photo-1583212292454-1fe6229603b7?w=600&auto=format&fit=crop&q=60"
+  },
+  {
+    id: "5",
+    title: "The Return of Analog Sound in a Digital Age",
+    summary: "Vinyl sales continue to climb as audiophiles seek out the warmth and tactile feel of physical music media.",
+    fullContent: "In an era dominated by instant streaming, physical music media is making a surprising comeback. Vinyl records have seen consecutive years of sales growth, driven not just by nostalgic collectors but also by a younger generation looking for a more deliberate, high-fidelity listening experience. Fans claim the analog format captures details and warmth lost in compression, while others value the artwork and physical interaction of playing an album from start to finish.",
+    author: "Liam Carter",
+    date: "2026-05-27",
+    category: "Culture",
+    imageUrl: "https://images.unsplash.com/photo-1484755560693-a4074577af3a?w=600&auto=format&fit=crop&q=60"
+  },
+  {
+    id: "6",
+    title: "Next-Gen Aerospace: The Race to Mars",
+    summary: "Private space enterprises and government agencies are aligning timelines to send the first human crews to Mars.",
+    fullContent: "Humanity is closer than ever to setting foot on another planet. The logistics of a Mars mission are being actively solved: from deep-space radiation shields to closed-loop life support systems. With multiple test launches planned for the coming year, space agencies and private aerospace companies are projecting crewed missions in the mid-2030s. The mission represents not only a scientific leap but also a testament to international collaboration.",
+    author: "Elena Rostova",
+    date: "2026-05-26",
+    category: "Science",
+    imageUrl: "https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=600&auto=format&fit=crop&q=60"
   }
 ];
 
