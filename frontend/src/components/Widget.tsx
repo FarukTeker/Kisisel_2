@@ -343,7 +343,7 @@ export default function Widget({
       )}
 
       {/* Main card body */}
-      <div style={{ flex: 1 }}>
+      <div style={{ flex: 1, overflow: 'hidden', height: '100%' }}>
         {renderContent()}
       </div>
 

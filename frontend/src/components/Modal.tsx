@@ -7,9 +7,10 @@ interface ModalProps {
   onClose: () => void;
   title: string;
   children: React.ReactNode;
+  maxWidth?: string;
 }
 
-export default function Modal({ isOpen, onClose, title, children }: ModalProps) {
+export default function Modal({ isOpen, onClose, title, children, maxWidth }: ModalProps) {
   if (!isOpen) return null;
 
   return (
@@ -25,7 +26,7 @@ export default function Modal({ isOpen, onClose, title, children }: ModalProps) 
       <div className="card animate-fade-in" style={{
         backgroundColor: 'var(--surface)',
         width: '100%',
-        maxWidth: '500px',
+        maxWidth: maxWidth || '500px',
         padding: '2rem',
         position: 'relative'
       }}>
