@@ -308,6 +308,7 @@ export default function Widget({
         cursor: editMode ? 'grab' : 'default',
         boxSizing: 'border-box',
         userSelect: editMode ? 'none' : 'text', 
+        boxShadow: isSelected ? '4px 4px 0px #4f46e5' : '4px 4px 0px #111827',
         transition: 'box-shadow 0.2s ease',
         zIndex: isSelected ? 5 : 1,
         flex: (customSize.width || customSize.height) ? 'none' : undefined
@@ -322,7 +323,7 @@ export default function Widget({
             top: '-12px', 
             left: '-12px', 
             background: '#ffffff', 
-            border: '1.5px solid #111827', 
+            border: '2px solid #111827', 
             borderRadius: '50%', 
             width: '26px',
             height: '26px',
@@ -330,7 +331,7 @@ export default function Widget({
             alignItems: 'center',
             justifyContent: 'center',
             cursor: 'pointer', 
-            boxShadow: '0 2px 4px rgba(0,0,0,0.15)',
+            boxShadow: '2px 2px 0px #111827',
             zIndex: 10 
           }}
           title="Widget Settings"
@@ -380,7 +381,7 @@ export default function Widget({
             border: '2px solid #111827',
             cursor: 'se-resize',
             zIndex: 15,
-            boxShadow: '0 1px 3px rgba(0,0,0,0.15)',
+            boxShadow: '2px 2px 0px #111827',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center'

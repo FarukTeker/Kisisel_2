@@ -23,7 +23,7 @@ export default function Login() {
     <div style={{
       display: 'flex',
       minHeight: '100vh',
-      backgroundColor: 'var(--surface-hover)',
+      backgroundColor: '#f3f4f6', // Light gray background
       alignItems: 'center',
       justifyContent: 'center',
       padding: '2rem'
@@ -34,30 +34,34 @@ export default function Login() {
           width: '100%',
           maxWidth: '460px',
           padding: '3rem 2.5rem',
-          backgroundColor: '#e5e7eb', // Light gray background to match wireframe
-          borderRadius: '12px',
-          boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)',
-          border: '1px solid #d1d5db'
+          backgroundColor: '#ffffff', 
+          borderRadius: '4px',
+          boxShadow: '6px 6px 0px #111827',
+          border: '2.5px solid #111827'
         }}
       >
         <h1 style={{ 
           textAlign: 'center', 
           marginBottom: '2rem', 
-          fontSize: '1.5rem', 
-          fontWeight: '700',
-          color: '#111827'
+          fontSize: '1.75rem', 
+          fontWeight: '900',
+          color: '#111827',
+          letterSpacing: '-0.5px',
+          textTransform: 'uppercase'
         }}>
           Kişisel {isLogin ? 'Login' : 'Register'}
         </h1>
         
+        {/* Custom brutalist logo frame */}
         <div style={{ 
           width: '100px', 
           height: '100px', 
           margin: '0 auto 2.5rem', 
-          borderRadius: '20px', 
+          borderRadius: '4px', 
           overflow: 'hidden',
           backgroundColor: '#ffffff',
-          boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)'
+          border: '2.5px solid #111827',
+          boxShadow: '3px 3px 0px #111827'
         }}>
           <Image 
             src="/logo.png" 
@@ -66,64 +70,65 @@ export default function Login() {
             height={100}
             style={{ objectFit: 'cover' }}
             priority
+            unoptimized
           />
         </div>
 
         <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
           
           <div style={{ display: 'grid', gridTemplateColumns: '100px 1fr', alignItems: 'center', gap: '1rem' }}>
-            <label style={{ fontWeight: '700', fontSize: '1rem', color: '#111827' }}>email</label>
+            <label style={{ fontWeight: '800', fontSize: '0.95rem', color: '#111827', textTransform: 'uppercase' }}>email</label>
             <input 
               type="email" 
               placeholder="email"
               style={{ 
-                padding: '0.75rem 1rem', 
+                padding: '0.65rem 0.85rem', 
                 borderRadius: '4px', 
-                border: 'none',
+                border: '2px solid #111827',
                 backgroundColor: '#ffffff',
-                boxShadow: 'inset 0 2px 4px 0 rgba(0, 0, 0, 0.06)',
                 outline: 'none',
-                fontSize: '1rem',
-                color: '#111827'
+                fontSize: '0.95rem',
+                color: '#111827',
+                fontWeight: 'bold'
               }} 
             />
           </div>
 
           <div style={{ display: 'grid', gridTemplateColumns: '100px 1fr', alignItems: 'center', gap: '1rem' }}>
-            <label style={{ fontWeight: '700', fontSize: '1rem', color: '#111827' }}>password</label>
+            <label style={{ fontWeight: '800', fontSize: '0.95rem', color: '#111827', textTransform: 'uppercase' }}>password</label>
             <input 
               type="password" 
               placeholder="password"
               style={{ 
-                padding: '0.75rem 1rem', 
+                padding: '0.65rem 0.85rem', 
                 borderRadius: '4px', 
-                border: 'none',
+                border: '2px solid #111827',
                 backgroundColor: '#ffffff',
-                boxShadow: 'inset 0 2px 4px 0 rgba(0, 0, 0, 0.06)',
                 outline: 'none',
-                fontSize: '1rem',
-                color: '#111827'
+                fontSize: '0.95rem',
+                color: '#111827',
+                fontWeight: 'bold'
               }} 
             />
           </div>
 
           {!isLogin && (
             <div style={{ display: 'grid', gridTemplateColumns: '100px 1fr', alignItems: 'center', gap: '1rem' }}>
-              <label style={{ fontWeight: '700', fontSize: '0.85rem', lineHeight: 1.2, color: '#111827' }}>
+              <label style={{ fontWeight: '800', fontSize: '0.85rem', lineHeight: 1.2, color: '#111827', textTransform: 'uppercase' }}>
                 Repeat<br/>password
               </label>
               <input 
                 type="password" 
                 placeholder="password"
                 style={{ 
-                  padding: '0.75rem 1rem', 
+                  padding: '0.65rem 0.85rem', 
                   borderRadius: '4px', 
-                  border: 'none',
+                  border: '2px solid #111827',
                   backgroundColor: '#ffffff',
-                  boxShadow: 'inset 0 2px 4px 0 rgba(0, 0, 0, 0.06)',
                   outline: 'none',
-                  fontSize: '1rem',
-                  color: '#111827'
+                  fontSize: '0.95rem',
+                  color: '#111827',
+                  fontWeight: 'bold'
                 }} 
               />
             </div>
@@ -136,13 +141,13 @@ export default function Login() {
                   <button 
                     type="button" 
                     onClick={() => setIsLogin(false)} 
-                    style={{ fontSize: '0.875rem', fontWeight: '700', color: '#111827', textDecoration: 'none' }}
+                    style={{ fontSize: '0.85rem', fontWeight: '800', color: '#111827', textDecoration: 'underline', cursor: 'pointer' }}
                   >
                     new user?
                   </button>
                   <button 
                     type="button"
-                    style={{ fontSize: '0.875rem', fontWeight: '700', color: '#111827', textDecoration: 'none' }}
+                    style={{ fontSize: '0.85rem', fontWeight: '800', color: '#111827', textDecoration: 'underline', cursor: 'pointer' }}
                   >
                     forgot password
                   </button>
@@ -150,15 +155,16 @@ export default function Login() {
                 <button 
                   type="submit" 
                   style={{ 
-                    padding: '0.6rem 1.5rem', 
+                    padding: '0.5rem 1.25rem', 
                     backgroundColor: '#ffffff', 
                     color: '#111827', 
-                    fontWeight: '600',
-                    fontSize: '1.1rem',
+                    fontWeight: '800',
+                    fontSize: '0.95rem',
                     borderRadius: '4px',
-                    border: '1px solid #d1d5db',
+                    border: '2px solid #111827',
                     cursor: 'pointer',
-                    boxShadow: '0 1px 2px 0 rgba(0, 0, 0, 0.05)'
+                    boxShadow: '3px 3px 0px #111827',
+                    textTransform: 'uppercase'
                   }}
                 >
                   Login
@@ -169,15 +175,16 @@ export default function Login() {
                 <button 
                   type="submit" 
                   style={{ 
-                    padding: '0.6rem 2.5rem', 
+                    padding: '0.5rem 2.25rem', 
                     backgroundColor: '#ffffff', 
                     color: '#111827', 
-                    fontWeight: '600', 
-                    fontSize: '1.1rem',
+                    fontWeight: '800', 
+                    fontSize: '0.95rem',
                     borderRadius: '4px',
-                    border: '1px solid #d1d5db',
+                    border: '2px solid #111827',
                     cursor: 'pointer',
-                    boxShadow: '0 1px 2px 0 rgba(0, 0, 0, 0.05)'
+                    boxShadow: '3px 3px 0px #111827',
+                    textTransform: 'uppercase'
                   }}
                 >
                   Register
@@ -185,7 +192,7 @@ export default function Login() {
                 <button 
                   type="button" 
                   onClick={() => setIsLogin(true)} 
-                  style={{ fontSize: '0.875rem', fontWeight: '700', color: '#111827', textDecoration: 'underline' }}
+                  style={{ fontSize: '0.85rem', fontWeight: '800', color: '#111827', textDecoration: 'underline', cursor: 'pointer' }}
                 >
                   Already a user? Login
                 </button>
@@ -194,7 +201,7 @@ export default function Login() {
           </div>
         </form>
 
-        <div style={{ margin: '2.5rem 0', borderBottom: '2px solid #374151' }} />
+        <div style={{ margin: '2rem 0', borderBottom: '2px solid #111827' }} />
 
         <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
           <button 
@@ -203,18 +210,20 @@ export default function Login() {
               display: 'flex', 
               alignItems: 'center', 
               gap: '1.5rem', 
-              padding: '0.85rem 1.5rem',
+              padding: '0.75rem 1.25rem',
               backgroundColor: '#ffffff',
               borderRadius: '4px',
-              border: 'none',
-              fontWeight: '700',
-              fontSize: '1.1rem',
+              border: '2px solid #111827',
+              fontWeight: '800',
+              fontSize: '0.95rem',
               color: '#111827',
-              boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06)'
+              boxShadow: '3px 3px 0px #111827',
+              cursor: 'pointer',
+              justifyContent: 'center'
             }}
           >
-            <span style={{ fontSize: '1.25rem' }}>G</span> 
-            {isLogin ? 'Login with Google' : 'Sign up with Google'}
+            <span style={{ fontSize: '1.1rem', fontWeight: '900' }}>G</span> 
+            <span>{isLogin ? 'Login with Google' : 'Sign up with Google'}</span>
           </button>
           
           <button 
@@ -223,18 +232,20 @@ export default function Login() {
               display: 'flex', 
               alignItems: 'center', 
               gap: '1.5rem', 
-              padding: '0.85rem 1.5rem',
+              padding: '0.75rem 1.25rem',
               backgroundColor: '#ffffff',
               borderRadius: '4px',
-              border: 'none',
-              fontWeight: '700',
-              fontSize: '1.1rem',
+              border: '2px solid #111827',
+              fontWeight: '800',
+              fontSize: '0.95rem',
               color: '#111827',
-              boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06)'
+              boxShadow: '3px 3px 0px #111827',
+              cursor: 'pointer',
+              justifyContent: 'center'
             }}
           >
-            <span style={{ fontSize: '1.25rem' }}>F</span> 
-            {isLogin ? 'Login with Facebook' : 'Sign up with Facebook'}
+            <span style={{ fontSize: '1.1rem', fontWeight: '900' }}>F</span> 
+            <span>{isLogin ? 'Login with Facebook' : 'Sign up with Facebook'}</span>
           </button>
         </div>
       </div>
