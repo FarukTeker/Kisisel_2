@@ -1,65 +1,135 @@
-import Image from "next/image";
+"use client";
+
+import React, { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+import Navbar from '@/components/Navbar';
+import Widget from '@/components/Widget';
+import EditorialWidget from '@/components/EditorialWidget';
+import Modal from '@/components/Modal';
+import { mockArticles } from '@/lib/mockData';
 
 export default function Home() {
+  const router = useRouter();
+  const [loading, setLoading] = useState(true);
+  const [readingMode, setReadingMode] = useState<'S' | 'H' | 'F'>('S');
+  const [editMode, setEditMode] = useState(false);
+  const [isShareOpen, setIsShareOpen] = useState(false);
+  const [isWidgetSettingsOpen, setIsWidgetSettingsOpen] = useState(false);
+
+  useEffect(() => {
+    if (localStorage.getItem('isLoggedIn') !== 'true') {
+      router.push('/login');
+    } else {
+      setLoading(false);
+    }
+  }, [router]);
+
+  if (loading) {
+    return (
+      <div style={{ display: 'flex', minHeight: '100vh', alignItems: 'center', justifyContent: 'center', backgroundColor: 'var(--surface-hover)' }}>
+        <p style={{ fontWeight: '600', color: 'var(--text-muted)' }}>Loading...</p>
+      </div>
+    );
+  }
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
+    <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
+      <Navbar 
+        readingMode={readingMode} 
+        setReadingMode={setReadingMode} 
+        editMode={editMode} 
+        setEditMode={setEditMode}
+        onShare={() => setIsShareOpen(true)}
+      />
+
+      <main className="container" style={{ padding: '2rem 1rem', flex: 1 }}>
+        <div style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
+          gap: '1.5rem',
+          gridAutoRows: 'minmax(250px, auto)'
+        }}>
+          {/* Main article */}
+          <div style={{ gridColumn: '1 / -1', gridRow: 'span 2' }}>
+            <Widget 
+              article={mockArticles[0]} 
+              readingMode={readingMode} 
+              editMode={editMode}
+              onSettingsClick={() => setIsWidgetSettingsOpen(true)}
             />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+          </div>
+
+          <div style={{ gridRow: 'span 1' }}>
+            <Widget 
+              article={mockArticles[1]} 
+              readingMode={readingMode} 
+              editMode={editMode}
+              onSettingsClick={() => setIsWidgetSettingsOpen(true)}
+            />
+          </div>
+          
+          <div style={{ gridRow: 'span 1' }}>
+            <Widget 
+              article={mockArticles[2]} 
+              readingMode={readingMode} 
+              editMode={editMode}
+              onSettingsClick={() => setIsWidgetSettingsOpen(true)}
+            />
+          </div>
+
+          {/* Editorial Column */}
+          <div style={{ gridColumn: 'span 2' }}>
+            <EditorialWidget />
+          </div>
+
+          <div style={{ gridRow: 'span 1' }}>
+            <Widget 
+              article={mockArticles[3]} 
+              readingMode={readingMode} 
+              editMode={editMode}
+              onSettingsClick={() => setIsWidgetSettingsOpen(true)}
+            />
+          </div>
         </div>
       </main>
+
+      <Modal isOpen={isShareOpen} onClose={() => setIsShareOpen(false)} title="Share with link">
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+          <div style={{ display: 'flex', gap: '0.5rem' }}>
+            <input 
+              type="text" 
+              readOnly 
+              value="www.kisisel.com/extension" 
+              style={{ flex: 1, padding: '0.5rem', border: '1px solid var(--border)', borderRadius: 'var(--radius-sm)' }}
+            />
+            <button className="btn btn-outline">Copy</button>
+          </div>
+          <div style={{ display: 'flex', justifyContent: 'center', gap: '1rem', marginTop: '1rem' }}>
+            <button style={{ width: '40px', height: '40px', borderRadius: '8px', border: '1px solid var(--border)' }}>I</button>
+            <button style={{ width: '40px', height: '40px', borderRadius: '8px', border: '1px solid var(--border)' }}>F</button>
+            <button style={{ width: '40px', height: '40px', borderRadius: '8px', border: '1px solid var(--border)' }}>X</button>
+          </div>
+        </div>
+      </Modal>
+
+      <Modal isOpen={isWidgetSettingsOpen} onClose={() => setIsWidgetSettingsOpen(false)} title="Widget Settings">
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+          <div>
+            <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'bold' }}>Category</label>
+            <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
+              {['Technology', 'Science', 'Food', 'Finance', 'Editorial'].map(cat => (
+                <button key={cat} className="btn btn-outline" style={{ padding: '0.25rem 0.5rem', fontSize: '0.875rem' }}>
+                  {cat}
+                </button>
+              ))}
+            </div>
+          </div>
+          <div>
+            <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'bold' }}>Source</label>
+            <input type="text" placeholder="Add source..." style={{ width: '100%', padding: '0.5rem', border: '1px solid var(--border)', borderRadius: 'var(--radius-sm)' }} />
+          </div>
+        </div>
+      </Modal>
     </div>
   );
 }
