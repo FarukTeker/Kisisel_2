@@ -19,6 +19,14 @@ export interface Newspaper {
   articles: NewsArticle[];
 }
 
+export interface Publisher {
+  id: string;
+  name: string;
+  author: string;
+  defaultCategory: string;
+  articleIds: string[];
+}
+
 export const mockArticles: NewsArticle[] = [
   {
     id: "1",
@@ -79,6 +87,37 @@ export const mockArticles: NewsArticle[] = [
     date: "2026-05-26",
     category: "Science",
     imageUrl: "https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=600&auto=format&fit=crop&q=60"
+  }
+];
+
+export const mockPublishers: Publisher[] = [
+  {
+    id: "tech-today",
+    name: "Tech Today",
+    author: "Alex Morgan",
+    defaultCategory: "Technology",
+    articleIds: ["1", "2"]
+  },
+  {
+    id: "culinary-delights",
+    name: "Culinary Delights",
+    author: "Chef Gordon",
+    defaultCategory: "Food",
+    articleIds: ["3"]
+  },
+  {
+    id: "science-digest",
+    name: "Science Digest",
+    author: "Science Weekly",
+    defaultCategory: "Science",
+    articleIds: ["4", "1"]
+  },
+  {
+    id: "global-finance",
+    name: "Global Finance",
+    author: "Market Watcher",
+    defaultCategory: "Finance",
+    articleIds: ["2"]
   }
 ];
 

@@ -6,9 +6,34 @@ import { Responsive, useContainerWidth, type Layout, type LayoutItem } from 'rea
 import Navbar from '@/components/Navbar';
 import Widget from '@/components/Widget';
 import Modal from '@/components/Modal';
-import { mockArticles } from '@/lib/mockData';
+import { mockArticles, mockPublishers, type NewsArticle } from '@/lib/mockData';
 
-type WidgetId = 'card1' | 'card2' | 'card3' | 'card4' | 'card5' | 'card6';
+type WidgetLayoutType = 'card1' | 'card2' | 'card3' | 'card4' | 'card5' | 'card6';
+
+interface FeedWidget {
+  id: string;
+  title: string;
+  layoutType: WidgetLayoutType;
+  publisherId: string;
+}
+
+const DEFAULT_WIDGETS: FeedWidget[] = [
+  { id: 'card1', title: 'Lead Story', layoutType: 'card1', publisherId: 'tech-today' },
+  { id: 'card2', title: 'Market Watch', layoutType: 'card2', publisherId: 'global-finance' },
+  { id: 'card3', title: 'Food Brief', layoutType: 'card3', publisherId: 'culinary-delights' },
+  { id: 'card4', title: 'Science Column', layoutType: 'card4', publisherId: 'science-digest' },
+  { id: 'card5', title: 'Culture Story', layoutType: 'card5', publisherId: 'tech-today' },
+  { id: 'card6', title: 'Mars Feature', layoutType: 'card6', publisherId: 'science-digest' },
+];
+
+const WIDGET_TEMPLATE_OPTIONS: Array<{ id: WidgetLayoutType; label: string; description: string }> = [
+  { id: 'card1', label: 'Feature', description: 'Large story with image and long body.' },
+  { id: 'card2', label: 'Wide Brief', description: 'Horizontal image and short summary.' },
+  { id: 'card3', label: 'Compact', description: 'Small image with concise body text.' },
+  { id: 'card4', label: 'Text Column', description: 'Text-first column for reading.' },
+  { id: 'card5', label: 'Visual Story', description: 'Title, large image, and body.' },
+  { id: 'card6', label: 'Gallery', description: 'Wide feature with image strip.' },
+];
 
 const DEFAULT_LAYOUT: LayoutItem[] = [
   { i: 'card1', x: 0, y: 0, w: 1, h: 5, minW: 1, minH: 2 },
@@ -18,6 +43,33 @@ const DEFAULT_LAYOUT: LayoutItem[] = [
   { i: 'card5', x: 0, y: 5, w: 1, h: 3, minW: 1, minH: 1 },
   { i: 'card6', x: 1, y: 5, w: 2, h: 3, minW: 1, minH: 1 },
 ];
+
+const getPublisherArticles = (publisherId: string): NewsArticle[] => {
+  const publisher = mockPublishers.find((item) => item.id === publisherId);
+  if (!publisher) return mockArticles;
+
+  const articles = publisher.articleIds
+    .map((articleId) => mockArticles.find((article) => article.id === articleId))
+    .filter((article): article is NewsArticle => Boolean(article));
+
+  return articles.length > 0 ? articles : mockArticles;
+};
+
+const getInitialLayoutForWidget = (id: string, layoutType: WidgetLayoutType, existingLayout: Layout): LayoutItem => {
+  const bottomY = existingLayout.reduce((maxY, item) => Math.max(maxY, item.y + item.h), 0);
+  const isWide = layoutType === 'card2' || layoutType === 'card6';
+  const isTall = layoutType === 'card1' || layoutType === 'card5';
+
+  return {
+    i: id,
+    x: 0,
+    y: bottomY,
+    w: isWide ? 2 : 1,
+    h: isTall ? 4 : 3,
+    minW: 1,
+    minH: 1,
+  };
+};
 
 export default function Home() {
   const router = useRouter();
@@ -32,13 +84,37 @@ export default function Home() {
   const [selectedWidgetId, setSelectedWidgetId] = useState<string | null>(null);
   const [activeSettingsTab, setActiveSettingsTab] = useState<string>('Design');
   const [selectedCategory, setSelectedCategory] = useState<string>('Technology');
-  const [widgetOrder, setWidgetOrder] = useState<WidgetId[]>(['card1', 'card2', 'card3', 'card4', 'card5', 'card6']);
+  const [widgets, setWidgets] = useState<FeedWidget[]>(DEFAULT_WIDGETS);
   const [layout, setLayout] = useState<Layout>(DEFAULT_LAYOUT);
+  const [newWidgetPublisherId, setNewWidgetPublisherId] = useState(mockPublishers[0]?.id || '');
+  const [newWidgetTemplate, setNewWidgetTemplate] = useState<WidgetLayoutType>('card3');
   const { width, containerRef } = useContainerWidth({ initialWidth: 1280 });
+  const selectedWidget = selectedWidgetId ? widgets.find((widget) => widget.id === selectedWidgetId) : null;
+  const selectedPublisher = mockPublishers.find((publisher) => publisher.id === newWidgetPublisherId) || mockPublishers[0];
+
+  const handleAddWidget = () => {
+    if (!selectedPublisher) return;
+
+    const id = `widget-${Date.now()}`;
+    const newWidget: FeedWidget = {
+      id,
+      title: selectedPublisher.name,
+      layoutType: newWidgetTemplate,
+      publisherId: selectedPublisher.id,
+    };
+
+    setWidgets((currentWidgets) => [...currentWidgets, newWidget]);
+    setLayout((currentLayout) => [
+      ...currentLayout,
+      getInitialLayoutForWidget(id, newWidgetTemplate, currentLayout),
+    ]);
+    setSelectedWidgetId(id);
+    setActiveSettingsTab('Category');
+  };
 
   useEffect(() => {
     if (selectedWidgetId === null) {
-      setActiveSettingsTab('Design');
+      setActiveSettingsTab('Widgets');
     } else {
       setActiveSettingsTab('Category');
     }
@@ -62,11 +138,11 @@ export default function Home() {
   // Select Card 1 by default when editMode is turned on
   useEffect(() => {
     if (editMode) {
-      setSelectedWidgetId('card1');
+      setSelectedWidgetId((currentWidgetId) => currentWidgetId || widgets[0]?.id || null);
     } else {
       setSelectedWidgetId(null);
     }
-  }, [editMode]);
+  }, [editMode, widgets]);
 
   if (loading) {
     return (
@@ -110,16 +186,16 @@ export default function Home() {
           onDragStart={(_, item) => { if (item) setSelectedWidgetId(item.i); }}
           onResizeStart={(_, item) => { if (item) setSelectedWidgetId(item.i); }}
         >
-          {widgetOrder.map((currentWidgetId) => (
-            <div key={currentWidgetId} className="feed-rgl-item">
+          {widgets.map((widget) => (
+            <div key={widget.id} className="feed-rgl-item">
               <Widget
-                articles={mockArticles}
-                layoutType={currentWidgetId}
+                articles={getPublisherArticles(widget.publisherId)}
+                layoutType={widget.layoutType}
                 readingMode={readingMode}
                 editMode={editMode}
-                isSelected={selectedWidgetId === currentWidgetId}
-                onSelect={() => setSelectedWidgetId(currentWidgetId)}
-                onSettingsClick={() => { setSelectedWidgetId(currentWidgetId); setIsWidgetSettingsOpen(true); }}
+                isSelected={selectedWidgetId === widget.id}
+                onSelect={() => setSelectedWidgetId(widget.id)}
+                onSettingsClick={() => { setSelectedWidgetId(widget.id); setIsWidgetSettingsOpen(true); }}
               />
             </div>
           ))}
@@ -155,15 +231,16 @@ export default function Home() {
       <Modal 
         isOpen={isWidgetSettingsOpen} 
         onClose={() => setIsWidgetSettingsOpen(false)} 
-        title={selectedWidgetId ? `Widget Settings - ${selectedWidgetId.toUpperCase()}` : 'Page Settings'}
+        title={selectedWidget ? `Widget Settings - ${selectedWidget.title}` : 'Page Settings'}
         maxWidth="750px"
+        variant="floating"
       >
         <div style={{ display: 'flex', minHeight: '380px', border: '1.5px solid #111827', borderRadius: '4px', overflow: 'hidden' }}>
           {/* Left panel: tabs */}
           <div style={{ width: '130px', borderRight: '1.5px solid #111827', backgroundColor: '#f3f4f6', display: 'flex', flexDirection: 'column' }}>
             {(selectedWidgetId 
               ? ['Category', 'Editorial', 'Popular', 'I feel lucky'] 
-              : ['Design', 'layout', 'share', 'following']
+              : ['Widgets', 'Design', 'layout', 'share', 'following']
             ).map(tab => {
               const isActive = activeSettingsTab === tab;
               return (
@@ -292,6 +369,94 @@ export default function Home() {
                 </div>
               )}
 
+              {/* Unselected - Widgets */}
+              {!selectedWidgetId && activeSettingsTab === 'Widgets' && (
+                <div>
+                  <h4 style={{ fontWeight: '800', marginBottom: '0.75rem', fontSize: '0.95rem' }}>Add Widget</h4>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '0.85rem' }}>
+                    <label style={{ display: 'flex', flexDirection: 'column', gap: '0.35rem', fontWeight: '800', fontSize: '0.85rem' }}>
+                      Publisher
+                      <select
+                        value={newWidgetPublisherId}
+                        onChange={(event) => setNewWidgetPublisherId(event.target.value)}
+                        style={{
+                          padding: '0.55rem 0.65rem',
+                          border: '1.5px solid #111827',
+                          borderRadius: '4px',
+                          outline: 'none',
+                          fontWeight: '700',
+                          backgroundColor: '#ffffff'
+                        }}
+                      >
+                        {mockPublishers.map((publisher) => (
+                          <option key={publisher.id} value={publisher.id}>
+                            {publisher.name} - {publisher.author}
+                          </option>
+                        ))}
+                      </select>
+                    </label>
+
+                    <div>
+                      <h5 style={{ fontSize: '0.85rem', fontWeight: '800', margin: '0 0 0.5rem 0' }}>Widget Template</h5>
+                      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.5rem' }}>
+                        {WIDGET_TEMPLATE_OPTIONS.map((template) => {
+                          const isSelected = newWidgetTemplate === template.id;
+
+                          return (
+                            <button
+                              key={template.id}
+                              onClick={() => setNewWidgetTemplate(template.id)}
+                              style={{
+                                padding: '0.65rem',
+                                border: '1.5px solid #111827',
+                                borderRadius: '4px',
+                                backgroundColor: isSelected ? '#111827' : '#ffffff',
+                                color: isSelected ? '#ffffff' : '#111827',
+                                cursor: 'pointer',
+                                textAlign: 'left'
+                              }}
+                            >
+                              <span style={{ display: 'block', fontSize: '0.85rem', fontWeight: '900' }}>{template.label}</span>
+                              <span style={{ display: 'block', fontSize: '0.7rem', lineHeight: 1.3, opacity: isSelected ? 0.85 : 0.7 }}>
+                                {template.description}
+                              </span>
+                            </button>
+                          );
+                        })}
+                      </div>
+                    </div>
+
+                    {selectedPublisher && (
+                      <div style={{ padding: '0.75rem', border: '1.5px solid #111827', borderRadius: '4px', backgroundColor: '#f9fafb' }}>
+                        <p style={{ margin: 0, fontSize: '0.8rem', fontWeight: '800', color: '#111827' }}>
+                          {selectedPublisher.name}
+                        </p>
+                        <p style={{ margin: '0.2rem 0 0 0', fontSize: '0.75rem', color: '#4b5563', lineHeight: 1.35 }}>
+                          {selectedPublisher.defaultCategory} publisher by {selectedPublisher.author}. This widget will start with {selectedPublisher.articleIds.length} local article{selectedPublisher.articleIds.length === 1 ? '' : 's'}.
+                        </p>
+                      </div>
+                    )}
+
+                    <button
+                      onClick={handleAddWidget}
+                      style={{
+                        alignSelf: 'flex-start',
+                        padding: '0.55rem 1rem',
+                        border: 'none',
+                        borderRadius: '4px',
+                        backgroundColor: '#111827',
+                        color: '#ffffff',
+                        fontWeight: '900',
+                        cursor: 'pointer',
+                        fontSize: '0.85rem'
+                      }}
+                    >
+                      Add Widget
+                    </button>
+                  </div>
+                </div>
+              )}
+
               {/* Unselected - Design */}
               {!selectedWidgetId && activeSettingsTab === 'Design' && (
                 <div>
@@ -385,10 +550,10 @@ export default function Home() {
                 <div>
                   <h4 style={{ fontWeight: '800', marginBottom: '0.75rem', fontSize: '0.95rem' }}>Following Publishers</h4>
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-                    {['BBC News', 'TechCrunch', 'Wired', 'The New York Times', 'The Verge'].map(pub => (
-                      <label key={pub} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontWeight: 'bold', fontSize: '0.9rem', cursor: 'pointer' }}>
-                        <input type="checkbox" defaultChecked={pub !== 'Wired'} style={{ accentColor: '#111827' }} />
-                        <span>{pub}</span>
+                    {mockPublishers.map((publisher) => (
+                      <label key={publisher.id} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontWeight: 'bold', fontSize: '0.9rem', cursor: 'pointer' }}>
+                        <input type="checkbox" defaultChecked style={{ accentColor: '#111827' }} />
+                        <span>{publisher.name}</span>
                       </label>
                     ))}
                   </div>
@@ -461,34 +626,63 @@ export default function Home() {
                     { id: 'slot4', name: 'W5', style: { gridColumn: '1', gridRow: '3 / 5' } },
                     { id: 'slot5', name: 'W6', style: { gridColumn: '2 / 4', gridRow: '3 / 5' } },
                   ].map((slot, index) => {
-                    const widgetId = widgetOrder[index];
-                    const isSelected = selectedWidgetId === widgetId;
+                    const widget = widgets[index];
+                    const isSelected = Boolean(widget && selectedWidgetId === widget.id);
                     
                     return (
                       <div
                         key={slot.id}
-                        onClick={() => setSelectedWidgetId(isSelected ? null : widgetId)}
+                        onClick={() => {
+                          if (widget) setSelectedWidgetId(isSelected ? null : widget.id);
+                        }}
                         style={{
                           ...slot.style,
-                          backgroundColor: isSelected ? '#4f46e5' : '#e5e7eb',
+                          backgroundColor: isSelected ? '#4f46e5' : widget ? '#e5e7eb' : '#f9fafb',
                           border: isSelected ? '1.5px solid #4f46e5' : '1.5px solid #111827',
                           borderRadius: '2px',
-                          cursor: 'pointer',
+                          cursor: widget ? 'pointer' : 'default',
                           display: 'flex',
                           alignItems: 'center',
                           justifyContent: 'center',
                           fontSize: '0.65rem',
                           fontWeight: '900',
-                          color: isSelected ? '#ffffff' : '#111827',
+                          color: isSelected ? '#ffffff' : widget ? '#111827' : '#9ca3af',
                           transition: 'all 0.15s ease'
                         }}
-                        title={`Select ${widgetId.toUpperCase()}`}
+                        title={widget ? `Select ${widget.title}` : 'Empty slot'}
                       >
-                        {slot.name}
+                        {widget ? slot.name : '+'}
                       </div>
                     );
                   })}
                 </div>
+                {widgets.length > 6 && (
+                  <div style={{ marginTop: '0.75rem', display: 'flex', flexDirection: 'column', gap: '0.35rem', maxHeight: '92px', overflowY: 'auto' }}>
+                    {widgets.slice(6).map((widget, index) => {
+                      const isSelected = selectedWidgetId === widget.id;
+
+                      return (
+                        <button
+                          key={widget.id}
+                          onClick={() => setSelectedWidgetId(isSelected ? null : widget.id)}
+                          style={{
+                            padding: '0.35rem 0.45rem',
+                            border: '1.5px solid #111827',
+                            borderRadius: '4px',
+                            backgroundColor: isSelected ? '#4f46e5' : '#ffffff',
+                            color: isSelected ? '#ffffff' : '#111827',
+                            fontSize: '0.7rem',
+                            fontWeight: '800',
+                            cursor: 'pointer',
+                            textAlign: 'left'
+                          }}
+                        >
+                          W{index + 7} - {widget.title}
+                        </button>
+                      );
+                    })}
+                  </div>
+                )}
               </div>
 
               {/* Bottom: "Input field" toggle/switch/pill input */}
