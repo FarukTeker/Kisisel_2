@@ -94,10 +94,10 @@ export default function Navbar({ readingMode, setReadingMode, editMode, setEditM
         color: '#111827',
         letterSpacing: '0.5px'
       }}>
-        <Link href="/">FeeDaily</Link>
+        <Link href="/feed">FeeDaily</Link>
       </div>
 
-      {/* Right side: Share, Discover, Edit Toggle, Profile */}
+      {/* Right side: Share, Edit Toggle, Profile */}
       <div style={{ display: 'flex', alignItems: 'center', gap: '1.25rem' }}>
         {/* Share Button */}
         <button 
@@ -122,26 +122,6 @@ export default function Navbar({ readingMode, setReadingMode, editMode, setEditM
             <line x1="12" y1="2" x2="12" y2="15" />
           </svg>
         </button>
-
-        {/* Discover Button */}
-        <Link 
-          href="/feed"
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            backgroundColor: '#ffffff',
-            border: '1.5px solid #111827',
-            borderRadius: '4px',
-            padding: '0.35rem 1.25rem',
-            fontWeight: 'bold',
-            fontSize: '0.875rem',
-            color: '#111827',
-            textDecoration: 'none',
-            cursor: 'pointer'
-          }}
-        >
-          <span>discover</span>
-        </Link>
 
         {/* Edit Toggle */}
         <div style={{ display: 'flex', alignItems: 'center' }}>

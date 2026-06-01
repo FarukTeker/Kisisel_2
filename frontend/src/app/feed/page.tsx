@@ -141,7 +141,6 @@ export default function Feed() {
       <div 
         style={{
           position: 'absolute',
-          top: 0, left: 0, right: 0, bottom: 0,
           transform: `translate(${panOffset.x}px, ${panOffset.y}px)`,
           // Grid background lines
           backgroundImage: 'linear-gradient(to right, #f3f4f6 2px, transparent 2px), linear-gradient(to bottom, #f3f4f6 2px, transparent 2px)',
