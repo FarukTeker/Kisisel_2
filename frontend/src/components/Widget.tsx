@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useRef } from 'react';
+import React from 'react';
 import Image from 'next/image';
 import { NewsArticle } from '../lib/mockData';
 
@@ -21,11 +21,8 @@ export default function Widget({
   editMode, 
   isSelected = false, 
   onSelect, 
-  onSettingsClick 
+  onSettingsClick
 }: WidgetProps) {
-  
-  const [customSize, setCustomSize] = useState<{ width?: number; height?: number }>({});
-  const cardRef = useRef<HTMLDivElement>(null);
 
   // Border styles based on edit mode and selection state
   const borderStyle = isSelected
@@ -53,39 +50,6 @@ export default function Widget({
     }
   }
 
-  const handleResizeMouseDown = (e: React.MouseEvent) => {
-    if (!editMode) return;
-    e.preventDefault();
-    e.stopPropagation();
-
-    if (onSelect) onSelect(); 
-
-    const startX = e.clientX;
-    const startY = e.clientY;
-    
-    if (!cardRef.current) return;
-    const startWidth = cardRef.current.offsetWidth;
-    const startHeight = cardRef.current.offsetHeight;
-
-    const handleMouseMove = (moveEvent: MouseEvent) => {
-      const deltaX = moveEvent.clientX - startX;
-      const deltaY = moveEvent.clientY - startY;
-      
-      setCustomSize({
-        width: Math.max(180, startWidth + deltaX),
-        height: Math.max(100, startHeight + deltaY)
-      });
-    };
-
-    const handleMouseUp = () => {
-      document.removeEventListener('mousemove', handleMouseMove);
-      document.removeEventListener('mouseup', handleMouseUp);
-    };
-
-    document.addEventListener('mousemove', handleMouseMove);
-    document.addEventListener('mouseup', handleMouseUp);
-  };
-
   const renderTitle = (title: string, fontSize = '1.15rem') => (
     <h3 style={{ 
       fontSize, 
@@ -108,7 +72,7 @@ export default function Widget({
   const renderContent = () => {
     if (readingMode === 'H') {
       return (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', height: '100%' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', height: '100%', minHeight: 0 }}>
           {displayArticles.map((art, idx) => (
             <div key={`${art.id}-${idx}`} style={{
               backgroundColor: '#ffffff',
@@ -140,7 +104,7 @@ export default function Widget({
 
     if (readingMode === 'S') {
       return (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', height: '100%' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', height: '100%', minHeight: 0 }}>
           {displayArticles.map((art, idx) => (
             <div key={`${art.id}-${idx}`} style={{
               backgroundColor: '#ffffff',
@@ -174,7 +138,7 @@ export default function Widget({
     return (
       <>
         {layoutType === 'card1' && (
-          <div style={{ display: 'flex', flexDirection: 'column', height: '100%', gap: '1rem' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', height: '100%', minHeight: 0, gap: '1rem' }}>
             <div style={{ display: 'flex', gap: '1rem', alignItems: 'flex-start' }}>
               {article.imageUrl && (
                 <div style={{ width: '100px', height: '100px', flexShrink: 0, position: 'relative', border: '1.5px solid #111827', borderRadius: '2px', overflow: 'hidden' }}>
@@ -210,7 +174,7 @@ export default function Widget({
         )}
 
         {layoutType === 'card3' && (
-          <div style={{ display: 'flex', flexDirection: 'column', height: '100%', gap: '0.75rem' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', height: '100%', minHeight: 0, gap: '0.75rem' }}>
             <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'flex-start' }}>
               {article.imageUrl && (
                 <div style={{ width: '80px', height: '80px', flexShrink: 0, position: 'relative', border: '1.5px solid #111827', borderRadius: '2px', overflow: 'hidden' }}>
@@ -229,7 +193,7 @@ export default function Widget({
         )}
 
         {layoutType === 'card4' && (
-          <div style={{ display: 'flex', flexDirection: 'column', height: '100%', gap: '0.5rem' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', height: '100%', minHeight: 0, gap: '0.5rem' }}>
             {renderTitle(article.title, '1.15rem')}
             {renderMetadata(article)}
             <p style={{ fontSize: '0.85rem', lineHeight: '1.5', color: '#111827', flex: 1, textAlign: 'justify' }}>
@@ -239,7 +203,7 @@ export default function Widget({
         )}
 
         {layoutType === 'card5' && (
-          <div style={{ display: 'flex', flexDirection: 'column', height: '100%', gap: '1rem' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', height: '100%', minHeight: 0, gap: '1rem' }}>
             <div>
               {renderTitle(article.title, '1.3rem')}
               {renderMetadata(article)}
@@ -256,7 +220,7 @@ export default function Widget({
         )}
 
         {layoutType === 'card6' && (
-          <div style={{ display: 'flex', flexDirection: 'column', height: '100%', gap: '1rem', justifyContent: 'space-between' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', height: '100%', minHeight: 0, gap: '1rem', justifyContent: 'space-between' }}>
             <div>
               {renderTitle(article.title, '1.4rem')}
               {renderMetadata(article)}
@@ -292,13 +256,14 @@ export default function Widget({
 
   return (
     <div 
-      ref={cardRef}
       className="card animate-fade-in" 
       onClick={() => { if (editMode && onSelect) onSelect(); }}
       style={{ 
         padding: '1.5rem', 
-        height: customSize.height ? `${customSize.height}px` : '100%', 
-        width: customSize.width ? `${customSize.width}px` : 'auto',
+        height: '100%', 
+        width: '100%',
+        minWidth: 0,
+        minHeight: 0,
         display: 'flex', 
         flexDirection: 'column',
         border: borderStyle,
@@ -310,14 +275,14 @@ export default function Widget({
         userSelect: editMode ? 'none' : 'text', 
         boxShadow: isSelected ? '4px 4px 0px #4f46e5' : '4px 4px 0px #111827',
         transition: 'box-shadow 0.2s ease',
-        zIndex: isSelected ? 5 : 1,
-        flex: (customSize.width || customSize.height) ? 'none' : undefined
+        flex: 1
       }}
     >
       {/* 1. Gear button on Top-Left Corner */}
       {editMode && (
         <button 
           onClick={(e) => { e.stopPropagation(); if (onSettingsClick) onSettingsClick(); }}
+          className="widget-settings-btn"
           style={{ 
             position: 'absolute', 
             top: '-12px', 
@@ -344,19 +309,31 @@ export default function Widget({
       )}
 
       {/* Main card body */}
-      <div style={{ flex: 1, overflow: 'hidden', height: '100%' }}>
+      <div
+        className="widget-body"
+        style={{
+        flex: 1,
+        minHeight: 0,
+        height: '100%',
+        overflowY: 'auto',
+        overflowX: 'hidden',
+        paddingRight: '0.15rem'
+      }}>
         {renderContent()}
       </div>
 
-      {/* 2. Selected Widget label floating below the card */}
+      {/* 2. Selected Widget badge */}
       {isSelected && (
         <div style={{
           position: 'absolute',
-          bottom: '-28px',
-          left: '0',
+          right: '0.9rem',
+          bottom: '0.8rem',
+          backgroundColor: '#ffffff',
+          padding: '0.15rem 0.35rem',
+          borderRadius: '2px',
           color: '#4f46e5',
           fontWeight: '900',
-          fontSize: '0.9rem',
+          fontSize: '0.75rem',
           pointerEvents: 'none',
           textTransform: 'uppercase',
           letterSpacing: '0.5px',
@@ -366,29 +343,6 @@ export default function Widget({
         </div>
       )}
 
-      {/* 3. Resize Handle on Bottom-Right Corner */}
-      {editMode && (
-        <div 
-          onMouseDown={handleResizeMouseDown}
-          style={{
-            position: 'absolute',
-            bottom: '-8px',
-            right: '-8px',
-            width: '16px',
-            height: '16px',
-            borderRadius: '50%',
-            backgroundColor: '#ffffff',
-            border: '2px solid #111827',
-            cursor: 'se-resize',
-            zIndex: 15,
-            boxShadow: '2px 2px 0px #111827',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center'
-          }}
-          title="Drag to Resize"
-        />
-      )}
     </div>
   );
 }

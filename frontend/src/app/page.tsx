@@ -2,10 +2,22 @@
 
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import { Responsive, useContainerWidth, type Layout, type LayoutItem } from 'react-grid-layout';
 import Navbar from '@/components/Navbar';
 import Widget from '@/components/Widget';
 import Modal from '@/components/Modal';
 import { mockArticles } from '@/lib/mockData';
+
+type WidgetId = 'card1' | 'card2' | 'card3' | 'card4' | 'card5' | 'card6';
+
+const DEFAULT_LAYOUT: LayoutItem[] = [
+  { i: 'card1', x: 0, y: 0, w: 1, h: 5, minW: 1, minH: 2 },
+  { i: 'card2', x: 1, y: 0, w: 2, h: 2, minW: 1, minH: 1 },
+  { i: 'card3', x: 1, y: 2, w: 1, h: 3, minW: 1, minH: 1 },
+  { i: 'card4', x: 2, y: 2, w: 1, h: 3, minW: 1, minH: 1 },
+  { i: 'card5', x: 0, y: 5, w: 1, h: 3, minW: 1, minH: 1 },
+  { i: 'card6', x: 1, y: 5, w: 2, h: 3, minW: 1, minH: 1 },
+];
 
 export default function Home() {
   const router = useRouter();
@@ -20,8 +32,9 @@ export default function Home() {
   const [selectedWidgetId, setSelectedWidgetId] = useState<string | null>(null);
   const [activeSettingsTab, setActiveSettingsTab] = useState<string>('Design');
   const [selectedCategory, setSelectedCategory] = useState<string>('Technology');
-  const [widgetOrder, setWidgetOrder] = useState<string[]>(['card1', 'card2', 'card3', 'card4', 'card5', 'card6']);
-  const draggedItemIndex = React.useRef<number | null>(null);
+  const [widgetOrder, setWidgetOrder] = useState<WidgetId[]>(['card1', 'card2', 'card3', 'card4', 'card5', 'card6']);
+  const [layout, setLayout] = useState<Layout>(DEFAULT_LAYOUT);
+  const { width, containerRef } = useContainerWidth({ initialWidth: 1280 });
 
   useEffect(() => {
     if (selectedWidgetId === null) {
@@ -63,20 +76,6 @@ export default function Home() {
     );
   }
 
-  // Grid styling depending on screen size and reading mode
-  const gridStyle: React.CSSProperties = isMobile 
-    ? {
-        display: 'grid',
-        gridTemplateColumns: '1fr',
-        gap: '2.5rem' // Increased gap slightly for selection labels
-      }
-    : {
-        display: 'grid',
-        gridTemplateColumns: '1.2fr 1fr 1fr',
-        gap: '2.5rem 1.5rem', // Added vertical gap for selected widget text label
-        alignItems: 'stretch'
-      };
-
   return (
     <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', backgroundColor: '#ffffff' }}>
       <Navbar 
@@ -88,67 +87,43 @@ export default function Home() {
         onPageSettings={() => { setSelectedWidgetId(null); setIsWidgetSettingsOpen(true); }}
       />
 
-      <main className="container" style={{ padding: '2.5rem 1.5rem 4rem', flex: 1, maxWidth: '1280px', margin: '0 auto', width: '100%' }}>
-        <div style={gridStyle}>
-          {[
-            { id: 'slot0', style: (!isMobile && readingMode === 'F') ? { gridColumn: '1', gridRow: '1 / 3' } : {} },
-            { id: 'slot1', style: !isMobile ? { gridColumn: '2 / 4', gridRow: '1' } : {} },
-            { id: 'slot2', style: !isMobile ? { gridColumn: '2', gridRow: '2' } : {} },
-            { id: 'slot3', style: !isMobile ? { gridColumn: '3', gridRow: '2' } : {} },
-            { id: 'slot4', style: (!isMobile && readingMode === 'F') ? { gridColumn: '1', gridRow: '3 / 5' } : {} },
-            { id: 'slot5', style: (!isMobile && readingMode === 'F') ? { gridColumn: '2 / 4', gridRow: '3 / 5' } : {} },
-          ].map((slot, index) => {
-            const currentWidgetId = widgetOrder[index];
-            return (
-              <div 
-                key={slot.id}
-                id={slot.id}
-                style={slot.style}
-                draggable={editMode}
-                onDragStart={(e) => {
-                  if (!editMode) return;
-                  draggedItemIndex.current = index;
-                  e.dataTransfer.setData('sourceIndex', index.toString());
-                  e.dataTransfer.effectAllowed = 'move';
-                }}
-                onDragEnter={(e) => {
-                  if (!editMode) return;
-                  e.preventDefault();
-                  if (draggedItemIndex.current !== null && draggedItemIndex.current !== index) {
-                    const newOrder = [...widgetOrder];
-                    const temp = newOrder[draggedItemIndex.current];
-                    newOrder[draggedItemIndex.current] = newOrder[index];
-                    newOrder[index] = temp;
-                    setWidgetOrder(newOrder);
-                    draggedItemIndex.current = index;
-                  }
-                }}
-                onDrop={(e) => {
-                  if (!editMode) return;
-                  e.preventDefault();
-                }}
-                onDragEnd={() => {
-                  draggedItemIndex.current = null;
-                }}
-                onDragOver={(e) => {
-                  if (!editMode) return;
-                  e.preventDefault();
-                  e.dataTransfer.dropEffect = 'move';
-                }}
-              >
-                <Widget 
-                  articles={mockArticles} 
-                  layoutType={currentWidgetId as any}
-                  readingMode={readingMode} 
-                  editMode={editMode}
-                  isSelected={selectedWidgetId === currentWidgetId}
-                  onSelect={() => setSelectedWidgetId(currentWidgetId)}
-                  onSettingsClick={() => { setSelectedWidgetId(currentWidgetId); setIsWidgetSettingsOpen(true); }}
-                />
-              </div>
-            );
-          })}
-        </div>
+      <main ref={containerRef} className="container" style={{ padding: '2.5rem 1.5rem 4rem', flex: 1, maxWidth: '1280px', margin: '0 auto', width: '100%' }}>
+        <Responsive
+          className={`feed-rgl ${editMode ? 'feed-rgl-editing' : 'feed-rgl-viewing'}`}
+          width={width}
+          layouts={{ lg: layout, md: layout, sm: layout, xs: layout, xxs: layout }}
+          breakpoints={{ lg: 1024, md: 768, sm: 640, xs: 0, xxs: 0 }}
+          cols={{ lg: 3, md: 3, sm: 1, xs: 1, xxs: 1 }}
+          rowHeight={readingMode === 'F' ? 120 : 96}
+          margin={[24, 44]}
+          containerPadding={[0, 0]}
+          dragConfig={{
+            enabled: editMode,
+            cancel: '.widget-settings-btn, .react-resizable-handle, button, input, textarea',
+            threshold: 3,
+          }}
+          resizeConfig={{
+            enabled: editMode,
+            handles: ['se'],
+          }}
+          onLayoutChange={(nextLayout) => setLayout(nextLayout)}
+          onDragStart={(_, item) => { if (item) setSelectedWidgetId(item.i); }}
+          onResizeStart={(_, item) => { if (item) setSelectedWidgetId(item.i); }}
+        >
+          {widgetOrder.map((currentWidgetId) => (
+            <div key={currentWidgetId} className="feed-rgl-item">
+              <Widget
+                articles={mockArticles}
+                layoutType={currentWidgetId}
+                readingMode={readingMode}
+                editMode={editMode}
+                isSelected={selectedWidgetId === currentWidgetId}
+                onSelect={() => setSelectedWidgetId(currentWidgetId)}
+                onSettingsClick={() => { setSelectedWidgetId(currentWidgetId); setIsWidgetSettingsOpen(true); }}
+              />
+            </div>
+          ))}
+        </Responsive>
       </main>
 
       {/* Share Modal */}

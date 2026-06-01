@@ -16,8 +16,8 @@ export default function Feed() {
   const [startPan, setStartPan] = useState({ x: 0, y: 0 });
 
   // Infinite Scroll Boundary Dimensions
-  const RANGE_X = 2400; // Left-to-right wrap boundary
-  const RANGE_Y = 1800; // Top-to-bottom wrap boundary
+  const RANGE_X = 1920; // Left-to-right wrap boundary
+  const RANGE_Y = 1180; // Top-to-bottom wrap boundary
 
   useEffect(() => {
     if (localStorage.getItem('isLoggedIn') !== 'true') {
@@ -50,20 +50,20 @@ export default function Feed() {
     };
   }, [loading]);
 
-  // 12 mock newspapers distributed in a grid coordinate system (x range: [-900, 900], y range: [-600, 600])
+  // 12 mock newspapers distributed in a compact grid coordinate system
   const [extendedFeed, setExtendedFeed] = useState([
-    { id: "n1", name: "Tech Today Weekly", author: "Alex Morgan", viewCount: 15420, date: "2026-05-31", x: -900, y: -600 },
-    { id: "n2", name: "Culinary & Baking Delights", author: "Chef Gordon", viewCount: 8900, date: "2026-05-30", x: -300, y: -600 },
-    { id: "n3", name: "Science Digest Review", author: "Science Weekly", viewCount: 22100, date: "2026-05-29", x: 300, y: -600 },
-    { id: "n4", name: "Global Finance Trends", author: "Market Watcher", viewCount: 5600, date: "2026-05-31", x: 900, y: -600 },
-    { id: "n5", name: "Hacker News Special Edition", author: "Sam Altman", viewCount: 31200, date: "2026-05-28", x: -900, y: 0 },
-    { id: "n6", name: "Nature & Cosmic Horizons", author: "Neil Tyson", viewCount: 14700, date: "2026-05-27", x: -300, y: 0 },
-    { id: "n7", name: "Artistic Impressions", author: "Claude Monet", viewCount: 4200, date: "2026-05-26", x: 300, y: 0 },
-    { id: "n8", name: "Healthy Living Guide", author: "Dr. Andrew", viewCount: 9500, date: "2026-05-25", x: 900, y: 0 },
-    { id: "n9", name: "Cinema & Hollywood Review", author: "Tarantino", viewCount: 18400, date: "2026-05-24", x: -900, y: 600 },
-    { id: "n10", name: "Gaming & Tech Innovators", author: "Hideo Kojima", viewCount: 27900, date: "2026-05-23", x: -300, y: 600 },
-    { id: "n11", name: "Traveler & Globetrotter", author: "Marco Polo", viewCount: 6300, date: "2026-05-22", x: 300, y: 600 },
-    { id: "n12", name: "Philosophy & Mindsets", author: "Marcus Aurelius", viewCount: 12500, date: "2026-05-21", x: 900, y: 600 },
+    { id: "n1", name: "Tech Today Weekly", author: "Alex Morgan", viewCount: 15420, date: "2026-05-31", x: -720, y: -380 },
+    { id: "n2", name: "Culinary & Baking Delights", author: "Chef Gordon", viewCount: 8900, date: "2026-05-30", x: -240, y: -380 },
+    { id: "n3", name: "Science Digest Review", author: "Science Weekly", viewCount: 22100, date: "2026-05-29", x: 240, y: -380 },
+    { id: "n4", name: "Global Finance Trends", author: "Market Watcher", viewCount: 5600, date: "2026-05-31", x: 720, y: -380 },
+    { id: "n5", name: "Hacker News Special Edition", author: "Sam Altman", viewCount: 31200, date: "2026-05-28", x: -720, y: 0 },
+    { id: "n6", name: "Nature & Cosmic Horizons", author: "Neil Tyson", viewCount: 14700, date: "2026-05-27", x: -240, y: 0 },
+    { id: "n7", name: "Artistic Impressions", author: "Claude Monet", viewCount: 4200, date: "2026-05-26", x: 240, y: 0 },
+    { id: "n8", name: "Healthy Living Guide", author: "Dr. Andrew", viewCount: 9500, date: "2026-05-25", x: 720, y: 0 },
+    { id: "n9", name: "Cinema & Hollywood Review", author: "Tarantino", viewCount: 18400, date: "2026-05-24", x: -720, y: 380 },
+    { id: "n10", name: "Gaming & Tech Innovators", author: "Hideo Kojima", viewCount: 27900, date: "2026-05-23", x: -240, y: 380 },
+    { id: "n11", name: "Traveler & Globetrotter", author: "Marco Polo", viewCount: 6300, date: "2026-05-22", x: 240, y: 380 },
+    { id: "n12", name: "Philosophy & Mindsets", author: "Marcus Aurelius", viewCount: 12500, date: "2026-05-21", x: 720, y: 380 },
   ]);
 
   const handleMouseDown = (e: React.MouseEvent) => {
