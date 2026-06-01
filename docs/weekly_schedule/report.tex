@@ -1,0 +1,244 @@
+\documentclass[12pt,a4paper]{article}
+
+\usepackage[margin=2.5cm]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{graphicx}
+\usepackage{array}
+\usepackage{enumitem}
+\usepackage{newtxtext,newtxmath}
+\usepackage{titlesec}
+\usepackage{setspace}
+\usepackage{longtable}
+\usepackage{booktabs}
+\usepackage{xcolor}
+
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0.55em}
+\setstretch{1.08}
+
+\titleformat{\section}
+  {\normalfont\Large\bfseries}
+  {}
+  {0pt}
+  {}
+
+\newcommand{\taskentry}[4]{%
+  \textbf{Task Name:} #1\\
+  \textbf{Definition:} #2\\
+  \textbf{Status:} #3\\
+  \textbf{Responsible Person:} #4
+}
+
+\newcommand{\weekblock}[3]{%
+  \item {\Large\bfseries #1}\\[-0.2em]
+  \textbf{Meeting Type:} #2
+
+  \vspace{0.25cm}
+  \hspace*{0.8cm}
+  \begin{minipage}[t]{0.86\textwidth}
+    #3
+  \end{minipage}
+}
+
+\begin{document}
+
+\begin{titlepage}
+    \centering
+
+    \includegraphics[width=0.23\textwidth]{iyte_logo.png}
+
+    \vspace{1.6cm}
+
+    {\Large\bfseries INTERDISCIPLINARY ASSIGNMENT\par}
+    {\Large\bfseries SPRING 2026\par}
+
+    \vspace{1.2cm}
+
+    {\Large\bfseries CENG318 - ID322\par}
+    {\Large\bfseries Human-Computer Interaction\par}
+
+    \vspace{2.6cm}
+
+    {\Large\bfseries Weekly Schedule\par}
+    {\Large\bfseries Project Title: Kişisel\par}
+    {\large\bfseries A Widget-Based Adaptive News Aggregation and Social Curation Platform\par}
+    {\Large\bfseries Date of Submission: June 1, 2026\par}
+
+    \vfill
+
+    \begin{flushleft}
+        {\Large\bfseries Group Members:}
+
+        \vspace{0.8cm}
+
+        \renewcommand{\arraystretch}{1.25}
+        \begin{tabular}{@{}p{7cm}p{5cm}@{}}
+            \textbf{Sübhan Akbenli} & \textbf{300201129} \\
+            \textbf{Berkay Fehmi Tekin} & \textbf{300201090} \\
+            \textbf{Zübeyr Almaho} & \textbf{300201023} \\
+            \textbf{Yasin Sezgin} & \textbf{300201007} \\
+            \textbf{Ömer Faruk Teker} & \textbf{300201077} \\
+        \end{tabular}
+    \end{flushleft}
+\end{titlepage}
+
+\section*{\underline{Weekly Schedule}}
+
+\begin{itemize}[leftmargin=2.1cm, itemsep=0.4em]
+    \item \textit{This weekly schedule summarizes the group's progress, decisions, completed tasks, and planned next actions.}
+    \item \textit{Meetings were conducted in three formats: in class, face-to-face, and online.}
+    \item \textit{The latest project status was updated on June 1, 2026, after the most recent frontend implementation progress.}
+\end{itemize}
+
+\vspace{0.4cm}
+
+\begin{itemize}[leftmargin=1.1cm, itemsep=1.45cm]
+    \weekblock{Week 1 (April 13--19, 2026):}{In class}{
+      \taskentry
+        {Project scope discussion and role assignment.}
+        {Discussed the main HCI problem area, selected the adaptive news aggregation idea, and aligned the project around user agency, widget-based customization, and social curation. Initial team responsibilities were assigned according to research, frontend, backend, AI, and evaluation work.}
+        {Completed.}
+        {All group members.}
+
+      \vspace{0.45cm}
+      \taskentry
+        {Initial literature and competitor review.}
+        {Started collecting references about personalization, filter bubbles, news fatigue, dashboards, and social curation. Compared Google News, Feedly, Flipboard, and similar news products at a high level.}
+        {Completed.}
+        {Yasin Sezgin, Berkay Fehmi Tekin, Zübeyr Almaho.}
+    }
+
+    \weekblock{Week 2 (April 20--26, 2026):}{Online}{
+      \taskentry
+        {User research preparation.}
+        {Prepared survey questions and planned the target user profile for people who read, organize, and share online news. The group defined the main research focus as reducing information overload while increasing user control.}
+        {Completed.}
+        {Yasin Sezgin, Sübhan Akbenli.}
+
+      \vspace{0.45cm}
+      \taskentry
+        {Persona and task-flow planning.}
+        {Outlined the primary user flows: composing a newspaper layout, changing reading modes, adding editorial notes, discovering popular/random news, and sharing a public newspaper view.}
+        {Completed.}
+        {Yasin Sezgin, Ömer Faruk Teker, Zübeyr Almaho.}
+    }
+
+    \weekblock{Week 3 (April 27--May 3, 2026):}{Face-to-face}{
+      \taskentry
+        {Requirements consolidation.}
+        {Reviewed the delayed Week 1--2 items and consolidated the feature scope. The group agreed to prioritize a desktop-first prototype with six widget slots, reading modes, editorial commentary, and share/discover flows.}
+        {Completed.}
+        {All group members.}
+
+      \vspace{0.45cm}
+      \taskentry
+        {Survey results and personas.}
+        {Documented mock survey results and updated personas to support the proposal narrative and design decisions.}
+        {Completed.}
+        {Yasin Sezgin, Berkay Fehmi Tekin.}
+    }
+
+    \weekblock{Week 4 (May 4--10, 2026):}{In class}{
+      \taskentry
+        {Paper prototype and wireframe production.}
+        {Prepared paper prototypes and wireframes for authentication, home widget grid, widget creator, source selection, reading mode, discover/follow, and editorial notes screens. Compiled high-resolution wireframes into design documentation.}
+        {Completed.}
+        {Sübhan Akbenli, Ömer Faruk Teker, Zübeyr Almaho.}
+
+      \vspace{0.45cm}
+      \taskentry
+        {Design feedback and iteration planning.}
+        {Reviewed the wireframes in relation to the proposal's HCI claims: progressive disclosure, user control, serendipity, and authorial agency. Listed the screens that should be implemented first in the coded prototype.}
+        {Completed.}
+        {All group members.}
+    }
+
+    \clearpage
+    \weekblock{Week 5 (May 11--17, 2026):}{Online}{
+      \taskentry
+        {Frontend architecture planning.}
+        {Converted the wireframe decisions into a frontend implementation plan. Decided to use a React/Next.js prototype, a reusable widget component, mock article data, reading mode state, and a settings modal before connecting real backend services.}
+        {Completed.}
+        {Sübhan Akbenli, Ömer Faruk Teker, Berkay Fehmi Tekin.}
+
+      \vspace{0.45cm}
+      \taskentry
+        {Backend and data-layer planning.}
+        {Kept the planned backend scope as NestJS API, PostgreSQL persistence, RSS ingestion, Redis caching, and AI summarization, but postponed implementation in order to make the frontend prototype demonstrable first.}
+        {Planned / postponed.}
+        {Berkay Fehmi Tekin, Zübeyr Almaho.}
+    }
+
+    \weekblock{Week 6 (May 18--24, 2026):}{Face-to-face}{
+      \taskentry
+        {Prototype screen mapping.}
+        {Mapped proposal task flows to coded pages: login flow, main newspaper page, editable widget grid, reading mode controls, share modal, and discover feed page.}
+        {Completed.}
+        {Sübhan Akbenli, Ömer Faruk Teker.}
+
+      \vspace{0.45cm}
+      \taskentry
+        {Content model and sample data.}
+        {Prepared mock article and newspaper data to support Technology, Finance, Food, Science, and Culture categories during prototype demonstrations.}
+        {Completed.}
+        {Zübeyr Almaho, Yasin Sezgin.}
+    }
+
+    \clearpage
+    \weekblock{Week 7 (May 25--June 1, 2026):}{Online and face-to-face}{
+      \taskentry
+        {Frontend implementation sprint.}
+        {Implemented the Next.js frontend prototype with the main newspaper page, navbar controls, login routing, reusable widgets, mock data, and design tokens. Added Summary, Heading, and Full reading modes so widget content can change depth according to user intent.}
+        {Completed on May 31, 2026.}
+        {Sübhan Akbenli, Ömer Faruk Teker.}
+
+      \vspace{0.45cm}
+      \taskentry
+        {Widget editing and settings interactions.}
+        {Implemented edit mode, drag-and-drop widget reordering, widget selection, page/widget settings modal, category controls, editorial notes input, popular-news options, randomization action, layout preview, and share-link modal.}
+        {Completed on May 31, 2026.}
+        {Sübhan Akbenli, Ömer Faruk Teker, Zübeyr Almaho.}
+
+      \vspace{0.45cm}
+      \taskentry
+        {Discover feed and UI cleanup.}
+        {Implemented a discover page with a two-dimensional panning canvas, shared-newspaper preview cards, filter modal, touchpad/mouse interaction, and final UI cleanup by removing the helper overlay.}
+        {Completed on May 31, 2026.}
+        {Sübhan Akbenli, Berkay Fehmi Tekin.}
+
+      \vspace{0.45cm}
+      \taskentry
+        {Current status review and remaining work.}
+        {Reviewed the repository on June 1, 2026. The frontend prototype is the strongest completed part. Remaining work includes backend persistence, RSS feed integration, AI-generated summaries, real authentication, usability test sessions, final report updates, and presentation preparation.}
+        {In progress.}
+        {All group members.}
+    }
+\end{itemize}
+
+\newpage
+\section*{\underline{Remaining Plan}}
+
+{\small
+\renewcommand{\arraystretch}{1.25}
+\begin{longtable}{@{}p{0.19\textwidth}p{0.36\textwidth}p{0.20\textwidth}p{0.17\textwidth}@{}}
+\toprule
+\textbf{Period} & \textbf{Planned Work} & \textbf{Responsible Person(s)} & \textbf{Status} \\
+\midrule
+June 2--7, 2026
+  & Connect frontend prototype to persistent data where feasible; refine editorial notes, sharing flow, and discover/filter interactions for demo stability.
+  & Berkay Fehmi Tekin, Sübhan Akbenli, Ömer Faruk Teker
+  & Planned \\
+June 8--14, 2026
+  & Prepare and conduct usability testing sessions using the implemented prototype; collect observations, task completion notes, and SUS responses.
+  & Yasin Sezgin, all group members
+  & Planned \\
+June 15--22, 2026
+  & Fix major usability issues, complete final report sections, prepare final presentation, and rehearse the project demonstration.
+  & All group members
+  & Planned \\
+\bottomrule
+\end{longtable}
+}
+
+\end{document}
