@@ -18,6 +18,16 @@ export default function Modal({ isOpen, onClose, title, children, maxWidth, vari
   const dragRef = useRef({ startX: 0, startY: 0, originX: 0, originY: 0 });
   const [position, setPosition] = useState({ x: 32, y: 92 });
   const [isDragging, setIsDragging] = useState(false);
+  const [isCompactViewport, setIsCompactViewport] = useState(false);
+
+  useEffect(() => {
+    const syncViewport = () => setIsCompactViewport(window.innerWidth < 768);
+
+    syncViewport();
+    window.addEventListener('resize', syncViewport);
+
+    return () => window.removeEventListener('resize', syncViewport);
+  }, []);
 
   useEffect(() => {
     if (!isOpen || variant !== 'floating') return;
@@ -58,7 +68,7 @@ export default function Modal({ isOpen, onClose, title, children, maxWidth, vari
 
   if (!isOpen) return null;
 
-  if (variant === 'floating') {
+  if (variant === 'floating' && !isCompactViewport) {
     return (
       <div style={{
         position: 'fixed',
@@ -152,18 +162,24 @@ export default function Modal({ isOpen, onClose, title, children, maxWidth, vari
     <div style={{
       position: 'fixed',
       top: 0, left: 0, right: 0, bottom: 0,
-      backgroundColor: 'rgba(0,0,0,0.5)',
+      backgroundColor: 'rgba(17,24,39,0.46)',
       display: 'flex',
-      alignItems: 'center',
+      alignItems: isCompactViewport ? 'flex-end' : 'center',
       justifyContent: 'center',
-      zIndex: 100
+      zIndex: 100,
+      padding: isCompactViewport ? '0.75rem' : '1rem'
     }}>
       <div className="card animate-fade-in" style={{
-        backgroundColor: 'var(--surface)',
+        backgroundColor: '#fffdf8',
         width: '100%',
-        maxWidth: maxWidth || '500px',
-        padding: '2rem',
-        position: 'relative'
+        maxWidth: isCompactViewport ? '100%' : maxWidth || '500px',
+        padding: isCompactViewport ? '1rem' : '2rem',
+        position: 'relative',
+        borderRadius: isCompactViewport ? '24px 24px 0 0' : '18px',
+        border: '2px solid #111827',
+        boxShadow: isCompactViewport ? '0 -10px 30px rgba(0,0,0,0.12)' : '8px 8px 0px #111827',
+        maxHeight: isCompactViewport ? '88vh' : 'auto',
+        overflow: 'auto'
       }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
           <h2 style={{ fontSize: '1.5rem' }}>{title}</h2>

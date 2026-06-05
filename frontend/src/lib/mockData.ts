@@ -6,6 +6,9 @@ export interface NewsArticle {
   author: string;
   date: string;
   category: string;
+  publisher: string;
+  sourceUrl: string;
+  summaryLabel?: string;
   imageUrl?: string;
 }
 
@@ -36,6 +39,9 @@ export const mockArticles: NewsArticle[] = [
     author: "Jane Doe",
     date: "2026-05-31",
     category: "Technology",
+    publisher: "Tech Today",
+    sourceUrl: "https://example.com/tech-today/future-of-ai-daily-life",
+    summaryLabel: "AI-generated preview",
     imageUrl: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=600&auto=format&fit=crop&q=60"
   },
   {
@@ -46,6 +52,9 @@ export const mockArticles: NewsArticle[] = [
     author: "John Smith",
     date: "2026-05-30",
     category: "Finance",
+    publisher: "Global Finance",
+    sourceUrl: "https://example.com/global-finance/markets-rally-tech-boom",
+    summaryLabel: "AI-generated preview",
     imageUrl: "https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=600&auto=format&fit=crop&q=60"
   },
   {
@@ -56,6 +65,9 @@ export const mockArticles: NewsArticle[] = [
     author: "Alice Johnson",
     date: "2026-05-29",
     category: "Food",
+    publisher: "Culinary Delights",
+    sourceUrl: "https://example.com/culinary-delights/minimalist-cooking-trends",
+    summaryLabel: "AI-generated preview",
     imageUrl: "https://images.unsplash.com/photo-1556910103-1c02745aae4d?w=600&auto=format&fit=crop&q=60"
   },
   {
@@ -66,6 +78,9 @@ export const mockArticles: NewsArticle[] = [
     author: "Dr. Robert Lee",
     date: "2026-05-28",
     category: "Science",
+    publisher: "Science Digest",
+    sourceUrl: "https://example.com/science-digest/deep-sea-discoveries",
+    summaryLabel: "AI-generated preview",
     imageUrl: "https://images.unsplash.com/photo-1583212292454-1fe6229603b7?w=600&auto=format&fit=crop&q=60"
   },
   {
@@ -76,6 +91,9 @@ export const mockArticles: NewsArticle[] = [
     author: "Liam Carter",
     date: "2026-05-27",
     category: "Culture",
+    publisher: "Culture Weekly",
+    sourceUrl: "https://example.com/culture-weekly/return-of-analog-sound",
+    summaryLabel: "AI-generated preview",
     imageUrl: "https://images.unsplash.com/photo-1484755560693-a4074577af3a?w=600&auto=format&fit=crop&q=60"
   },
   {
@@ -86,6 +104,9 @@ export const mockArticles: NewsArticle[] = [
     author: "Elena Rostova",
     date: "2026-05-26",
     category: "Science",
+    publisher: "Science Digest",
+    sourceUrl: "https://example.com/science-digest/race-to-mars",
+    summaryLabel: "AI-generated preview",
     imageUrl: "https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=600&auto=format&fit=crop&q=60"
   }
 ];

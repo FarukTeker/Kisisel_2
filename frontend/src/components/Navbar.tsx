@@ -2,6 +2,7 @@
 
 import React from 'react';
 import Link from 'next/link';
+import { logoutPrototypeUser } from '@/lib/prototypeState';
 
 interface NavbarProps {
   readingMode: 'S' | 'H' | 'F';
@@ -10,112 +11,91 @@ interface NavbarProps {
   setEditMode: (mode: boolean) => void;
   onShare: () => void;
   onPageSettings?: () => void;
+  isMobile?: boolean;
 }
 
-export default function Navbar({ readingMode, setReadingMode, editMode, setEditMode, onShare, onPageSettings }: NavbarProps) {
+export default function Navbar({ readingMode, setReadingMode, editMode, setEditMode, onShare, onPageSettings, isMobile = false }: NavbarProps) {
   return (
     <nav style={{
       display: 'flex',
-      alignItems: 'center',
+      alignItems: isMobile ? 'stretch' : 'center',
       justifyContent: 'space-between',
-      padding: '0.75rem 2rem',
-      backgroundColor: '#f3f4f6', // Light gray navbar background
-      borderBottom: '1px solid #d1d5db',
+      flexDirection: isMobile ? 'column' : 'row',
+      gap: isMobile ? '0.85rem' : 0,
+      padding: isMobile ? '0.95rem 1rem' : '1rem 2rem 0.9rem',
+      background: 'rgba(255, 253, 250, 0.84)',
+      borderBottom: '1px solid rgba(23, 23, 23, 0.08)',
       position: 'sticky',
       top: 0,
-      zIndex: 10
+      zIndex: 20,
+      backdropFilter: 'blur(12px)'
     }}>
-      {/* Left side: Date + View Icon + Segmented Control */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%', gap: '0.75rem' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', minWidth: 0 }}>
         {/* Date Display */}
         <div style={{ 
-          fontSize: '0.85rem', 
+          fontSize: isMobile ? '0.72rem' : '0.78rem', 
           fontWeight: '800', 
-          color: '#111827', 
+          color: '#5f5b54', 
           textTransform: 'uppercase',
-          border: '1.5px solid #111827',
-          padding: '0.25rem 0.6rem',
-          backgroundColor: '#ffffff',
-          borderRadius: '4px',
-          marginRight: '0.5rem'
+          letterSpacing: '0.08em',
+          border: '1px solid rgba(23,23,23,0.1)',
+          padding: '0.35rem 0.7rem',
+          backgroundColor: 'rgba(255,255,255,0.78)',
+          borderRadius: '999px',
+          whiteSpace: 'nowrap'
         }}>
           {new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
         </div>
 
         {/* Eye icon */}
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '32px', height: '32px' }}>
-          <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#111827" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0z" />
-            <circle cx="12" cy="12" r="3" />
-          </svg>
-        </div>
-        
-        {/* Segmented control: Summary, Heading, Full */}
-        <div style={{ 
-          display: 'flex', 
-          backgroundColor: '#e5e7eb',
-          padding: '2px',
-          borderRadius: '4px',
-          border: '1.5px solid #111827'
+        {!isMobile && (
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '32px', height: '32px' }}>
+            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#111827" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0z" />
+              <circle cx="12" cy="12" r="3" />
+            </svg>
+          </div>
+        )}
+        <div style={{
+          minWidth: 0,
+          overflow: 'hidden',
+          textOverflow: 'ellipsis',
+          whiteSpace: 'nowrap',
+          fontWeight: 900,
+          fontSize: isMobile ? '1rem' : '1.24rem',
+          letterSpacing: '-0.06em',
+          textTransform: 'uppercase',
+          color: '#171717'
         }}>
-          {(['S', 'H', 'F'] as const).map((mode) => {
-            const label = mode === 'S' ? 'Summary' : mode === 'H' ? 'Heading' : 'Full';
-            const isActive = readingMode === mode;
-            return (
-              <button
-                key={mode}
-                onClick={() => setReadingMode(mode)}
-                style={{
-                  padding: '0.35rem 0.85rem',
-                  fontSize: '0.85rem',
-                  fontWeight: '600',
-                  color: '#111827',
-                  backgroundColor: isActive ? '#ffffff' : 'transparent',
-                  borderRight: mode !== 'F' && !isActive ? '1px solid #9ca3af' : 'none',
-                  transition: 'all 0.15s ease',
-                  cursor: 'pointer'
-                }}
-              >
-                {label}
-              </button>
-            );
-          })}
+          <Link href="/feed" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.55rem' }}>
+            <span style={{ display: 'inline-flex', width: isMobile ? '0.55rem' : '0.7rem', height: isMobile ? '0.55rem' : '0.7rem', borderRadius: '999px', background: '#2647d6' }} />
+            Kisisel
+          </Link>
         </div>
-      </div>
+        </div>
 
-      {/* Center: FeeDaily Brand */}
-      <div style={{ 
-        backgroundColor: '#ffffff',
-        border: '1.5px solid #111827',
-        borderRadius: '4px',
-        padding: '0.35rem 2.5rem',
-        fontWeight: 'bold',
-        fontSize: '1.2rem',
-        color: '#111827',
-        letterSpacing: '0.5px'
-      }}>
-        <Link href="/feed">FeeDaily</Link>
-      </div>
-
-      {/* Right side: Share, Edit Toggle, Profile */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: '1.25rem' }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: isMobile ? '0.65rem' : '1.25rem', flexShrink: 0 }}>
         {/* Share Button */}
         <button 
           onClick={onShare}
           style={{
             display: 'flex',
             alignItems: 'center',
+            justifyContent: 'center',
             backgroundColor: '#ffffff',
-            border: '1.5px solid #111827',
-            borderRadius: '4px',
-            padding: '0.35rem 1.25rem',
-            fontWeight: 'bold',
-            fontSize: '0.875rem',
+            border: '1px solid rgba(23,23,23,0.12)',
+            borderRadius: '999px',
+            padding: isMobile ? '0.55rem 0.75rem' : '0.45rem 1rem',
+            fontWeight: '800',
+            fontSize: '0.82rem',
             color: '#111827',
-            cursor: 'pointer'
+            cursor: 'pointer',
+            boxShadow: '0 8px 20px rgba(17,24,39,0.08)'
           }}
+          aria-label="Share newspaper"
         >
-          <span>share</span>
+          {!isMobile && <span>share</span>}
           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#111827" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ marginLeft: '6px' }}>
             <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8" />
             <polyline points="16 6 12 2 8 6" />
@@ -124,15 +104,15 @@ export default function Navbar({ readingMode, setReadingMode, editMode, setEditM
         </button>
 
         {/* Edit Toggle */}
-        <div style={{ display: 'flex', alignItems: 'center' }}>
-          <span style={{ fontWeight: 'bold', fontSize: '0.875rem', color: '#111827' }}>edit</span>
+        <div style={{ display: 'flex', alignItems: 'center', padding: '0.1rem', borderRadius: '999px', background: 'rgba(255,255,255,0.72)', border: '1px solid rgba(23,23,23,0.09)' }}>
+          <span style={{ fontWeight: '800', fontSize: '0.82rem', color: '#5f5b54', paddingLeft: '0.65rem' }}>{isMobile ? 'Edit' : 'Edit'}</span>
           <div 
             onClick={() => setEditMode(!editMode)}
             style={{
               width: '42px',
               height: '22px',
-              backgroundColor: editMode ? '#111827' : '#ffffff',
-              border: '1.5px solid #111827',
+              backgroundColor: editMode ? '#2647d6' : '#f4efe7',
+              border: '1px solid rgba(23,23,23,0.12)',
               borderRadius: '999px',
               position: 'relative',
               cursor: 'pointer',
@@ -158,15 +138,17 @@ export default function Navbar({ readingMode, setReadingMode, editMode, setEditM
           <button 
             onClick={onPageSettings}
             style={{
-              background: 'none',
-              border: 'none',
+              background: '#ffffff',
+              border: '1px solid rgba(23,23,23,0.12)',
               cursor: 'pointer',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              padding: '0.25rem',
+              padding: '0.45rem',
+              borderRadius: '999px',
               color: '#111827',
-              transition: 'transform 0.2s ease'
+              transition: 'transform 0.2s ease',
+              boxShadow: '0 8px 20px rgba(17,24,39,0.08)'
             }}
             title="Page Settings"
           >
@@ -180,21 +162,22 @@ export default function Navbar({ readingMode, setReadingMode, editMode, setEditM
         {/* User avatar/Logout */}
         <button 
           onClick={() => {
-            localStorage.removeItem('isLoggedIn');
+            logoutPrototypeUser();
             window.location.href = '/login';
           }}
           title="Logout"
           style={{ 
-            width: '32px', 
-            height: '32px', 
+            width: isMobile ? '38px' : '32px', 
+            height: isMobile ? '38px' : '32px', 
             borderRadius: '50%', 
-            backgroundColor: '#e5e7eb', 
-            border: '1.5px solid #9ca3af',
+            backgroundColor: '#ffffff', 
+            border: '1px solid rgba(23,23,23,0.12)',
             color: '#4b5563', 
             display: 'flex', 
             alignItems: 'center', 
             justifyContent: 'center',
-            cursor: 'pointer'
+            cursor: 'pointer',
+            boxShadow: '0 8px 20px rgba(17,24,39,0.08)'
           }}
         >
           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
@@ -202,6 +185,42 @@ export default function Navbar({ readingMode, setReadingMode, editMode, setEditM
             <circle cx="12" cy="7" r="4" />
           </svg>
         </button>
+      </div>
+
+      </div>
+
+      <div style={{ 
+        display: 'flex', 
+        width: '100%', 
+        backgroundColor: 'rgba(255,255,255,0.82)',
+        padding: '4px',
+        borderRadius: '999px',
+        border: '1px solid rgba(23,23,23,0.09)',
+        boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.55)'
+      }}>
+        {(['S', 'H', 'F'] as const).map((mode) => {
+          const label = mode === 'S' ? 'Summary' : mode === 'H' ? 'Headline' : 'Focused';
+          const isActive = readingMode === mode;
+          return (
+            <button
+              key={mode}
+              onClick={() => setReadingMode(mode)}
+              style={{
+                flex: 1,
+                padding: isMobile ? '0.55rem 0.4rem' : '0.45rem 0.85rem',
+                fontSize: isMobile ? '0.78rem' : '0.85rem',
+                fontWeight: '800',
+                color: isActive ? '#ffffff' : '#5f5b54',
+                background: isActive ? 'linear-gradient(180deg, #315efb 0%, #2647d6 100%)' : 'transparent',
+                borderRadius: '999px',
+                transition: 'all 0.15s ease',
+                cursor: 'pointer'
+              }}
+            >
+              {label}
+            </button>
+          );
+        })}
       </div>
     </nav>
   );
