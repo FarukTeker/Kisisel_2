@@ -26,12 +26,12 @@ struct AuthFlowView: View {
 
                 VStack(spacing: 14) {
                     if mode == .register {
-                        KTextField(label: "Full name", text: $name, icon: "person")
+                        KTextField(label: "Full name", text: $name, icon: "person", contentType: .name)
                     }
-                    KTextField(label: "Email", text: $email, icon: "envelope", keyboard: .emailAddress)
-                    KTextField(label: "Password", text: $password, icon: "lock", isSecure: true)
+                    KTextField(label: "Email", text: $email, icon: "envelope", keyboard: .emailAddress, contentType: .emailAddress)
+                    KTextField(label: "Password", text: $password, icon: "lock", isSecure: true, contentType: mode == .login ? .password : .newPassword)
                     if mode == .register {
-                        KTextField(label: "Confirm password", text: $confirmPassword, icon: "lock.rotation", isSecure: true)
+                        KTextField(label: "Confirm password", text: $confirmPassword, icon: "lock.rotation", isSecure: true, contentType: .newPassword)
                     }
                 }
 
@@ -118,11 +118,19 @@ struct AuthFlowView: View {
 // MARK: - Reusable text field (login/register/source-add forms)
 
 struct KTextField: View {
+    enum FieldContentType {
+        case name
+        case emailAddress
+        case password
+        case newPassword
+    }
+
     let label: String
     @Binding var text: String
     var icon: String? = nil
     var isSecure: Bool = false
     var keyboard: UIKeyboardType = .default
+    var contentType: FieldContentType? = nil
 
     var body: some View {
         VStack(alignment: .leading, spacing: 6) {
@@ -137,10 +145,14 @@ struct KTextField: View {
                 }
                 Group {
                     if isSecure {
-                        SecureField("", text: $text)
+                        SecureField(label, text: $text)
+                            .textContentType(swiftUIContentType)
+                            .textInputAutocapitalization(.never)
+                            .autocorrectionDisabled()
                     } else {
-                        TextField("", text: $text)
+                        TextField(label, text: $text)
                             .keyboardType(keyboard)
+                            .textContentType(swiftUIContentType)
                             .textInputAutocapitalization(.never)
                             .autocorrectionDisabled()
                     }
@@ -153,6 +165,21 @@ struct KTextField: View {
             .background(Color.surface)
             .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
             .overlay(RoundedRectangle(cornerRadius: 12, style: .continuous).stroke(Color.hairline, lineWidth: 1.2))
+        }
+    }
+
+    private var swiftUIContentType: UITextContentType? {
+        switch contentType {
+        case .name:
+            return .name
+        case .emailAddress:
+            return .emailAddress
+        case .password:
+            return .password
+        case .newPassword:
+            return .newPassword
+        case nil:
+            return nil
         }
     }
 }

@@ -199,29 +199,32 @@ struct WidgetCardView: View {
         let accent: Color = widget.kind == .popular ? Color(hex: "315EFB") : Color(hex: "7C3AED")
         let momentumLabel = widget.kind == .popular ? "↑ Cross-source momentum" : "⟳ Unexpected angle"
         let visibleItems = pagedItems(items, start: discoveryStartIndex, count: visibleDiscoveryCount)
+        let compactDiscovery = widget.size == .compact
+        let regularDiscovery = widget.size == .regular
 
         return VStack(alignment: .leading, spacing: 10) {
             if items.isEmpty {
                 discoverySkeleton
             } else {
                 ForEach(Array(visibleItems.enumerated()), id: \.element.id) { _, article in
-                    VStack(alignment: .leading, spacing: 6) {
+                    VStack(alignment: .leading, spacing: compactDiscovery ? 5 : 6) {
                         HStack(alignment: .top, spacing: 8) {
                             Text(article.title)
                                 .font(.kisiselH3)
                                 .foregroundStyle(Color.ink)
-                                .lineLimit(2)
+                                .lineLimit(compactDiscovery ? 2 : 3)
                             Spacer()
                             KCategoryPill(category: article.category)
                         }
                         Text("\(momentumLabel) · \(article.publisher) · \(article.date)")
                             .font(.kisiselCaption)
                             .foregroundStyle(Color.textMuted)
-                        if store.readingMode != .scan {
+                            .lineLimit(compactDiscovery ? 1 : 2)
+                        if store.readingMode != .scan && !compactDiscovery {
                             Text(store.summary(for: article))
                                 .font(.kisiselBody)
                                 .foregroundStyle(Color.textMuted)
-                                .lineLimit(3)
+                                .lineLimit(regularDiscovery ? 2 : 3)
                         }
                         HStack {
                             statusPill(for: article)
@@ -229,7 +232,7 @@ struct WidgetCardView: View {
                             openSourceButton(article)
                         }
                     }
-                    .padding(12)
+                    .padding(compactDiscovery ? 10 : 12)
                     .background(Color.surface)
                     .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
                     .overlay(RoundedRectangle(cornerRadius: 12, style: .continuous).stroke(Color.ink.opacity(0.16), lineWidth: 1.2))
@@ -237,7 +240,7 @@ struct WidgetCardView: View {
                 }
             }
             HStack {
-                Text(widget.kind == .popular ? "\(items.count) stories scored from live feeds" : "Sampled from all sources")
+                Text(discoveryFooterLabel(total: items.count))
                     .font(.kisiselCaption)
                     .foregroundStyle(Color.textSoft)
                 Spacer()
@@ -270,9 +273,17 @@ struct WidgetCardView: View {
         case .full:
             switch widget.size {
             case .compact: return 1
-            case .regular: return 1
+            case .regular: return 2
             case .large: return 2
             }
+        }
+    }
+    private func discoveryFooterLabel(total: Int) -> String {
+        switch widget.size {
+        case .compact:
+            return widget.kind == .popular ? "\(total) live picks" : "\(total) sampled stories"
+        case .regular, .large:
+            return widget.kind == .popular ? "\(total) stories scored from live feeds" : "Sampled from all sources"
         }
     }
     private var discoverySkeleton: some View {
