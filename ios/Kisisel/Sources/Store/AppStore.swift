@@ -548,11 +548,11 @@ final class AppStore: ObservableObject {
         case "bbc-science":
             return "https://www.bbc.com/news/science-environment"
         case "the-guardian-tech":
-            return "https://www.theguardian.com/uk/technology"
+            return "https://www.theguardian.com/technology"
         case "hacker-news":
-            return "https://news.ycombinator.com/"
+            return "https://news.ycombinator.com/news"
         case "nasa":
-            return "https://www.nasa.gov/news/"
+            return "https://www.nasa.gov/news/all-news/"
         default:
             if let url = URL(string: source.feedUrl), let host = url.host {
                 return "https://\(host)"
