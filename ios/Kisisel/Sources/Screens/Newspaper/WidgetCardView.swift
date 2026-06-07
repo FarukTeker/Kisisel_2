@@ -19,6 +19,8 @@ struct WidgetCardView: View {
     var onSelect: (() -> Void)? = nil
     var onSettings: (() -> Void)? = nil
     var onDelete: (() -> Void)? = nil
+    @State private var newsStartIndex = 0
+    @State private var discoveryStartIndex = 0
 
     private var editing: Bool { isEditable && store.editMode }
     /// Editorial cards keep their inline note editor live while editing — every
@@ -196,12 +198,13 @@ struct WidgetCardView: View {
         let items = discoveryItems
         let accent: Color = widget.kind == .popular ? Color(hex: "315EFB") : Color(hex: "7C3AED")
         let momentumLabel = widget.kind == .popular ? "↑ Cross-source momentum" : "⟳ Unexpected angle"
+        let visibleItems = pagedItems(items, start: discoveryStartIndex, count: visibleDiscoveryCount)
 
         return VStack(alignment: .leading, spacing: 10) {
             if items.isEmpty {
                 discoverySkeleton
             } else {
-                ForEach(Array(items.prefix(visibleDiscoveryCount).enumerated()), id: \.element.id) { _, article in
+                ForEach(Array(visibleItems.enumerated()), id: \.element.id) { _, article in
                     VStack(alignment: .leading, spacing: 6) {
                         HStack(alignment: .top, spacing: 8) {
                             Text(article.title)
@@ -241,6 +244,10 @@ struct WidgetCardView: View {
                 Text("Live").font(.kisiselCaption).fontWeight(.heavy).foregroundStyle(accent)
             }
         }
+        .contentShape(Rectangle())
+        .highPriorityGesture(articlePagingGesture(total: items.count) { delta in
+            moveIndex(&discoveryStartIndex, by: delta, total: items.count)
+        })
     }
 
     private var discoveryItems: [Article] {
@@ -319,8 +326,9 @@ struct WidgetCardView: View {
         case .regular: count = 2
         case .large: count = 4
         }
+        let visibleArticles = pagedItems(pool, start: newsStartIndex, count: count)
         return VStack(spacing: 8) {
-            ForEach(Array(pool.prefix(count)), id: \.id) { article in
+            ForEach(Array(visibleArticles), id: \.id) { article in
                 HStack(spacing: 10) {
                     VStack(alignment: .leading, spacing: 3) {
                         Text(article.title)
@@ -342,6 +350,10 @@ struct WidgetCardView: View {
                 .overlay(RoundedRectangle(cornerRadius: 10, style: .continuous).stroke(Color(hex: "E5E7EB"), lineWidth: 1))
             }
         }
+        .contentShape(Rectangle())
+        .highPriorityGesture(articlePagingGesture(total: pool.count) { delta in
+            moveIndex(&newsStartIndex, by: delta, total: pool.count)
+        })
     }
 
     /// Skim mode — summary cards with metadata + AI status.
@@ -352,8 +364,9 @@ struct WidgetCardView: View {
         case .regular: count = 2
         case .large: count = 3
         }
+        let visibleArticles = pagedItems(pool, start: newsStartIndex, count: count)
         return VStack(spacing: 10) {
-            ForEach(Array(pool.prefix(count)), id: \.id) { article in
+            ForEach(Array(visibleArticles), id: \.id) { article in
                 VStack(alignment: .leading, spacing: 6) {
                     HStack(alignment: .top) {
                         Text(article.title).font(.kisiselH3).foregroundStyle(Color.ink).lineLimit(2)
@@ -377,11 +390,15 @@ struct WidgetCardView: View {
                 .onAppear { store.requestSummary(for: article) }
             }
         }
+        .contentShape(Rectangle())
+        .highPriorityGesture(articlePagingGesture(total: pool.count) { delta in
+            moveIndex(&newsStartIndex, by: delta, total: pool.count)
+        })
     }
 
     /// Full mode — one article, full summary, deep-read framing.
     private func fullArticle(_ pool: [Article]) -> some View {
-        let article = pool[0]
+        let article = pool[wrappedIndex(newsStartIndex, total: pool.count)]
         return VStack(alignment: .leading, spacing: 10) {
             Text(article.title).font(.kisiselH1).foregroundStyle(Color.ink)
             HStack(spacing: 6) {
@@ -403,6 +420,10 @@ struct WidgetCardView: View {
             }
         }
         .onAppear { store.requestSummary(for: article) }
+        .contentShape(Rectangle())
+        .highPriorityGesture(articlePagingGesture(total: pool.count) { delta in
+            moveIndex(&newsStartIndex, by: delta, total: pool.count)
+        })
     }
 
     // MARK: Shared sub-views
@@ -436,6 +457,38 @@ struct WidgetCardView: View {
             .overlay(Capsule().stroke(Color.ink.opacity(prominent ? 0 : 0.4), lineWidth: 1))
         }
         .buttonStyle(.plain)
+    }
+
+    private func articlePagingGesture(total: Int, advance: @escaping (Int) -> Void) -> some Gesture {
+        DragGesture(minimumDistance: 22)
+            .onEnded { value in
+                guard !editing, total > 1 else { return }
+                let horizontal = value.translation.width
+                let vertical = value.translation.height
+
+                if abs(vertical) >= abs(horizontal), abs(vertical) > 28 {
+                    advance(vertical < 0 ? 1 : -1)
+                } else if abs(horizontal) > 28 {
+                    advance(horizontal < 0 ? 1 : -1)
+                }
+            }
+    }
+
+    private func pagedItems(_ items: [Article], start: Int, count: Int) -> [Article] {
+        guard !items.isEmpty else { return [] }
+        let cappedCount = min(count, items.count)
+        let normalizedStart = wrappedIndex(start, total: items.count)
+        return (0..<cappedCount).map { items[(normalizedStart + $0) % items.count] }
+    }
+
+    private func moveIndex(_ index: inout Int, by delta: Int, total: Int) {
+        guard total > 0 else { return }
+        index = wrappedIndex(index + delta, total: total)
+    }
+
+    private func wrappedIndex(_ index: Int, total: Int) -> Int {
+        guard total > 0 else { return 0 }
+        return (index % total + total) % total
     }
 
     private func editBadge(systemImage: String, color: Color, action: (() -> Void)?) -> some View {
