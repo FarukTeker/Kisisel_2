@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Kisisel Mobile Testcase Prototype</title>
+    <style>
+      :root {
+        --bg: #f6f1e8;
+        --surface: #fffdf8;
+        --line: #161616;
+        --muted: #6b6b6b;
+        --accent: #315efb;
+        --accent-soft: #e8eeff;
+        --chip: #f0eadf;
+        --success: #0f766e;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        font-family: Inter, Arial, sans-serif;
+        background: linear-gradient(180deg, #f8f4ec 0%, #efe7da 100%);
+        color: var(--line);
+      }
+
+      .page {
+        max-width: 430px;
+        margin: 0 auto;
+        padding: 20px 16px 96px;
+        border-bottom: 2px dashed rgba(0, 0, 0, 0.2);
+      }
+
+      .phone {
+        background: rgba(255, 255, 255, 0.72);
+        border: 2px solid var(--line);
+        border-radius: 28px;
+        box-shadow: 8px 8px 0 rgba(0, 0, 0, 0.08);
+        padding: 14px;
+      }
+
+      .topbar,
+      .row,
+      .article-row,
+      .tabbar {
+        display: flex;
+        align-items: center;
+      }
+
+      .topbar,
+      .tabbar {
+        justify-content: space-between;
+      }
+
+      .brand {
+        font-size: 1.65rem;
+        font-weight: 900;
+        letter-spacing: -0.06em;
+        text-transform: uppercase;
+      }
+
+      .sub {
+        color: var(--muted);
+        font-size: 0.85rem;
+      }
+
+      .btn,
+      .pill,
+      .icon {
+        border: 2px solid var(--line);
+        background: var(--surface);
+        border-radius: 14px;
+      }
+
+      .btn {
+        padding: 12px 14px;
+        font-weight: 800;
+      }
+
+      .btn.primary {
+        background: var(--line);
+        color: #fff;
+      }
+
+      .pill {
+        padding: 6px 10px;
+        font-size: 0.78rem;
+        font-weight: 700;
+        background: var(--chip);
+      }
+
+      .icon {
+        width: 42px;
+        height: 42px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 800;
+      }
+
+      .hero,
+      .panel,
+      .card,
+      .note,
+      .source,
+      .public-card {
+        background: var(--surface);
+        border: 2px solid var(--line);
+        border-radius: 22px;
+        box-shadow: 6px 6px 0 rgba(0, 0, 0, 0.06);
+      }
+
+      .hero,
+      .panel,
+      .card,
+      .note,
+      .source,
+      .public-card {
+        padding: 14px;
+      }
+
+      .hero {
+        margin-top: 14px;
+      }
+
+      .hero .media,
+      .thumb,
+      .mini {
+        background: linear-gradient(135deg, #dbe5ff, #f4eadf);
+        border: 2px solid var(--line);
+        border-radius: 16px;
+      }
+
+      .hero .media {
+        height: 180px;
+        margin: 10px 0 12px;
+      }
+
+      .thumb {
+        width: 92px;
+        height: 78px;
+        flex: none;
+      }
+
+      .mini {
+        height: 86px;
+        margin-bottom: 10px;
+      }
+
+      .section-title {
+        margin: 20px 0 10px;
+        font-size: 1.05rem;
+        font-weight: 900;
+      }
+
+      .mode-switch {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 8px;
+        margin: 14px 0;
+      }
+
+      .mode-switch div {
+        border: 2px solid var(--line);
+        border-radius: 14px;
+        padding: 10px 8px;
+        text-align: center;
+        font-weight: 800;
+        background: #fff;
+      }
+
+      .mode-switch .active {
+        background: var(--accent);
+        color: white;
+        border-color: var(--accent);
+      }
+
+      .stack {
+        display: grid;
+        gap: 12px;
+      }
+
+      .two-col {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+      }
+
+      .article-row {
+        gap: 12px;
+      }
+
+      .lines {
+        display: grid;
+        gap: 8px;
+        flex: 1;
+      }
+
+      .line {
+        height: 10px;
+        border-radius: 999px;
+        background: #ddd7ca;
+      }
+
+      .line.dark {
+        background: #181818;
+      }
+
+      .line.short {
+        width: 40%;
+      }
+
+      .line.medium {
+        width: 68%;
+      }
+
+      .line.long {
+        width: 100%;
+      }
+
+      .chip-row,
+      .tab-row {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+      }
+
+      .chip {
+        border-radius: 999px;
+        border: 1.5px solid var(--line);
+        background: white;
+        padding: 8px 12px;
+        font-size: 0.78rem;
+        font-weight: 700;
+      }
+
+      .chip.active {
+        background: var(--accent-soft);
+        color: var(--accent);
+        border-color: var(--accent);
+      }
+
+      .input,
+      .textarea {
+        width: 100%;
+        border: 2px solid var(--line);
+        border-radius: 16px;
+        background: #fff;
+      }
+
+      .input {
+        height: 48px;
+      }
+
+      .textarea {
+        height: 170px;
+      }
+
+      .tabbar {
+        position: sticky;
+        bottom: 10px;
+        margin-top: 14px;
+        background: rgba(255, 253, 248, 0.92);
+        backdrop-filter: blur(10px);
+        border: 2px solid var(--line);
+        border-radius: 22px;
+        padding: 8px;
+        gap: 8px;
+      }
+
+      .tabbar span {
+        flex: 1;
+        text-align: center;
+        font-size: 0.72rem;
+        font-weight: 800;
+        padding: 10px 4px;
+        border-radius: 14px;
+      }
+
+      .tabbar .active {
+        background: var(--line);
+        color: white;
+      }
+
+      h1, h2, h3, p {
+        margin: 0;
+      }
+
+      .caption {
+        margin: 12px 0 0;
+        color: var(--muted);
+        font-size: 0.83rem;
+        line-height: 1.45;
+      }
+    </style>
+  </head>
+  <body>
+    <section class="page">
+      <h1>Mobile Auth</h1>
+      <p class="caption">Covers TC-UC01 and TC-UC02 with large touch targets, clear validation zones, and social login actions.</p>
+      <div class="phone">
+        <div class="stack">
+          <div class="topbar">
+            <span class="pill">New account</span>
+            <span class="pill">Secure auth</span>
+          </div>
+          <div>
+            <div class="brand">Kisisel</div>
+            <p class="sub">Create a personal newspaper in minutes.</p>
+          </div>
+          <div class="stack">
+            <div class="input"></div>
+            <div class="input"></div>
+            <div class="input"></div>
+          </div>
+          <button class="btn primary">Register</button>
+          <div class="row" style="justify-content: center; gap: 10px">
+            <div class="line medium"></div>
+            <span class="sub">or</span>
+            <div class="line medium"></div>
+          </div>
+          <button class="btn">Continue with Google</button>
+          <button class="btn">Continue with Facebook</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="page">
+      <h1>Mobile Home Feed</h1>
+      <p class="caption">Covers TC-UC03, TC-UC08, TC-UC09, and TC-UC10 through a summary-first feed with visible reading modes and serendipity blocks.</p>
+      <div class="phone">
+        <div class="topbar">
+          <div>
+            <div class="brand">Kisisel</div>
+            <p class="sub">Friday briefing</p>
+          </div>
+          <div class="row" style="gap: 8px">
+            <div class="icon">S</div>
+            <div class="icon">+</div>
+          </div>
+        </div>
+
+        <div class="mode-switch">
+          <div>Headline</div>
+          <div class="active">Summary</div>
+          <div>Focused</div>
+        </div>
+
+        <div class="hero">
+          <div class="row" style="justify-content: space-between">
+            <span class="pill">Featured</span>
+            <span class="pill">AI Summary</span>
+          </div>
+          <div class="media"></div>
+          <div class="stack">
+            <div class="line dark long"></div>
+            <div class="line medium"></div>
+            <div class="line long"></div>
+            <div class="line long"></div>
+          </div>
+          <div class="row" style="justify-content: space-between; margin-top: 12px">
+            <span class="chip active">Open source</span>
+            <span class="chip">Author note</span>
+          </div>
+        </div>
+
+        <div class="section-title">Popular outside your bubble</div>
+        <div class="stack">
+          <div class="card article-row">
+            <div class="thumb"></div>
+            <div class="lines">
+              <div class="line dark long"></div>
+              <div class="line medium"></div>
+              <div class="chip-row"><span class="chip">Popular</span><span class="chip">Science</span></div>
+            </div>
+          </div>
+          <div class="card article-row">
+            <div class="thumb"></div>
+            <div class="lines">
+              <div class="line dark long"></div>
+              <div class="line medium"></div>
+              <div class="chip-row"><span class="chip">Random</span><span class="chip">Policy</span></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="tabbar">
+          <span class="active">Feed</span>
+          <span>Widgets</span>
+          <span>Notes</span>
+          <span>Profile</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="page">
+      <h1>Mobile Editor</h1>
+      <p class="caption">Covers TC-UC04, TC-UC05, TC-UC06, and TC-UC12 with edit mode, drag-friendly cards, configuration chips, and autosave messaging.</p>
+      <div class="phone">
+        <div class="topbar">
+          <span class="pill">Edit mode on</span>
+          <button class="btn primary">Save</button>
+        </div>
+        <div class="section-title">Front page editor</div>
+        <div class="stack">
+          <div class="panel">
+            <div class="mini"></div>
+            <div class="line dark long"></div>
+            <div class="line long"></div>
+          </div>
+          <div class="two-col">
+            <div class="panel">
+              <div class="mini"></div>
+              <div class="line medium"></div>
+            </div>
+            <div class="panel">
+              <div class="mini"></div>
+              <div class="line medium"></div>
+            </div>
+          </div>
+          <div class="panel">
+            <div class="chip-row">
+              <span class="chip active">Technology</span>
+              <span class="chip">Popular</span>
+              <span class="chip">3 items</span>
+            </div>
+            <p class="caption">Selected widget settings remain on-screen on mobile rather than floating far from the content.</p>
+          </div>
+        </div>
+        <div class="tabbar">
+          <span>Feed</span>
+          <span class="active">Widgets</span>
+          <span>Notes</span>
+          <span>Profile</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="page">
+      <h1>Source Management</h1>
+      <p class="caption">Covers TC-UC07 with suggested feeds, add/remove controls, duplicate prevention, and custom RSS entry.</p>
+      <div class="phone">
+        <div class="topbar">
+          <div class="brand" style="font-size: 1.1rem">Add Sources</div>
+          <span class="pill">RSS + URL</span>
+        </div>
+        <div class="section-title">Search and suggested feeds</div>
+        <div class="stack">
+          <div class="input"></div>
+          <div class="source article-row">
+            <div class="thumb" style="width: 56px; height: 56px"></div>
+            <div class="lines"><div class="line dark"></div><div class="line medium"></div></div>
+            <div class="icon">+</div>
+          </div>
+          <div class="source article-row">
+            <div class="thumb" style="width: 56px; height: 56px"></div>
+            <div class="lines"><div class="line dark"></div><div class="line medium"></div></div>
+            <div class="icon">+</div>
+          </div>
+          <div class="panel">
+            <p class="sub">Added sources</p>
+            <div class="stack" style="margin-top: 10px">
+              <div class="article-row"><div class="line long"></div><span class="chip">Remove</span></div>
+              <div class="article-row"><div class="line long"></div><span class="chip">Remove</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="page">
+      <h1>Editorial Notes</h1>
+      <p class="caption">Covers TC-UC11 with article context, private/public note toggle, tags, and save action.</p>
+      <div class="phone">
+        <div class="topbar">
+          <div>
+            <div class="brand" style="font-size: 1.2rem">My Notes</div>
+            <p class="sub">Attach your voice to the article.</p>
+          </div>
+          <button class="btn primary">Save</button>
+        </div>
+        <div class="note" style="margin-top: 14px">
+          <div class="article-row">
+            <div class="thumb"></div>
+            <div class="lines">
+              <div class="line dark long"></div>
+              <div class="line medium"></div>
+            </div>
+          </div>
+        </div>
+        <div class="tab-row" style="margin: 14px 0">
+          <span class="chip">Private note</span>
+          <span class="chip active">Editorial (public)</span>
+        </div>
+        <div class="textarea"></div>
+        <div class="section-title">Sharing and tags</div>
+        <div class="chip-row">
+          <span class="chip active">Followers</span>
+          <span class="chip">Public</span>
+          <span class="chip">Private</span>
+          <span class="chip">#Editorial</span>
+          <span class="chip">#Policy</span>
+        </div>
+        <div class="tabbar">
+          <span>Feed</span>
+          <span>Widgets</span>
+          <span class="active">Notes</span>
+          <span>Profile</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="page">
+      <h1>Discover and Public Newspaper</h1>
+      <p class="caption">Covers TC-UC14, TC-UC15, TC-UC16, and TC-UC17 with discover browsing, follow, read-only public view, and fork actions.</p>
+      <div class="phone">
+        <div class="topbar">
+          <div class="brand" style="font-size: 1.35rem">Discover</div>
+          <div class="icon">?</div>
+        </div>
+        <div class="chip-row" style="margin: 14px 0">
+          <span class="chip">Following</span>
+          <span class="chip active">Popular</span>
+          <span class="chip">Suggested</span>
+        </div>
+        <div class="stack">
+          <div class="public-card article-row">
+            <div class="thumb"></div>
+            <div class="lines">
+              <div class="line dark long"></div>
+              <div class="line medium"></div>
+              <div class="chip-row"><span class="chip">Follow</span><span class="chip">Open</span></div>
+            </div>
+          </div>
+          <div class="public-card article-row">
+            <div class="thumb"></div>
+            <div class="lines">
+              <div class="line dark long"></div>
+              <div class="line medium"></div>
+              <div class="chip-row"><span class="chip">Follow</span><span class="chip">Open</span></div>
+            </div>
+          </div>
+          <div class="panel">
+            <p class="section-title" style="margin-top: 0">Public newspaper view</p>
+            <div class="mini"></div>
+            <div class="stack">
+              <div class="line dark long"></div>
+              <div class="line long"></div>
+              <div class="line medium"></div>
+            </div>
+            <div class="row" style="justify-content: space-between; margin-top: 12px">
+              <button class="btn">Follow curator</button>
+              <button class="btn primary">Use this layout</button>
+            </div>
+          </div>
+        </div>
+        <div class="tabbar">
+          <span>Feed</span>
+          <span class="active">Discover</span>
+          <span>Notes</span>
+          <span>Profile</span>
+        </div>
+      </div>
+    </section>
+  </body>
+</html>

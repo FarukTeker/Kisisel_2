@@ -329,6 +329,10 @@ export default function Home() {
                  title={widget.title}
                  kind={widget.kind}
                  editorialBody={widget.editorialBody}
+                 onEditorialBodyChange={(value) => {
+                   setEditorialSaveError('');
+                   setWidgets((prev) => prev.map((w) => (w.id === widget.id ? { ...w, editorialBody: value } : w)));
+                 }}
                  isSelected={selectedWidgetId === widget.id}
                  onSelect={() => setSelectedWidgetId(widget.id)}
                  onSettingsClick={() => { setSelectedWidgetId(widget.id); setIsWidgetSettingsOpen(true); }}

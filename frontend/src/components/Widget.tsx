@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useRef } from 'react';
 import Image from 'next/image';
 import { NewsArticle } from '../lib/mockData';
 import { fetchSummaryPreview } from '../lib/summaryApi';
@@ -15,6 +15,7 @@ interface WidgetProps {
   title?: string;
   kind?: 'news' | 'editorial' | 'popular' | 'random';
   editorialBody?: string;
+  onEditorialBodyChange?: (value: string) => void;
   isSelected?: boolean;
   onSelect?: () => void;
   onSettingsClick?: () => void;
@@ -30,6 +31,7 @@ export default function Widget({
   title,
   kind = 'news',
   editorialBody,
+  onEditorialBodyChange,
   isSelected = false,
   onSelect,
   onSettingsClick,
@@ -41,6 +43,20 @@ export default function Widget({
   const [loadingIds, setLoadingIds] = useState<Set<string>>(new Set());
   const [discoveryArticles, setDiscoveryArticles] = useState<LiveArticle[]>([]);
   const [discoveryLoading, setDiscoveryLoading] = useState(false);
+
+  // Track actual body height for dynamic article count
+  const bodyRef = useRef<HTMLDivElement>(null);
+  const [bodyHeight, setBodyHeight] = useState(0);
+
+  useEffect(() => {
+    const el = bodyRef.current;
+    if (!el) return;
+    const ro = new ResizeObserver(([entry]) => {
+      setBodyHeight(entry.contentRect.height);
+    });
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
 
   const openSource = (article: NewsArticle | LiveArticle) => {
     if (typeof window !== 'undefined') {
@@ -67,21 +83,27 @@ export default function Widget({
     });
   }, [kind]);
 
+  // ── Dynamic article count based on actual widget height ───────────────────
+  const dynamicCount = useMemo(() => {
+    if (readingMode === 'F') return 1;
+    // approx item height (px) + gap
+    const itemH = readingMode === 'H' ? 72 : 140; // H = compact row, S = summary card
+    const gap    = readingMode === 'H' ? 8 : 10;
+    const h = bodyHeight > 0 ? bodyHeight : (readingMode === 'H' ? 300 : 400);
+    return Math.max(1, Math.floor((h + gap) / (itemH + gap)));
+  }, [bodyHeight, readingMode]);
+
   // ── News widget: pick displayArticles from prop ────────────────────────────
   const displayArticles = useMemo<NewsArticle[]>(() => {
-    if (kind !== 'news') return [];
+    if (kind !== 'news' || articles.length === 0) return [];
     if (readingMode === 'F') {
       return [articles[startIndex % articles.length]];
-    } else if (readingMode === 'S') {
-      const countMap = { card1: 2, card2: 1, card3: 2, card4: 2, card5: 3, card6: 3 };
-      const count = countMap[newsLayoutType];
-      return Array.from({ length: count }, (_, i) => articles[(startIndex + i) % articles.length]);
-    } else {
-      const countMap = { card1: 4, card2: 2, card3: 3, card4: 3, card5: 6, card6: 5 };
-      const count = countMap[newsLayoutType];
-      return Array.from({ length: count }, (_, i) => articles[(startIndex + i) % articles.length]);
     }
-  }, [articles, kind, readingMode, newsLayoutType, startIndex]);
+    return Array.from(
+      { length: Math.min(dynamicCount, articles.length) },
+      (_, i) => articles[(startIndex + i) % articles.length],
+    );
+  }, [articles, kind, readingMode, dynamicCount, startIndex]);
 
   const articleIdKey = displayArticles.map((a) => a.id).join(',');
 
@@ -250,7 +272,13 @@ export default function Widget({
     }
 
     const items = discoveryArticles.length > 0 ? discoveryArticles : (articles as LiveArticle[]);
-    const shown = isPop ? items.slice(0, 3) : items.slice(0, 2);
+    // dynamic count: each discovery card ≈ 130px (skim) or 180px (with summary)
+    const discItemH = readingMode === 'H' ? 80 : 155;
+    const headerH   = 64; // title row
+    const footerH   = 32;
+    const availH    = bodyHeight > 0 ? bodyHeight - headerH - footerH : 400;
+    const discCount = Math.max(1, Math.floor(availH / (discItemH + 10)));
+    const shown = items.slice(0, discCount);
 
     return (
       <div style={{ display: 'flex', flexDirection: 'column', gap: compact ? '0.7rem' : '0.9rem', height: '100%' }}>
@@ -311,9 +339,34 @@ export default function Widget({
             <span style={{ padding: '0.35rem 0.55rem', borderRadius: '999px', border: '1.5px solid #111827', backgroundColor: '#eef3ff', color: '#111827', fontSize: '0.68rem', fontWeight: 800, whiteSpace: 'nowrap' }}>Public</span>
           </div>
           <div style={{ borderTop: '1.5px dashed #111827', opacity: 0.28 }} />
-          <p style={{ fontSize: compact ? '0.82rem' : '0.9rem', lineHeight: 1.6, color: '#111827', margin: 0, flex: 1 }}>
-            {editorialBody || 'Add your editorial note to frame why this story matters, what readers should question, or how related stories connect.'}
-          </p>
+          {editMode && onEditorialBodyChange ? (
+            <textarea
+              value={editorialBody || ''}
+              onChange={(event) => onEditorialBodyChange(event.target.value)}
+              onClick={(event) => event.stopPropagation()}
+              placeholder="Add your editorial note to frame why this story matters, what readers should question, or how related stories connect."
+              style={{
+                fontSize: compact ? '0.82rem' : '0.9rem',
+                lineHeight: 1.6,
+                color: '#111827',
+                margin: 0,
+                flex: 1,
+                width: '100%',
+                minHeight: '90px',
+                resize: 'vertical',
+                border: '1.5px dashed #111827',
+                borderRadius: '6px',
+                padding: '0.6rem',
+                outline: 'none',
+                fontFamily: 'inherit',
+                backgroundColor: '#fffdf8',
+              }}
+            />
+          ) : (
+            <p style={{ fontSize: compact ? '0.82rem' : '0.9rem', lineHeight: 1.6, color: '#111827', margin: 0, flex: 1 }}>
+              {editorialBody || 'Add your editorial note to frame why this story matters, what readers should question, or how related stories connect.'}
+            </p>
+          )}
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '0.75rem' }}>
             <span style={{ fontSize: '0.74rem', color: '#6b7280', fontWeight: 700 }}>Visible in shared newspapers</span>
             <span style={{ fontSize: '0.74rem', color: '#111827', fontWeight: 800 }}>Author's note</span>
@@ -591,7 +644,7 @@ export default function Widget({
       )}
 
       {/* Main card body */}
-      <div className="widget-body" style={{ flex: 1, minHeight: 0, height: '100%', overflowY: 'auto', overflowX: 'hidden', paddingRight: '0.15rem' }}>
+      <div ref={bodyRef} className="widget-body" style={{ flex: 1, minHeight: 0, height: '100%', overflowY: 'auto', overflowX: 'hidden', paddingRight: '0.15rem' }}>
         {renderContent()}
       </div>
 
