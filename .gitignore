@@ -30,6 +30,8 @@ npm-debug.log*
 # Editor directories
 .idea/
 .vscode/
+*.xcuserstate
+xcuserdata/
 
 # Misc
 /Kisisel/
