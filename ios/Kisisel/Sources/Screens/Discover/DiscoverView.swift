@@ -134,10 +134,40 @@ private struct DiscoverCard: View {
     @EnvironmentObject private var store: AppStore
     let newspaper: Newspaper
 
+    private var sourceNames: [String] {
+        Array(Set(newspaper.widgets.compactMap { widget in
+            guard let sourceId = widget.sourceId else { return nil }
+            return store.sources.first(where: { $0.id == sourceId })?.name
+        })).sorted()
+    }
+
+    private var categoryNames: [String] {
+        Array(Set(newspaper.widgets.compactMap { widget in
+            guard let sourceId = widget.sourceId else { return nil }
+            return store.sources.first(where: { $0.id == sourceId })?.category
+        })).sorted()
+    }
+
+    private var widgetMixLabel: String {
+        let editorialCount = newspaper.widgets.filter { $0.kind == .editorial }.count
+        let discoveryCount = newspaper.widgets.filter { $0.kind == .popular || $0.kind == .random }.count
+
+        if editorialCount > 0 && discoveryCount > 0 { return "Editorial + discovery mix" }
+        if editorialCount > 0 { return "Includes curator notes" }
+        if discoveryCount > 0 { return "Includes discovery picks" }
+        return "Source-led reading stack"
+    }
+
+    private var editorialPreview: String? {
+        newspaper.widgets.first(where: { $0.kind == .editorial })?.editorialBody?
+            .trimmingCharacters(in: .whitespacesAndNewlines)
+    }
+
     var body: some View {
-        VStack(alignment: .leading, spacing: 10) {
+        VStack(alignment: .leading, spacing: 12) {
             HStack(alignment: .top, spacing: 10) {
                 VStack(alignment: .leading, spacing: 4) {
+                    KEyebrow(text: widgetMixLabel, color: .accent)
                     Text(newspaper.name).font(.kisiselH2).foregroundStyle(Color.ink)
                     Text("Curated by \(newspaper.curator)").font(.kisiselCaption).foregroundStyle(Color.textMuted)
                 }
@@ -155,12 +185,60 @@ private struct DiscoverCard: View {
                 .font(.kisiselBody)
                 .foregroundStyle(Color.textMuted)
                 .lineLimit(2)
+            if let editorialPreview, !editorialPreview.isEmpty {
+                HStack(alignment: .top, spacing: 8) {
+                    Image(systemName: "quote.opening")
+                        .font(.system(size: 11, weight: .bold))
+                        .foregroundStyle(Color.accent)
+                    Text(editorialPreview)
+                        .font(.kisiselCaption)
+                        .foregroundStyle(Color.textMuted)
+                        .lineLimit(2)
+                }
+                .padding(10)
+                .background(Color.surfaceHover)
+                .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
+            }
+            if !categoryNames.isEmpty {
+                ScrollView(.horizontal, showsIndicators: false) {
+                    HStack(spacing: 6) {
+                        ForEach(categoryNames.prefix(3), id: \.self) { category in
+                            KCategoryPill(category: category)
+                        }
+                        if sourceNames.count > 0 {
+                            Text("\(sourceNames.count) sources")
+                                .font(.kisiselPill)
+                                .padding(.horizontal, 8)
+                                .padding(.vertical, 4)
+                                .background(Color.surfaceHover)
+                                .foregroundStyle(Color.textMuted)
+                                .clipShape(Capsule())
+                        }
+                    }
+                }
+            }
             HStack(spacing: 10) {
                 Label("\(newspaper.widgets.count) widgets", systemImage: "square.grid.2x2")
                 Label(newspaper.readingMode.label, systemImage: newspaper.readingMode.systemImage)
             }
             .font(.kisiselCaption)
             .foregroundStyle(Color.textSoft)
+            HStack(spacing: 8) {
+                if let leadSource = sourceNames.first {
+                    Label(leadSource, systemImage: "dot.radiowaves.left.and.right")
+                        .font(.kisiselCaption)
+                        .foregroundStyle(Color.textMuted)
+                        .lineLimit(1)
+                }
+                Spacer()
+                HStack(spacing: 4) {
+                    Text("Open newspaper")
+                    Image(systemName: "arrow.right")
+                }
+                .font(.kisiselCaption)
+                .fontWeight(.bold)
+                .foregroundStyle(Color.accent)
+            }
         }
         .padding(14)
         .frame(maxWidth: .infinity, alignment: .leading)
