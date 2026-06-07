@@ -1,0 +1,429 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		0EF9B2C4F185B8FA8C288B62 /* DiscoverView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84E244D08CA9AFD9FA6717EE /* DiscoverView.swift */; };
+		1C56BEC9E47AA87B42D4E04E /* DesignSystem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EA5E30046ECDBCE43E8D5EB /* DesignSystem.swift */; };
+		20E62C0198F59514F4840E62 /* SplashOnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 058D4F98E3D62668059B5737 /* SplashOnboardingView.swift */; };
+		2BA21082CEC1F220FC76C877 /* AuthView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C23C92092436885DED678C2 /* AuthView.swift */; };
+		41EE16C8C8BEF62E56BDE2C8 /* MainTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 933BAEB5336B5D00ABE15F6C /* MainTabView.swift */; };
+		444802280E67AEFE3D8BF060 /* KisiselApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87385D983DC7EF4162A1A16A /* KisiselApp.swift */; };
+		4F5656E53C6B20228410E740 /* WidgetCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1550BFC53DE6646BEE7A0DF /* WidgetCardView.swift */; };
+		51D2734C634EAB54ABAB938C /* RootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22FB2EB4B9C654B5571D43CA /* RootView.swift */; };
+		76442950AF4B3FF9AEEE5314 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3E5900CB595489E5A68BE50 /* SettingsView.swift */; };
+		78A39A8DD3C032D498EA8DE7 /* AppStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = D60B7B6BD36E3575DB5DE5C6 /* AppStore.swift */; };
+		862943422256773B32AE7C6E /* NewspaperSheets.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3140A707643F4303378CF443 /* NewspaperSheets.swift */; };
+		8EB44DA424E8DA179C7ACA3E /* NewspaperView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AF2F1BD9FBF7B1D63B02D24 /* NewspaperView.swift */; };
+		BE7AFF536291F63173FD3A30 /* Models.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF370FC35D7778298940C4F6 /* Models.swift */; };
+		F03104B6A3E2D5FB4D235A5A /* PublicNewspaperView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 682681C1D5A7C53C90E46634 /* PublicNewspaperView.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		058D4F98E3D62668059B5737 /* SplashOnboardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplashOnboardingView.swift; sourceTree = "<group>"; };
+		0AF2F1BD9FBF7B1D63B02D24 /* NewspaperView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewspaperView.swift; sourceTree = "<group>"; };
+		22FB2EB4B9C654B5571D43CA /* RootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootView.swift; sourceTree = "<group>"; };
+		2C23C92092436885DED678C2 /* AuthView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthView.swift; sourceTree = "<group>"; };
+		3140A707643F4303378CF443 /* NewspaperSheets.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewspaperSheets.swift; sourceTree = "<group>"; };
+		682681C1D5A7C53C90E46634 /* PublicNewspaperView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PublicNewspaperView.swift; sourceTree = "<group>"; };
+		6EA5E30046ECDBCE43E8D5EB /* DesignSystem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DesignSystem.swift; sourceTree = "<group>"; };
+		84E244D08CA9AFD9FA6717EE /* DiscoverView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiscoverView.swift; sourceTree = "<group>"; };
+		87385D983DC7EF4162A1A16A /* KisiselApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KisiselApp.swift; sourceTree = "<group>"; };
+		933BAEB5336B5D00ABE15F6C /* MainTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainTabView.swift; sourceTree = "<group>"; };
+		A3E5900CB595489E5A68BE50 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
+		B655F9B182DD5253BF73DEA0 /* Kisisel.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = Kisisel.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		D1550BFC53DE6646BEE7A0DF /* WidgetCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetCardView.swift; sourceTree = "<group>"; };
+		D60B7B6BD36E3575DB5DE5C6 /* AppStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppStore.swift; sourceTree = "<group>"; };
+		FF370FC35D7778298940C4F6 /* Models.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Models.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXGroup section */
+		06E0FCC2DB1BB7DE11535263 /* Sources */ = {
+			isa = PBXGroup;
+			children = (
+				7FAEBD125D8929EA8FB33F06 /* App */,
+				DE96171C614259114DE8EB67 /* Design */,
+				49BF9D4E88C703AFA18B1013 /* Models */,
+				5B2DC70877175CCB3C218B7D /* Screens */,
+				D67F110C4B924ADB073CD66C /* Store */,
+			);
+			path = Sources;
+			sourceTree = "<group>";
+		};
+		26879541999A8823C7DB4BF6 /* Discover */ = {
+			isa = PBXGroup;
+			children = (
+				84E244D08CA9AFD9FA6717EE /* DiscoverView.swift */,
+				682681C1D5A7C53C90E46634 /* PublicNewspaperView.swift */,
+			);
+			path = Discover;
+			sourceTree = "<group>";
+		};
+		2B2330F9838917CAF045EE58 /* Onboarding */ = {
+			isa = PBXGroup;
+			children = (
+				058D4F98E3D62668059B5737 /* SplashOnboardingView.swift */,
+			);
+			path = Onboarding;
+			sourceTree = "<group>";
+		};
+		4343B49067251AA5A6EB0FC0 /* Settings */ = {
+			isa = PBXGroup;
+			children = (
+				A3E5900CB595489E5A68BE50 /* SettingsView.swift */,
+			);
+			path = Settings;
+			sourceTree = "<group>";
+		};
+		49BF9D4E88C703AFA18B1013 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				FF370FC35D7778298940C4F6 /* Models.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		5B2DC70877175CCB3C218B7D /* Screens */ = {
+			isa = PBXGroup;
+			children = (
+				A84A9C86470C6ED7264C9330 /* Auth */,
+				26879541999A8823C7DB4BF6 /* Discover */,
+				A92174A5E7DA631A0DACDFBB /* Newspaper */,
+				2B2330F9838917CAF045EE58 /* Onboarding */,
+				4343B49067251AA5A6EB0FC0 /* Settings */,
+			);
+			path = Screens;
+			sourceTree = "<group>";
+		};
+		7373E6BD308A7D9A96F275CF = {
+			isa = PBXGroup;
+			children = (
+				06E0FCC2DB1BB7DE11535263 /* Sources */,
+				B88500A6B49D30D84278700F /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		7FAEBD125D8929EA8FB33F06 /* App */ = {
+			isa = PBXGroup;
+			children = (
+				87385D983DC7EF4162A1A16A /* KisiselApp.swift */,
+				933BAEB5336B5D00ABE15F6C /* MainTabView.swift */,
+				22FB2EB4B9C654B5571D43CA /* RootView.swift */,
+			);
+			path = App;
+			sourceTree = "<group>";
+		};
+		A84A9C86470C6ED7264C9330 /* Auth */ = {
+			isa = PBXGroup;
+			children = (
+				2C23C92092436885DED678C2 /* AuthView.swift */,
+			);
+			path = Auth;
+			sourceTree = "<group>";
+		};
+		A92174A5E7DA631A0DACDFBB /* Newspaper */ = {
+			isa = PBXGroup;
+			children = (
+				3140A707643F4303378CF443 /* NewspaperSheets.swift */,
+				0AF2F1BD9FBF7B1D63B02D24 /* NewspaperView.swift */,
+				D1550BFC53DE6646BEE7A0DF /* WidgetCardView.swift */,
+			);
+			path = Newspaper;
+			sourceTree = "<group>";
+		};
+		B88500A6B49D30D84278700F /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				B655F9B182DD5253BF73DEA0 /* Kisisel.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		D67F110C4B924ADB073CD66C /* Store */ = {
+			isa = PBXGroup;
+			children = (
+				D60B7B6BD36E3575DB5DE5C6 /* AppStore.swift */,
+			);
+			path = Store;
+			sourceTree = "<group>";
+		};
+		DE96171C614259114DE8EB67 /* Design */ = {
+			isa = PBXGroup;
+			children = (
+				6EA5E30046ECDBCE43E8D5EB /* DesignSystem.swift */,
+			);
+			path = Design;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		6436D96037B35F0321800E34 /* Kisisel */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = A0444E5C1BCB1107956E12A1 /* Build configuration list for PBXNativeTarget "Kisisel" */;
+			buildPhases = (
+				28437746218BCFB941A7D150 /* Sources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = Kisisel;
+			packageProductDependencies = (
+			);
+			productName = Kisisel;
+			productReference = B655F9B182DD5253BF73DEA0 /* Kisisel.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		5AAD9739ABBE2C551DC0F49E /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = YES;
+				LastUpgradeCheck = 1430;
+				TargetAttributes = {
+					6436D96037B35F0321800E34 = {
+						ProvisioningStyle = Automatic;
+					};
+				};
+			};
+			buildConfigurationList = 847522D39BA4A74DC8DAA3A0 /* Build configuration list for PBXProject "Kisisel" */;
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				Base,
+				en,
+			);
+			mainGroup = 7373E6BD308A7D9A96F275CF;
+			minimizedProjectReferenceProxies = 1;
+			preferredProjectObjectVersion = 77;
+			productRefGroup = B88500A6B49D30D84278700F /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				6436D96037B35F0321800E34 /* Kisisel */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXSourcesBuildPhase section */
+		28437746218BCFB941A7D150 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				78A39A8DD3C032D498EA8DE7 /* AppStore.swift in Sources */,
+				2BA21082CEC1F220FC76C877 /* AuthView.swift in Sources */,
+				1C56BEC9E47AA87B42D4E04E /* DesignSystem.swift in Sources */,
+				0EF9B2C4F185B8FA8C288B62 /* DiscoverView.swift in Sources */,
+				444802280E67AEFE3D8BF060 /* KisiselApp.swift in Sources */,
+				41EE16C8C8BEF62E56BDE2C8 /* MainTabView.swift in Sources */,
+				BE7AFF536291F63173FD3A30 /* Models.swift in Sources */,
+				862943422256773B32AE7C6E /* NewspaperSheets.swift in Sources */,
+				8EB44DA424E8DA179C7ACA3E /* NewspaperView.swift in Sources */,
+				F03104B6A3E2D5FB4D235A5A /* PublicNewspaperView.swift in Sources */,
+				51D2734C634EAB54ABAB938C /* RootView.swift in Sources */,
+				76442950AF4B3FF9AEEE5314 /* SettingsView.swift in Sources */,
+				20E62C0198F59514F4840E62 /* SplashOnboardingView.swift in Sources */,
+				4F5656E53C6B20228410E740 /* WidgetCardView.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		5B1A7A5194EA00A02088D37E /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_STYLE = Automatic;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = "Kişisel";
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = UIInterfaceOrientationPortrait;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.kisisel.app;
+				PRODUCT_NAME = Kisisel;
+				SDKROOT = iphoneos;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Release;
+		};
+		75BCB728C680439B613D1743 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					"DEBUG=1",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		99433FDFAF4C795BEA9C4A05 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_STYLE = Automatic;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = "Kişisel";
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = UIInterfaceOrientationPortrait;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.kisisel.app;
+				PRODUCT_NAME = Kisisel;
+				SDKROOT = iphoneos;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Debug;
+		};
+		B94D48D753E425407DAF8CA8 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		847522D39BA4A74DC8DAA3A0 /* Build configuration list for PBXProject "Kisisel" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				75BCB728C680439B613D1743 /* Debug */,
+				B94D48D753E425407DAF8CA8 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		A0444E5C1BCB1107956E12A1 /* Build configuration list for PBXNativeTarget "Kisisel" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				99433FDFAF4C795BEA9C4A05 /* Debug */,
+				5B1A7A5194EA00A02088D37E /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 5AAD9739ABBE2C551DC0F49E /* Project object */;
+}
