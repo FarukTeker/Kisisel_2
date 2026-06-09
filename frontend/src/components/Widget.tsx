@@ -2,12 +2,11 @@
 
 import React, { useState, useEffect, useMemo, useRef } from 'react';
 import Image from 'next/image';
-import { NewsArticle } from '../lib/mockData';
 import { fetchSummaryPreview } from '../lib/summaryApi';
 import { fetchPopularArticles, fetchRandomArticles, type LiveArticle } from '../lib/articlesApi';
 
 interface WidgetProps {
-  articles: NewsArticle[];
+  articles: LiveArticle[];
   layoutType: 'card1' | 'card2' | 'card3' | 'card4' | 'card5' | 'card6' | 'editorial' | 'discovery';
   readingMode: 'S' | 'H' | 'F';
   editMode: boolean;
@@ -58,7 +57,7 @@ export default function Widget({
     return () => ro.disconnect();
   }, []);
 
-  const openSource = (article: NewsArticle | LiveArticle) => {
+  const openSource = (article: LiveArticle) => {
     if (typeof window !== 'undefined') {
       window.open(article.sourceUrl, '_blank', 'noopener,noreferrer');
     }
@@ -94,23 +93,23 @@ export default function Widget({
   }, [bodyHeight, readingMode]);
 
   // ── News widget: pick displayArticles from prop ────────────────────────────
-  const displayArticles = useMemo<NewsArticle[]>(() => {
+  const displayArticles = useMemo<LiveArticle[]>(() => {
     if (kind !== 'news' || articles.length === 0) return [];
     if (readingMode === 'F') {
       return [articles[startIndex % articles.length]];
     }
     return Array.from(
-      { length: Math.min(dynamicCount, articles.length) },
+      { length: Math.min(10, articles.length) },
       (_, i) => articles[(startIndex + i) % articles.length],
-    );
-  }, [articles, kind, readingMode, dynamicCount, startIndex]);
+    ).filter((article): article is LiveArticle => Boolean(article));
+  }, [articles, kind, readingMode, startIndex]);
 
   const articleIdKey = displayArticles.map((a) => a.id).join(',');
 
   // ── Lazy AI summaries for news widgets ────────────────────────────────────
   useEffect(() => {
     if (kind !== 'news') return;
-    const toFetch = displayArticles.filter((a) => !liveSummaries[a.id] && !loadingIds.has(a.id));
+    const toFetch = displayArticles.filter((a) => !a.aiSummary && !liveSummaries[a.id] && !loadingIds.has(a.id));
     if (toFetch.length === 0) return;
 
     setLoadingIds((prev) => {
@@ -125,6 +124,7 @@ export default function Widget({
         content: article.fullContent,
         publisher: article.publisher,
         category: article.category,
+        articleId: article.id,
       });
       if (result?.summary) {
         setLiveSummaries((prev) => ({ ...prev, [article.id]: result.summary }));
@@ -142,7 +142,7 @@ export default function Widget({
   const discIdKey = discoveryArticles.map((a) => a.id).join(',');
   useEffect(() => {
     if (discoveryArticles.length === 0) return;
-    const toFetch = discoveryArticles.filter((a) => !liveSummaries[a.id] && !loadingIds.has(a.id));
+    const toFetch = discoveryArticles.filter((a) => !a.aiSummary && !liveSummaries[a.id] && !loadingIds.has(a.id));
     if (toFetch.length === 0) return;
 
     setLoadingIds((prev) => {
@@ -157,6 +157,7 @@ export default function Widget({
         content: article.fullContent,
         publisher: article.publisher,
         category: article.category,
+        articleId: article.id,
       });
       if (result?.summary) {
         setLiveSummaries((prev) => ({ ...prev, [article.id]: result.summary }));
@@ -185,10 +186,13 @@ export default function Widget({
     </h3>
   );
 
-  const getSummary = (article: NewsArticle | LiveArticle) =>
-    liveSummaries[article.id] || article.summary;
+  const getSummary = (article: LiveArticle) => {
+    if (article.aiSummary) return article.aiSummary;
+    if (liveSummaries[article.id]) return liveSummaries[article.id];
+    return 'Generating...';
+  };
 
-  const isLoading = (article: NewsArticle | LiveArticle) => loadingIds.has(article.id);
+  const isLoading = (article: LiveArticle) => loadingIds.has(article.id);
 
   const renderCategoryPill = (category: string) => {
     const colors = CATEGORY_COLORS[category] ?? { bg: '#f3f4f6', text: '#374151' };
@@ -199,9 +203,9 @@ export default function Widget({
     );
   };
 
-  const renderAiStatusPill = (article: NewsArticle | LiveArticle) => {
+  const renderAiStatusPill = (article: LiveArticle) => {
     const loading = isLoading(article);
-    const isLive = Boolean(liveSummaries[article.id]);
+    const isLive = Boolean(article.aiSummary || liveSummaries[article.id]);
     return (
       <span style={{ display: 'inline-flex', alignItems: 'center', gap: '0.25rem', padding: '0.18rem 0.5rem', borderRadius: '999px', border: `1px solid ${loading ? '#e5e7eb' : isLive ? '#bbf7d0' : '#bfdbfe'}`, backgroundColor: loading ? '#f9fafb' : isLive ? '#f0fdf4' : '#eff6ff', fontSize: '0.62rem', fontWeight: 700, color: loading ? '#9ca3af' : isLive ? '#15803d' : '#2563eb', whiteSpace: 'nowrap' }}>
         {loading ? (
@@ -209,13 +213,13 @@ export default function Widget({
         ) : isLive ? (
           <><span style={{ width: '6px', height: '6px', borderRadius: '50%', backgroundColor: '#22c55e', display: 'inline-block' }} />AI summary</>
         ) : (
-          <><span style={{ width: '6px', height: '6px', borderRadius: '50%', backgroundColor: '#3b82f6', display: 'inline-block' }} />{(article as LiveArticle).summaryLabel ?? 'AI preview'}</>
+          <><span style={{ width: '6px', height: '6px', borderRadius: '50%', backgroundColor: '#3b82f6', display: 'inline-block' }} />{article.summaryLabel ?? 'AI preview'}</>
         )}
       </span>
     );
   };
 
-  const renderOpenSourceBtn = (article: NewsArticle | LiveArticle, size: 'sm' | 'md' = 'sm') => (
+  const renderOpenSourceBtn = (article: LiveArticle, size: 'sm' | 'md' = 'sm') => (
     <button
       type="button"
       onClick={() => openSource(article)}
@@ -226,7 +230,7 @@ export default function Widget({
     </button>
   );
 
-  const renderMetadata = (article: NewsArticle | LiveArticle) => (
+  const renderMetadata = (article: LiveArticle) => (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '0.35rem', margin: '0.3rem 0 0.1rem' }}>
       <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', flexWrap: 'wrap' }}>
         <span style={{ fontSize: '0.7rem', fontWeight: 700, color: '#374151' }}>{article.publisher}</span>
@@ -271,14 +275,8 @@ export default function Widget({
       );
     }
 
-    const items = discoveryArticles.length > 0 ? discoveryArticles : (articles as LiveArticle[]);
-    // dynamic count: each discovery card ≈ 130px (skim) or 180px (with summary)
-    const discItemH = readingMode === 'H' ? 80 : 155;
-    const headerH   = 64; // title row
-    const footerH   = 32;
-    const availH    = bodyHeight > 0 ? bodyHeight - headerH - footerH : 400;
-    const discCount = Math.max(1, Math.floor(availH / (discItemH + 10)));
-    const shown = items.slice(0, discCount);
+    const items = discoveryArticles.length > 0 ? discoveryArticles : articles;
+    const shown = items.slice(0, 10);
 
     return (
       <div style={{ display: 'flex', flexDirection: 'column', gap: compact ? '0.7rem' : '0.9rem', height: '100%' }}>
@@ -290,7 +288,8 @@ export default function Widget({
           <span style={{ padding: '0.35rem 0.55rem', borderRadius: '999px', border: '1.5px solid #111827', backgroundColor: badgeBg, color: '#111827', fontSize: '0.68rem', fontWeight: 800, whiteSpace: 'nowrap' }}>{badgeLabel}</span>
         </div>
 
-        {shown.map((article, index) => (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.65rem', overflowY: 'auto', paddingRight: '4px', flex: 1, minHeight: 0 }}>
+          {shown.map((article, index) => (
           <div key={`${article.id}-${index}`} style={{ padding: compact ? '0.75rem' : '0.9rem', border: '1.5px solid #111827', borderRadius: '14px', backgroundColor: '#ffffff', display: 'flex', flexDirection: 'column', gap: '0.45rem' }}>
             <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: '0.5rem' }}>
               <h4 style={{ fontSize: compact ? '0.88rem' : '0.96rem', fontWeight: 900, lineHeight: 1.25, margin: 0, flex: 1, color: '#0f172a' }}>{article.title}</h4>
@@ -316,6 +315,7 @@ export default function Widget({
             </div>
           </div>
         ))}
+        </div>
 
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '0.75rem', marginTop: 'auto', flexShrink: 0 }}>
           <span style={{ fontSize: '0.72rem', color: '#9ca3af', fontWeight: 600 }}>
@@ -382,7 +382,7 @@ export default function Widget({
     // ── H mode ─────────────────────────────────────────────────────────────
     if (readingMode === 'H') {
       return (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', height: '100%', minHeight: 0 }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', height: '100%', minHeight: 0, overflowY: 'auto', paddingRight: '4px' }}>
           {displayArticles.map((art, idx) => (
             <div key={`${art.id}-${idx}`} style={{ backgroundColor: '#ffffff', border: '1px solid #e5e7eb', borderRadius: '8px', padding: '0.65rem 0.85rem', display: 'flex', alignItems: 'center', gap: '0.75rem', boxShadow: '0 1px 3px rgba(0,0,0,0.04)' }}>
               <div style={{ flex: 1, minWidth: 0 }}>
@@ -404,7 +404,7 @@ export default function Widget({
     // ── S mode ─────────────────────────────────────────────────────────────
     if (readingMode === 'S') {
       return (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.65rem', height: '100%', minHeight: 0 }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.65rem', height: '100%', minHeight: 0, overflowY: 'auto', paddingRight: '4px' }}>
           {displayArticles.map((art, idx) => (
             <div key={`${art.id}-${idx}`} style={{ backgroundColor: '#ffffff', border: '1px solid #e5e7eb', borderRadius: '10px', padding: '0.9rem 1rem', display: 'flex', flexDirection: 'column', gap: '0.45rem', boxShadow: '0 1px 3px rgba(0,0,0,0.04)' }}>
               <div style={{ display: 'flex', alignItems: 'flex-start', gap: '0.5rem', justifyContent: 'space-between' }}>
@@ -429,6 +429,8 @@ export default function Widget({
 
     // ── F mode (card layouts) ───────────────────────────────────────────────
     const article = displayArticles[0] || articles[0];
+    
+    if (!article) return null;
 
     return (
       <>

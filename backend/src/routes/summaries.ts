@@ -1,11 +1,12 @@
 import { Router } from 'express';
-import { summarizePreview } from '../services/ollamaSummary.js';
+import { summarizePreview } from '../services/groqSummary.js';
 
 interface SummaryPreviewBody {
   title?: string;
   content?: string;
   publisher?: string;
   category?: string;
+  articleId?: string;
 }
 
 export const summariesRouter = Router();
@@ -27,6 +28,18 @@ summariesRouter.post('/preview', async (req, res) => {
       publisher: body.publisher,
       category: body.category,
     });
+
+    if (body.articleId && result.summary) {
+      try {
+        const { prisma } = await import('../db.js');
+        await prisma.article.update({
+          where: { id: body.articleId },
+          data: { aiSummary: result.summary },
+        });
+      } catch (e) {
+        console.error('Failed to save aiSummary to DB for article:', body.articleId, e);
+      }
+    }
 
     res.json(result);
   } catch (error) {

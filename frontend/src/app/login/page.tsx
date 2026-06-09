@@ -1,9 +1,9 @@
 "use client";
 
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
-import { initializePrototypeState, loginPrototypeUser, MOCK_TEST_USERS, registerPrototypeUser, setCurrentPrototypeUser } from '@/lib/prototypeState';
+import { loginUser, registerUser } from '@/lib/prototypeState';
 
 export default function Login() {
   const [isLogin, setIsLogin] = useState(false);
@@ -14,21 +14,16 @@ export default function Login() {
   const [error, setError] = useState('');
   const router = useRouter();
 
-  useEffect(() => {
-    initializePrototypeState();
-  }, []);
-
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
 
     if (isLogin) {
-      const user = loginPrototypeUser(email, password);
+      const user = await loginUser(email, password);
       if (!user) {
-        setError('Invalid test credentials. Use one of the mock users below or register a new one.');
+        setError('Invalid email or password.');
         return;
       }
-
       router.push('/');
       return;
     }
@@ -43,18 +38,29 @@ export default function Login() {
       return;
     }
 
-    const result = registerPrototypeUser(username.trim(), email, password);
-    if ('error' in result) {
-      setError('This email is already registered. Try logging in with the existing test user.');
+    const result = await registerUser(username.trim(), email, password);
+    if (result.error) {
+      setError(result.error);
       return;
     }
 
     router.push('/');
   };
 
-  const handleMockLogin = (userId: string) => {
-    setCurrentPrototypeUser(userId);
-    router.push('/');
+  const handleDevLogin = async (email: string, pass: string, name: string) => {
+    setError('');
+    let user = await loginUser(email, pass);
+    if (!user) {
+      const res = await registerUser(name, email, pass);
+      if (res.error) {
+        setError(res.error);
+        return;
+      }
+      user = res.user || null;
+    }
+    if (user) {
+      router.push('/');
+    }
   };
 
   return (
@@ -98,25 +104,6 @@ export default function Login() {
         <p style={{ textAlign: 'center', margin: '0 0 1.75rem', color: '#6b7280', fontSize: '0.92rem', lineHeight: 1.45 }}>
           Build a calmer reading flow, publish your own newspaper, and add editorial context to every story.
         </p>
-        <div style={{ margin: '0 0 1rem', padding: '0.85rem 1rem', border: '1.5px dashed #111827', borderRadius: '16px', backgroundColor: '#f5efe4' }}>
-          <p style={{ fontSize: '0.78rem', fontWeight: 900, textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '0.45rem' }}>Test users</p>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.45rem' }}>
-            {MOCK_TEST_USERS.map((user) => (
-              <button
-                key={user.id}
-                type="button"
-                onClick={() => handleMockLogin(user.id)}
-                style={{ display: 'flex', justifyContent: 'space-between', gap: '0.75rem', padding: '0.65rem 0.75rem', borderRadius: '12px', border: '1.5px solid #111827', backgroundColor: '#fffdf8', textAlign: 'left' }}
-              >
-                <span>
-                  <strong style={{ display: 'block', fontSize: '0.88rem' }}>{user.name}</strong>
-                  <span style={{ fontSize: '0.75rem', color: '#6b7280' }}>{user.email}</span>
-                </span>
-                <span style={{ fontSize: '0.75rem', fontWeight: 800, color: '#111827', whiteSpace: 'nowrap' }}>{user.password}</span>
-              </button>
-            ))}
-          </div>
-        </div>
         
         {/* Custom brutalist logo frame */}
         <div style={{ 
@@ -241,13 +228,13 @@ export default function Login() {
                   <button 
                     type="button" 
                     onClick={() => setIsLogin(false)} 
-                    style={{ fontSize: '0.85rem', fontWeight: '800', color: '#111827', textDecoration: 'underline', cursor: 'pointer' }}
+                    style={{ fontSize: '0.85rem', fontWeight: '800', color: '#111827', textDecoration: 'underline', cursor: 'pointer', border: 'none', background: 'transparent' }}
                   >
                     new user?
                   </button>
                   <button 
                     type="button"
-                    style={{ fontSize: '0.85rem', fontWeight: '800', color: '#111827', textDecoration: 'underline', cursor: 'pointer' }}
+                    style={{ fontSize: '0.85rem', fontWeight: '800', color: '#111827', textDecoration: 'underline', cursor: 'pointer', border: 'none', background: 'transparent' }}
                   >
                     forgot password
                   </button>
@@ -292,7 +279,7 @@ export default function Login() {
                 <button 
                   type="button" 
                   onClick={() => setIsLogin(true)} 
-                  style={{ fontSize: '0.85rem', fontWeight: '800', color: '#111827', textDecoration: 'underline', cursor: 'pointer' }}
+                  style={{ fontSize: '0.85rem', fontWeight: '800', color: '#111827', textDecoration: 'underline', cursor: 'pointer', border: 'none', background: 'transparent' }}
                 >
                   Already a user? Login
                 </button>
@@ -301,52 +288,24 @@ export default function Login() {
           </div>
         </form>
 
-         <div style={{ margin: '2rem 0', borderBottom: '2px solid #111827', opacity: 0.18 }} />
-
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-          <button 
-            onClick={() => handleMockLogin(MOCK_TEST_USERS[0].id)}
-            style={{ 
-              display: 'flex', 
-              alignItems: 'center', 
-              gap: '1.5rem', 
-              padding: '0.75rem 1.25rem',
-              backgroundColor: '#ffffff',
-               borderRadius: '999px',
-               border: '1px solid rgba(23,23,23,0.12)',
-               fontWeight: '800',
-               fontSize: '0.95rem',
-               color: '#111827',
-               boxShadow: '0 12px 24px rgba(17,24,39,0.10)',
-              cursor: 'pointer',
-              justifyContent: 'center'
-            }}
-          >
-            <span style={{ fontSize: '1.1rem', fontWeight: '900' }}>G</span> 
-            <span>{isLogin ? 'Login with Google' : 'Sign up with Google'}</span>
-          </button>
-          
-          <button 
-            onClick={() => handleMockLogin(MOCK_TEST_USERS[1].id)}
-            style={{ 
-              display: 'flex', 
-              alignItems: 'center', 
-              gap: '1.5rem', 
-              padding: '0.75rem 1.25rem',
-              backgroundColor: '#ffffff',
-               borderRadius: '999px',
-               border: '1px solid rgba(23,23,23,0.12)',
-               fontWeight: '800',
-               fontSize: '0.95rem',
-               color: '#111827',
-               boxShadow: '0 12px 24px rgba(17,24,39,0.10)',
-              cursor: 'pointer',
-              justifyContent: 'center'
-            }}
-          >
-            <span style={{ fontSize: '1.1rem', fontWeight: '900' }}>F</span> 
-            <span>{isLogin ? 'Login with Facebook' : 'Sign up with Facebook'}</span>
-          </button>
+        <div style={{ marginTop: '2rem', paddingTop: '1.5rem', borderTop: '1px solid rgba(23,23,23,0.1)' }}>
+          <p style={{ textAlign: 'center', fontSize: '0.75rem', fontWeight: 800, color: '#9ca3af', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '1rem' }}>
+            Quick Dev Logins
+          </p>
+          <div style={{ display: 'flex', gap: '0.5rem', justifyContent: 'center', flexWrap: 'wrap' }}>
+            <button
+              onClick={() => handleDevLogin('alice@dev.com', 'password', 'Alice')}
+              style={{ padding: '0.4rem 0.8rem', borderRadius: '6px', border: '1px solid #d1d5db', backgroundColor: '#f3f4f6', fontSize: '0.8rem', fontWeight: 700, cursor: 'pointer' }}
+            >
+              Log in as Alice
+            </button>
+            <button
+              onClick={() => handleDevLogin('bob@dev.com', 'password', 'Bob')}
+              style={{ padding: '0.4rem 0.8rem', borderRadius: '6px', border: '1px solid #d1d5db', backgroundColor: '#f3f4f6', fontSize: '0.8rem', fontWeight: 700, cursor: 'pointer' }}
+            >
+              Log in as Bob
+            </button>
+          </div>
         </div>
       </div>
     </div>

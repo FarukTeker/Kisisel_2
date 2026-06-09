@@ -1,0 +1,85 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String      @id @default(cuid())
+  name         String
+  email        String      @unique
+  passwordHash String
+  role         String      @default("reader")
+  newspapers   Newspaper[]
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+}
+
+model Newspaper {
+  id          String   @id @default(cuid())
+  slug        String   @unique
+  name        String
+  description String?
+  readingMode String   @default("F") // 'S' | 'H' | 'F'
+  curatorId   String
+  curator     User     @relation(fields: [curatorId], references: [id])
+  widgets     Widget[]
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Widget {
+  id             String    @id @default(cuid())
+  newspaperId    String
+  newspaper      Newspaper @relation(fields: [newspaperId], references: [id], onDelete: Cascade)
+  title          String
+  layoutType     String    // 'card1', 'card2', 'editorial', 'discovery', etc.
+  kind           String    // 'news', 'editorial', 'popular', 'random'
+  publisherId    String?   // optional, connects to Publisher.id or RSS Source ID
+  editorialBody  String?
+  categoryFilter String?
+  
+  // Layout properties for react-grid-layout
+  layoutX        Int       @default(0)
+  layoutY        Int       @default(0)
+  layoutW        Int       @default(1)
+  layoutH        Int       @default(1)
+  layoutMinW     Int       @default(1)
+  layoutMinH     Int       @default(1)
+
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+}
+
+model Publisher {
+  id              String    @id
+  name            String
+  url             String
+  category        String
+  language        String    @default("en")
+  articles        Article[]
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+}
+
+model Article {
+  id          String    @id
+  title       String
+  summary     String
+  aiSummary   String?
+  fullContent String
+  author      String
+  date        String    // Storing as ISO date string for simplicity
+  category    String
+  publisher   Publisher @relation(fields: [sourceId], references: [id], onDelete: Cascade)
+  sourceUrl   String
+  sourceId    String
+  imageUrl    String?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@index([sourceId, date(sort: Desc)])
+}

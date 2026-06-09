@@ -7,10 +7,9 @@ import Navbar from '@/components/Navbar';
 import MobileTabBar from '@/components/MobileTabBar';
 import Widget from '@/components/Widget';
 import Modal from '@/components/Modal';
-import { mockArticles, mockPublishers, type NewsArticle } from '@/lib/mockData';
-import { DEFAULT_LAYOUT, DEFAULT_WIDGETS, getSharedNewspaperBySlug, SHARED_NEWSPAPERS, type FeedWidget, type WidgetKind, type WidgetLayoutType } from '@/lib/prototypeNewspapers';
-import { getCurrentPrototypeUser, initializePrototypeState, isFollowingSlug } from '@/lib/prototypeState';
-import { loadPrototypeDashboardState, savePrototypeDashboardState } from '@/lib/prototypeDashboardState';
+import { DEFAULT_LAYOUT, DEFAULT_WIDGETS, type FeedWidget, type WidgetKind, type WidgetLayoutType } from '@/lib/prototypeNewspapers';
+import { getCurrentUser } from '@/lib/prototypeState';
+import { loadDashboardState, saveDashboardState, shareDashboard } from '@/lib/prototypeDashboardState';
 import { useLiveSources } from '@/hooks/useLiveSources';
 import { fetchArticlesBySource, type LiveArticle } from '@/lib/articlesApi';
 
@@ -30,17 +29,8 @@ const DISCOVERY_WIDGET_OPTIONS = [
   { id: 'random', label: 'Random', description: 'Unexpected stories sampled outside your preferences.' },
 ] as const;
 
-const getPublisherArticles = (publisherId: string, liveCache: Record<string, LiveArticle[]>): NewsArticle[] => {
-  // Check live RSS cache first
-  if (liveCache[publisherId] && liveCache[publisherId].length > 0) {
-    return liveCache[publisherId] as unknown as NewsArticle[];
-  }
-  const publisher = mockPublishers.find((item) => item.id === publisherId);
-  if (!publisher) return mockArticles;
-  const articles = publisher.articleIds
-    .map((articleId) => mockArticles.find((article) => article.id === articleId))
-    .filter((article): article is NewsArticle => Boolean(article));
-  return articles.length > 0 ? articles : mockArticles;
+const getPublisherArticles = (publisherId: string, liveCache: Record<string, LiveArticle[]>): LiveArticle[] => {
+  return liveCache[publisherId] || [];
 };
 
 const getInitialLayoutForWidget = (id: string, layoutType: WidgetLayoutType, existingLayout: Layout): LayoutItem => {
@@ -78,7 +68,7 @@ export default function Home() {
   const [selectedCategory, setSelectedCategory] = useState<string>('Technology');
   const [widgets, setWidgets] = useState<FeedWidget[]>(DEFAULT_WIDGETS);
   const [layout, setLayout] = useState<Layout>(DEFAULT_LAYOUT);
-  const [newWidgetPublisherId, setNewWidgetPublisherId] = useState(mockPublishers[0]?.id || '');
+  const [newWidgetPublisherId, setNewWidgetPublisherId] = useState('');
   const [newWidgetTemplate, setNewWidgetTemplate] = useState<WidgetLayoutType>('card3');
   const [newDiscoveryKind, setNewDiscoveryKind] = useState<'popular' | 'random'>('popular');
   const [currentUserName, setCurrentUserName] = useState('');
@@ -91,13 +81,10 @@ export default function Home() {
   const [sourceAddError, setSourceAddError] = useState('');
   const { width, containerRef } = useContainerWidth({ initialWidth: 1280 });
   const selectedWidget = selectedWidgetId ? widgets.find((widget) => widget.id === selectedWidgetId) : null;
-  const selectedMockPublisher = mockPublishers.find((p) => p.id === newWidgetPublisherId);
   const selectedLiveSource = liveSources.find((s) => s.id === newWidgetPublisherId);
-  const selectedPublisher = selectedMockPublisher
-    ? { id: selectedMockPublisher.id, name: selectedMockPublisher.name, author: selectedMockPublisher.author, articleIds: selectedMockPublisher.articleIds, defaultCategory: selectedMockPublisher.defaultCategory }
-    : selectedLiveSource
+  const selectedPublisher = selectedLiveSource
       ? { id: selectedLiveSource.id, name: selectedLiveSource.name, author: selectedLiveSource.name, articleIds: [], defaultCategory: selectedLiveSource.category }
-      : mockPublishers[0];
+      : liveSources.length > 0 ? { id: liveSources[0].id, name: liveSources[0].name, author: liveSources[0].name, articleIds: [], defaultCategory: liveSources[0].category } : null;
   const shareUrl = 'http://localhost:3000/newspaper/share-19d2b8';
 
   const updateSelectedWidget = (updater: (widget: FeedWidget) => FeedWidget) => {
@@ -140,9 +127,9 @@ export default function Home() {
           }
         : {
             id,
-            title: selectedPublisher.name,
+            title: selectedPublisher?.name || 'Loading source...',
             layoutType: newWidgetTemplate,
-            publisherId: selectedPublisher.id,
+            publisherId: selectedPublisher?.id || '',
             kind: 'news',
           };
 
@@ -174,14 +161,23 @@ export default function Home() {
   }, [selectedWidgetId, selectedWidget?.kind, selectedWidget?.categoryFilter]);
 
   useEffect(() => {
-    initializePrototypeState();
-    if (localStorage.getItem('isLoggedIn') !== 'true') {
-      router.push('/login');
-    } else {
-      setLoading(false);
-      setCurrentUserName(getCurrentPrototypeUser()?.name || 'Prototype user');
+    if (!newWidgetPublisherId && liveSources.length > 0) {
+      setNewWidgetPublisherId(liveSources[0].id);
+    }
+  }, [liveSources, newWidgetPublisherId]);
 
-      const savedDashboard = loadPrototypeDashboardState();
+  useEffect(() => {
+    async function loadInitialData() {
+      const user = await getCurrentUser();
+      if (!user) {
+        router.push('/login');
+        return;
+      }
+      
+      setLoading(false);
+      setCurrentUserName(user.name);
+
+      const savedDashboard = await loadDashboardState();
       setWidgets(savedDashboard.widgets);
       setLayout(savedDashboard.layout);
       setReadingMode(savedDashboard.readingMode);
@@ -190,8 +186,7 @@ export default function Home() {
       // Pre-fetch live articles for all news widgets
       const liveSourceIds = savedDashboard.widgets
         .filter((w) => w.kind === 'news' && w.publisherId)
-        .map((w) => w.publisherId as string)
-        .filter((id) => !['tech-today','culinary-delights','science-digest','global-finance'].includes(id));
+        .map((w) => w.publisherId as string);
       const unique = [...new Set(liveSourceIds)];
       if (unique.length > 0) {
         Promise.all(unique.map((id) => fetchArticlesBySource(id, 10))).then((results) => {
@@ -201,6 +196,8 @@ export default function Home() {
         });
       }
     }
+    
+    loadInitialData();
 
     const handleResize = () => {
       setIsMobile(window.innerWidth < 1024);
@@ -211,34 +208,24 @@ export default function Home() {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [router]);
 
+  // Removed pendingForkSlug logic for now
   useEffect(() => {
-    if (!isHydrated) return;
-
-    const pendingForkSlug = localStorage.getItem('pendingForkSlug');
-    if (!pendingForkSlug) return;
-
-    const sharedNewspaper = getSharedNewspaperBySlug(pendingForkSlug);
-    if (!sharedNewspaper) return;
-
-    setWidgets(sharedNewspaper.widgets);
-    setLayout(sharedNewspaper.layout);
-    setReadingMode(sharedNewspaper.readingMode);
-    savePrototypeDashboardState({
-      widgets: sharedNewspaper.widgets,
-      layout: [...sharedNewspaper.layout],
-      readingMode: sharedNewspaper.readingMode,
-    });
-    localStorage.removeItem('pendingForkSlug');
+    // If we wanted to clone a dashboard, we'd do it here via API
   }, [isHydrated]);
 
   useEffect(() => {
     if (!isHydrated || loading) return;
 
-    savePrototypeDashboardState({
-      widgets,
-      layout: [...layout],
-      readingMode,
-    });
+    // Debounce the save to prevent spamming the backend
+    const timeout = setTimeout(() => {
+      saveDashboardState({
+        widgets,
+        layout: [...layout],
+        readingMode,
+      });
+    }, 500);
+
+    return () => clearTimeout(timeout);
   }, [widgets, layout, readingMode, isHydrated, loading]);
 
   // Select Card 1 by default when editMode is turned on
@@ -317,7 +304,7 @@ export default function Home() {
             <div key={widget.id} className="feed-rgl-item">
               <Widget
                  articles={(() => {
-                   const all = widget.publisherId ? getPublisherArticles(widget.publisherId, liveArticleCache) : mockArticles;
+                   const all = widget.publisherId ? getPublisherArticles(widget.publisherId, liveArticleCache) : [];
                    if (!widget.categoryFilter) return all;
                    const filtered = all.filter((a) => a.category === widget.categoryFilter);
                    return filtered.length > 0 ? filtered : all;
@@ -347,26 +334,26 @@ export default function Home() {
         </Responsive>
       </main>
 
-      {/* Share Modal */}
       <Modal isOpen={isShareOpen} onClose={() => setIsShareOpen(false)} title="Share newspaper">
         <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-          <p style={{ fontSize: '0.875rem', color: '#4b5563' }}>Copy the shareable link for this personalized newspaper:</p>
+          <p style={{ fontSize: '0.875rem', color: '#4b5563' }}>Generate a shareable link for this personalized newspaper:</p>
           <div style={{ display: 'flex', gap: '0.5rem', flexDirection: isMobile ? 'column' : 'row' }}>
-            <input 
-              type="text" 
-              readOnly 
-              value={shareUrl} 
-              style={{ flex: 1, padding: '0.6rem 0.85rem', border: '1.5px solid #111827', borderRadius: '4px', outline: 'none', fontSize: '0.9rem' }}
-            />
             <button 
               className="btn" 
-              onClick={() => {
-                navigator.clipboard.writeText(shareUrl);
-                alert("Link copied to clipboard!");
+              onClick={async () => {
+                const slug = await shareDashboard({ widgets, layout: [...layout], readingMode }, 'My Newspaper', 'A custom curated newspaper');
+                if (slug) {
+                  const url = `${window.location.origin}/newspaper/${slug}`;
+                  navigator.clipboard.writeText(url);
+                  alert(`Link generated and copied to clipboard! \n${url}`);
+                  setIsShareOpen(false);
+                } else {
+                  alert('Failed to share newspaper.');
+                }
               }}
-              style={{ padding: '0.6rem 1.25rem', backgroundColor: '#111827', color: '#ffffff', fontWeight: 'bold', border: 'none', borderRadius: '4px', cursor: 'pointer' }}
+              style={{ padding: '0.6rem 1.25rem', backgroundColor: '#111827', color: '#ffffff', fontWeight: 'bold', border: 'none', borderRadius: '4px', cursor: 'pointer', width: '100%' }}
             >
-              Copy
+              Generate Link & Copy
             </button>
           </div>
         </div>
@@ -628,13 +615,6 @@ export default function Home() {
                           }}
                           style={{ width: '100%', padding: '0.6rem 0.75rem', border: '1px solid #e5e7eb', borderRadius: '8px', outline: 'none', fontWeight: 700, fontSize: '0.85rem', backgroundColor: '#ffffff', color: '#111827', appearance: 'auto' }}
                         >
-                          <optgroup label="Mock sources">
-                            {mockPublishers.map((publisher) => (
-                              <option key={publisher.id} value={publisher.id}>
-                                {publisher.name} — {publisher.author}
-                              </option>
-                            ))}
-                          </optgroup>
                           {liveSources.length > 0 && (
                             <optgroup label="Live RSS sources">
                               {liveSources.map((source) => (
@@ -869,22 +849,9 @@ export default function Home() {
                     {currentUserName ? `${currentUserName} can reopen followed public newspapers from here.` : 'Followed public newspapers appear here.'}
                   </p>
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-                    {SHARED_NEWSPAPERS.filter((item) => isFollowingSlug(item.slug)).map((newspaper) => (
-                      <div key={newspaper.slug} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '0.75rem', padding: '0.7rem 0.8rem', border: '1.5px solid #111827', borderRadius: '12px', backgroundColor: '#fffdf8' }}>
-                        <div>
-                          <p style={{ margin: 0, fontWeight: 800, fontSize: '0.84rem', color: '#111827' }}>{newspaper.name}</p>
-                          <p style={{ margin: '0.2rem 0 0', fontSize: '0.75rem', color: '#6b7280' }}>by {newspaper.curator}</p>
-                        </div>
-                        <span style={{ padding: '0.35rem 0.6rem', borderRadius: '999px', border: '1px solid #111827', backgroundColor: '#efe7da', fontWeight: 800, fontSize: '0.72rem' }}>
-                          Following
-                        </span>
-                      </div>
-                    ))}
-                    {SHARED_NEWSPAPERS.every((item) => !isFollowingSlug(item.slug)) && (
-                      <div style={{ padding: '0.8rem', border: '1.5px dashed #111827', borderRadius: '12px', backgroundColor: '#f9fafb', fontSize: '0.8rem', color: '#6b7280' }}>
-                        No followed newspapers yet. Go to Discover and follow a curator to populate this list.
-                      </div>
-                    )}
+                    <div style={{ padding: '0.8rem', border: '1.5px dashed #111827', borderRadius: '12px', backgroundColor: '#f9fafb', fontSize: '0.8rem', color: '#6b7280' }}>
+                      No followed newspapers yet. Go to Discover and follow a curator to populate this list.
+                    </div>
                   </div>
                 </div>
               )}
@@ -1001,7 +968,7 @@ export default function Home() {
                     return;
                   }
                   setEditorialSaveError('');
-                  savePrototypeDashboardState({
+                  saveDashboardState({
                     widgets,
                     layout: [...layout],
                     readingMode,

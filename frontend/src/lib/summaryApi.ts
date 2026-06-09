@@ -5,6 +5,7 @@ interface SummaryPreviewRequest {
   content: string;
   publisher?: string;
   category?: string;
+  articleId?: string;
 }
 
 interface SummaryPreviewResponse {
@@ -25,6 +26,7 @@ export async function fetchSummaryPreview(
         content: article.content,
         publisher: article.publisher,
         category: article.category,
+        articleId: article.articleId,
       }),
     });
     if (!res.ok) return null;

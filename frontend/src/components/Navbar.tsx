@@ -2,7 +2,7 @@
 
 import React from 'react';
 import Link from 'next/link';
-import { logoutPrototypeUser } from '@/lib/prototypeState';
+import { logoutUser } from '@/lib/prototypeState';
 
 interface NavbarProps {
   readingMode: 'S' | 'H' | 'F';
@@ -161,8 +161,8 @@ export default function Navbar({ readingMode, setReadingMode, editMode, setEditM
 
         {/* User avatar/Logout */}
         <button 
-          onClick={() => {
-            logoutPrototypeUser();
+          onClick={async () => {
+            await logoutUser();
             window.location.href = '/login';
           }}
           title="Logout"

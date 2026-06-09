@@ -4,6 +4,7 @@ export interface LiveArticle {
   id: string;
   title: string;
   summary: string;
+  aiSummary?: string;
   fullContent: string;
   author: string;
   date: string;
