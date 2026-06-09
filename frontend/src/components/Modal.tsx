@@ -80,8 +80,8 @@ export default function Modal({ isOpen, onClose, title, children, maxWidth, vari
           ref={panelRef}
           className="card animate-fade-in"
           style={{
-            backgroundColor: '#ffffff',
-            color: '#111827',
+            backgroundColor: 'var(--surface)',
+            color: 'var(--foreground)',
             width: maxWidth || '500px',
             maxWidth: 'calc(100vw - 32px)',
             maxHeight: 'calc(100vh - 112px)',
@@ -92,8 +92,10 @@ export default function Modal({ isOpen, onClose, title, children, maxWidth, vari
             display: 'flex',
             flexDirection: 'column',
             pointerEvents: 'auto',
-            border: '2px solid #111827',
-            boxShadow: '6px 6px 0px #111827'
+            border: '2px solid var(--foreground)',
+            boxShadow: '6px 6px 0px var(--foreground)',
+            borderRadius: '14px',
+            overflow: 'hidden'
           }}
         >
           <div
@@ -112,8 +114,8 @@ export default function Modal({ isOpen, onClose, title, children, maxWidth, vari
               justifyContent: 'space-between',
               alignItems: 'center',
               padding: '1rem 1.25rem',
-              backgroundColor: '#f3f4f6',
-              borderBottom: '1.5px solid #111827',
+              backgroundColor: 'var(--surface-hover)',
+              borderBottom: '1.5px solid var(--foreground)',
               cursor: isDragging ? 'grabbing' : 'grab',
               userSelect: 'none'
             }}
@@ -140,7 +142,7 @@ export default function Modal({ isOpen, onClose, title, children, maxWidth, vari
                 justifyContent: 'center',
                 border: '1.5px solid transparent',
                 borderRadius: '4px',
-                color: '#111827',
+                color: 'var(--foreground)',
                 fontSize: '1.5rem',
                 fontWeight: 800,
                 lineHeight: 1,
@@ -170,14 +172,15 @@ export default function Modal({ isOpen, onClose, title, children, maxWidth, vari
       padding: isCompactViewport ? '0.75rem' : '1rem'
     }}>
       <div className="card animate-fade-in" style={{
-        backgroundColor: '#fffdf8',
+        backgroundColor: 'var(--surface)',
+        color: 'var(--foreground)',
         width: '100%',
         maxWidth: isCompactViewport ? '100%' : maxWidth || '500px',
         padding: isCompactViewport ? '1rem' : '2rem',
         position: 'relative',
         borderRadius: isCompactViewport ? '24px 24px 0 0' : '18px',
-        border: '2px solid #111827',
-        boxShadow: isCompactViewport ? '0 -10px 30px rgba(0,0,0,0.12)' : '8px 8px 0px #111827',
+        border: '2px solid var(--foreground)',
+        boxShadow: isCompactViewport ? '0 -10px 30px rgba(0,0,0,0.12)' : '8px 8px 0px var(--foreground)',
         maxHeight: isCompactViewport ? '88vh' : 'auto',
         overflow: 'auto'
       }}>

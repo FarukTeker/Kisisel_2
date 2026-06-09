@@ -79,6 +79,7 @@ newspapersRouter.post('/dashboard', async (req, res) => {
     for (const w of widgets) {
       const widget = await prisma.widget.create({
         data: {
+          id: w.id,
           newspaperId: newspaper.id,
           title: w.title || 'Untitled',
           layoutType: w.layoutType,

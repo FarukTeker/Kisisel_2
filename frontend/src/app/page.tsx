@@ -61,6 +61,9 @@ export default function Home() {
   const [isShareOpen, setIsShareOpen] = useState(false);
   const [isWidgetSettingsOpen, setIsWidgetSettingsOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
+  const [theme, setTheme] = useState('Light');
+  const [font, setFont] = useState('Sans-Serif (Modern Clean)');
+  const [toastMessage, setToastMessage] = useState<string | null>(null);
 
   // Edit Mode Specific States
   const [selectedWidgetId, setSelectedWidgetId] = useState<string | null>(null);
@@ -208,6 +211,24 @@ export default function Home() {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [router]);
 
+  useEffect(() => {
+    document.documentElement.setAttribute('data-theme', theme);
+  }, [theme]);
+
+  useEffect(() => {
+    if (font.includes('Serif (Playfair)')) {
+      document.body.style.setProperty('--app-font', 'var(--font-serif)');
+    } else if (font.includes('Serif (Lora)')) {
+      document.body.style.setProperty('--app-font', 'var(--font-lora)');
+    } else if (font.includes('Mono')) {
+      document.body.style.setProperty('--app-font', 'var(--font-mono)');
+    } else if (font.includes('Modern (Outfit)')) {
+      document.body.style.setProperty('--app-font', 'var(--font-outfit)');
+    } else {
+      document.body.style.setProperty('--app-font', 'var(--font-sans)');
+    }
+  }, [font]);
+
   // Removed pendingForkSlug logic for now
   useEffect(() => {
     // If we wanted to clone a dashboard, we'd do it here via API
@@ -247,6 +268,11 @@ export default function Home() {
 
   return (
     <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
+      {toastMessage && (
+        <div style={{ position: 'fixed', bottom: '2rem', left: '50%', transform: 'translateX(-50%)', backgroundColor: '#111827', color: '#ffffff', padding: '0.75rem 1.5rem', borderRadius: '999px', fontWeight: 800, fontSize: '0.85rem', zIndex: 9999, boxShadow: '0 10px 25px rgba(0,0,0,0.2)', animation: 'fadeIn 0.3s ease-out' }}>
+          {toastMessage}
+        </div>
+      )}
       <Navbar 
         readingMode={readingMode} 
         setReadingMode={setReadingMode} 
@@ -345,10 +371,12 @@ export default function Home() {
                 if (slug) {
                   const url = `${window.location.origin}/newspaper/${slug}`;
                   navigator.clipboard.writeText(url);
-                  alert(`Link generated and copied to clipboard! \n${url}`);
+                  setToastMessage(`Link copied! ${url}`);
+                  setTimeout(() => setToastMessage(null), 3000);
                   setIsShareOpen(false);
                 } else {
-                  alert('Failed to share newspaper.');
+                  setToastMessage('Failed to share newspaper.');
+                  setTimeout(() => setToastMessage(null), 3000);
                 }
               }}
               style={{ padding: '0.6rem 1.25rem', backgroundColor: '#111827', color: '#ffffff', fontWeight: 'bold', border: 'none', borderRadius: '4px', cursor: 'pointer', width: '100%' }}
@@ -367,14 +395,14 @@ export default function Home() {
         maxWidth="750px"
         variant="floating"
       >
-        <div style={{ display: 'flex', minHeight: '420px', border: '1px solid #e5e7eb', borderRadius: '12px', overflow: 'hidden', boxShadow: '0 4px 24px rgba(0,0,0,0.06)' }}>
+        <div style={{ display: 'flex', minHeight: '420px', border: '1px solid var(--border)', borderRadius: '12px', overflow: 'hidden', boxShadow: '0 4px 24px rgba(0,0,0,0.06)' }}>
           {/* Left panel: tabs */}
-          <div style={{ width: '148px', borderRight: '1px solid #e5e7eb', backgroundColor: '#f8f9fb', display: 'flex', flexDirection: 'column', flexShrink: 0 }}>
-            <div style={{ padding: '0.85rem 1rem', borderBottom: '1px solid #e5e7eb' }}>
-              <p style={{ fontSize: '0.62rem', fontWeight: 900, letterSpacing: '0.1em', textTransform: 'uppercase', color: '#9ca3af', margin: 0 }}>
+          <div style={{ width: '148px', borderRight: '1px solid var(--border)', backgroundColor: 'var(--surface-hover)', display: 'flex', flexDirection: 'column', flexShrink: 0 }}>
+            <div style={{ padding: '0.85rem 1rem', borderBottom: '1px solid var(--border)' }}>
+              <p style={{ fontSize: '0.62rem', fontWeight: 900, letterSpacing: '0.1em', textTransform: 'uppercase', color: 'var(--text-muted)', margin: 0 }}>
                 {selectedWidgetId ? 'Widget' : 'Page'}
               </p>
-              <p style={{ fontSize: '0.8rem', fontWeight: 800, color: '#111827', margin: '0.15rem 0 0' }}>
+              <p style={{ fontSize: '0.8rem', fontWeight: 800, color: 'var(--foreground)', margin: '0.15rem 0 0' }}>
                 {selectedWidgetId ? (selectedWidget?.title || 'Settings') : 'Settings'}
               </p>
             </div>
@@ -400,10 +428,10 @@ export default function Home() {
                     textAlign: 'left',
                     fontWeight: 700,
                     fontSize: '0.82rem',
-                    color: isActive ? '#2647d6' : '#6b7280',
-                    backgroundColor: isActive ? '#ffffff' : 'transparent',
-                    borderBottom: '1px solid #f3f4f6',
-                    borderLeft: isActive ? '3px solid #2647d6' : '3px solid transparent',
+                    color: isActive ? 'var(--primary)' : 'var(--text-muted)',
+                    backgroundColor: isActive ? 'var(--surface)' : 'transparent',
+                    borderBottom: '1px solid var(--border)',
+                    borderLeft: isActive ? '3px solid var(--primary)' : '3px solid transparent',
                     cursor: 'pointer',
                     outline: 'none',
                     display: 'flex',
@@ -420,7 +448,7 @@ export default function Home() {
           </div>
 
           {/* Right panel: content */}
-          <div style={{ flex: 1, display: 'flex', backgroundColor: '#ffffff' }}>
+          <div style={{ flex: 1, display: 'flex', backgroundColor: 'var(--surface)' }}>
             {/* Left part of right panel: Form Content */}
             <div style={{ flex: 1, padding: '1.25rem', display: 'flex', flexDirection: 'column', gap: '1rem', overflowY: 'auto' }}>
               
@@ -571,8 +599,8 @@ export default function Home() {
                   </p>
                   <button 
                     onClick={() => {
-                      alert('Shuffled content for ' + selectedWidgetId);
-                      setIsWidgetSettingsOpen(false);
+                      setToastMessage('Shuffled content for ' + (selectedWidget?.title || 'widget'));
+                      setTimeout(() => setToastMessage(null), 2000);
                     }}
                     style={{ 
                       padding: '0.6rem 1.5rem', 
@@ -758,31 +786,54 @@ export default function Home() {
                 <div>
                   <h4 style={{ fontWeight: '800', marginBottom: '0.75rem', fontSize: '0.95rem' }}>Appearance Theme</h4>
                   <div style={{ display: 'flex', gap: '0.5rem' }}>
-                    {['Light', 'Dark', 'Sepia'].map(theme => (
+                    {['Light', 'Dark', 'Sepia'].map(t => (
                       <button
-                        key={theme}
-                        onClick={() => alert(`Theme changed to ${theme}`)}
+                        key={t}
+                        onClick={() => setTheme(t)}
                         style={{
                           padding: '0.5rem 1rem',
                           fontSize: '0.8rem',
-                          border: '1.5px solid #111827',
+                          border: '1.5px solid var(--foreground)',
                           borderRadius: '4px',
-                          backgroundColor: theme === 'Light' ? '#111827' : '#ffffff',
-                          color: theme === 'Light' ? '#ffffff' : '#111827',
+                          backgroundColor: theme === t ? 'var(--foreground)' : 'var(--surface)',
+                          color: theme === t ? 'var(--surface)' : 'var(--foreground)',
                           fontWeight: '800',
                           cursor: 'pointer'
                         }}
                       >
-                        {theme}
+                        {t}
                       </button>
                     ))}
                   </div>
                   <h4 style={{ fontWeight: '800', margin: '1.25rem 0 0.75rem 0', fontSize: '0.95rem' }}>Typography</h4>
-                  <select style={{ padding: '0.5rem', border: '1.5px solid #111827', borderRadius: '4px', width: '100%', outline: 'none', fontWeight: 'bold' }}>
-                    <option>Serif (Classic Newspaper)</option>
-                    <option>Sans-Serif (Modern Clean)</option>
-                    <option>Mono (Tech/Code)</option>
-                  </select>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                    {[
+                      { name: 'Sans-Serif (Modern Clean)', value: 'Sans-Serif (Modern Clean)', fontVar: 'var(--font-sans)' },
+                      { name: 'Serif (Playfair)', value: 'Serif (Playfair)', fontVar: 'var(--font-serif)' },
+                      { name: 'Serif (Lora)', value: 'Serif (Lora)', fontVar: 'var(--font-lora)' },
+                      { name: 'Modern (Outfit)', value: 'Modern (Outfit)', fontVar: 'var(--font-outfit)' },
+                      { name: 'Mono (Tech/Code)', value: 'Mono (Tech/Code)', fontVar: 'var(--font-mono)' },
+                    ].map(f => (
+                      <button
+                        key={f.value}
+                        onClick={() => setFont(f.value)}
+                        style={{
+                          padding: '0.6rem 1rem',
+                          fontSize: '0.9rem',
+                          fontFamily: f.fontVar,
+                          border: '1.5px solid var(--foreground)',
+                          borderRadius: '4px',
+                          backgroundColor: font === f.value ? 'var(--foreground)' : 'var(--surface)',
+                          color: font === f.value ? 'var(--surface)' : 'var(--foreground)',
+                          fontWeight: '800',
+                          cursor: 'pointer',
+                          textAlign: 'left'
+                        }}
+                      >
+                        {f.name}
+                      </button>
+                    ))}
+                  </div>
                 </div>
               )}
 
@@ -823,7 +874,8 @@ export default function Home() {
                   <button
                     onClick={() => {
                       navigator.clipboard.writeText(shareUrl);
-                      alert("Link copied to clipboard!");
+                      setToastMessage("Link copied to clipboard!");
+                      setTimeout(() => setToastMessage(null), 3000);
                     }}
                     style={{
                       padding: '0.5rem 1rem',
@@ -974,7 +1026,8 @@ export default function Home() {
                     readingMode,
                   });
                   setIsWidgetSettingsOpen(false);
-                  alert('Settings saved successfully!');
+                  setToastMessage('Settings saved successfully!');
+                  setTimeout(() => setToastMessage(null), 3000);
                 }} style={{ padding: '0.45rem 1.1rem', border: 'none', borderRadius: '8px', backgroundColor: '#2647d6', color: '#ffffff', fontWeight: 700, cursor: 'pointer', fontSize: '0.85rem' }}>
                   Save
                 </button>
@@ -985,8 +1038,8 @@ export default function Home() {
             {/* Right part of right panel: Layout Preview */}
             <div style={{
               width: '220px',
-              borderLeft: '1px solid #e5e7eb',
-              backgroundColor: '#fafafa',
+              borderLeft: '1px solid var(--border)',
+              backgroundColor: 'var(--surface-hover)',
               padding: '1.25rem',
               display: 'flex',
               flexDirection: 'column',
@@ -1015,74 +1068,57 @@ export default function Home() {
                   )}
                 </div>
 
-                {/* 6-Widget Mini Grid — semantic colors */}
-                <div style={{ display: 'grid', gridTemplateColumns: '1.2fr 1fr 1fr', gridTemplateRows: 'repeat(4, 1fr)', gap: '0.35rem', width: '100%', height: '175px', backgroundColor: '#f0ede8', border: '1px solid #e5e7eb', borderRadius: '10px', padding: '0.4rem', boxSizing: 'border-box' }}>
-                  {[
-                    { id: 'slot0', name: 'W1', style: { gridColumn: '1', gridRow: '1 / 3' } },
-                    { id: 'slot1', name: 'W2', style: { gridColumn: '2 / 4', gridRow: '1' } },
-                    { id: 'slot2', name: 'W3', style: { gridColumn: '2', gridRow: '2' } },
-                    { id: 'slot3', name: 'W4', style: { gridColumn: '3', gridRow: '2' } },
-                    { id: 'slot4', name: 'W5', style: { gridColumn: '1', gridRow: '3 / 5' } },
-                    { id: 'slot5', name: 'W6', style: { gridColumn: '2 / 4', gridRow: '3 / 5' } },
-                  ].map((slot, index) => {
-                    const widget = widgets[index];
+                {/* Dynamic Layout Mini Grid */}
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gridAutoRows: '15px', gap: '0.2rem', width: '100%', maxHeight: '240px', backgroundColor: '#f0ede8', border: '1px solid #e5e7eb', borderRadius: '10px', padding: '0.4rem', boxSizing: 'border-box', overflowY: 'auto' }}>
+                  {layout.map((l, index) => {
+                    const widget = widgets.find(w => w.id === l.i);
+                    // Find the original index of the widget to display W1, W2 etc.
+                    const widgetIndex = widgets.findIndex(w => w.id === l.i);
                     const isSelected = Boolean(widget && selectedWidgetId === widget.id);
                     const slotBg = isSelected
                       ? '#2647d6'
                       : widget?.kind === 'editorial' ? '#dbeafe'
                       : widget?.kind === 'popular' || widget?.kind === 'random' ? '#ede9fe'
-                      : widget ? '#dcfce7'
-                      : '#f3f4f6';
-
+                      : '#dcfce7';
+                    
                     return (
                       <div
-                        key={slot.id}
+                        key={l.i}
                         onClick={() => { if (widget) setSelectedWidgetId(isSelected ? null : widget.id); }}
                         style={{
-                          ...slot.style,
+                          gridColumn: `${l.x + 1} / span ${l.w}`,
+                          gridRow: `${l.y + 1} / span ${l.h}`,
                           backgroundColor: slotBg,
                           border: isSelected ? '2px solid #2647d6' : '1px solid #d1ccc5',
                           borderRadius: '6px',
-                          cursor: widget ? 'pointer' : 'default',
+                          cursor: 'pointer',
                           display: 'flex',
                           alignItems: 'center',
                           justifyContent: 'center',
-                          fontSize: '0.58rem',
+                          fontSize: '0.55rem',
                           fontWeight: 800,
-                          color: isSelected ? '#ffffff' : widget ? '#374151' : '#d1d5db',
+                          color: isSelected ? '#ffffff' : '#374151',
                           transition: 'all 0.12s ease',
+                          overflow: 'hidden',
+                          textAlign: 'center',
+                          padding: '0.1rem',
+                          boxShadow: isSelected ? '0 4px 10px rgba(38,71,214,0.3)' : 'none'
                         }}
                         title={widget ? `Select ${widget.title}` : 'Empty slot'}
                       >
-                        {widget ? slot.name : '+'}
+                        {widget ? `W${widgetIndex + 1}` : '+'}
                       </div>
                     );
                   })}
                 </div>
-                {widgets.length > 6 && (
-                  <div style={{ marginTop: '0.65rem', display: 'flex', flexDirection: 'column', gap: '0.3rem', maxHeight: '88px', overflowY: 'auto' }}>
-                    {widgets.slice(6).map((widget, index) => {
-                      const isSelected = selectedWidgetId === widget.id;
-                      return (
-                        <button
-                          key={widget.id}
-                          onClick={() => setSelectedWidgetId(isSelected ? null : widget.id)}
-                          style={{ padding: '0.3rem 0.5rem', border: `1px solid ${isSelected ? '#2647d6' : '#e5e7eb'}`, borderRadius: '6px', backgroundColor: isSelected ? '#eff4ff' : '#ffffff', color: isSelected ? '#2647d6' : '#374151', fontSize: '0.68rem', fontWeight: 700, cursor: 'pointer', textAlign: 'left' }}
-                        >
-                          W{index + 7} — {widget.title}
-                        </button>
-                      );
-                    })}
-                  </div>
-                )}
               </div>
 
               {/* Bottom: reading mode hint */}
-              <div style={{ borderTop: '1px solid #f3f4f6', paddingTop: '0.85rem', marginTop: '0.85rem' }}>
-                <p style={{ fontSize: '0.65rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: '#9ca3af', marginBottom: '0.4rem' }}>Reading mode</p>
+              <div style={{ borderTop: '1px solid var(--border)', paddingTop: '0.85rem', marginTop: '0.85rem' }}>
+                <p style={{ fontSize: '0.65rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--text-muted)', marginBottom: '0.4rem' }}>Reading mode</p>
                 <div style={{ display: 'flex', gap: '0.3rem' }}>
                   {(['F', 'S', 'H'] as const).map((m) => (
-                    <span key={m} style={{ padding: '0.22rem 0.5rem', borderRadius: '6px', border: '1px solid #e5e7eb', fontSize: '0.68rem', fontWeight: 800, backgroundColor: readingMode === m ? '#111827' : '#ffffff', color: readingMode === m ? '#fff' : '#6b7280' }}>
+                    <span key={m} style={{ padding: '0.22rem 0.5rem', borderRadius: '6px', border: '1px solid var(--border)', fontSize: '0.68rem', fontWeight: 800, backgroundColor: readingMode === m ? 'var(--primary)' : 'var(--surface)', color: readingMode === m ? '#ffffff' : 'var(--text-muted)' }}>
                       {m === 'F' ? 'Full' : m === 'S' ? 'Scan' : 'Skim'}
                     </span>
                   ))}

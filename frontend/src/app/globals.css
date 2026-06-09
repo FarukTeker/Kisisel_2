@@ -11,18 +11,61 @@
   --text-soft: #8b8478;
   --paper-line: rgba(23, 23, 23, 0.08);
   
+  --bg-highlight: rgba(255,255,255,0.62);
+  --bg-grad-top: #fbf8f2;
+  --bg-grad-bottom: #e8dfd1;
+  
   --radius-sm: 8px;
   --radius-md: 16px;
   --radius-lg: 24px;
   
   --shadow-sm: 0 1px 2px rgb(0 0 0 / 0.04);
   --shadow-md: 0 16px 30px rgb(17 24 39 / 0.08);
-  --shadow-lg: 0 28px 60px rgb(17 24 39 / 0.12);
-
-  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --font-sans: var(--font-inter), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --font-serif: var(--font-playfair), 'Georgia', 'Times New Roman', serif;
+  --font-mono: var(--font-roboto-mono), 'Menlo', 'Monaco', 'Courier New', monospace;
+  --font-outfit: var(--font-outfit), sans-serif;
+  --font-lora: var(--font-lora), serif;
+  --app-font: var(--font-sans);
 }
 
-/* App is light-mode only — dark system preference intentionally ignored */
+[data-theme='Dark'] {
+  color-scheme: dark;
+  --background: #111827;
+  --foreground: #f9fafb;
+  --primary: #3b82f6;
+  --primary-hover: #60a5fa;
+  --surface: #1f2937;
+  --surface-hover: #374151;
+  --border: #4b5563;
+  --text-muted: #9ca3af;
+  --text-soft: #d1d5db;
+  --paper-line: rgba(255, 255, 255, 0.08);
+  
+  --bg-highlight: rgba(255,255,255,0.03);
+  --bg-grad-top: #1f2937;
+  --bg-grad-bottom: #030712;
+}
+
+[data-theme='Sepia'] {
+  color-scheme: light;
+  --background: #f4ecd8;
+  --foreground: #433422;
+  --primary: #c2410c;
+  --primary-hover: #9a3412;
+  --surface: #fdf6e3;
+  --surface-hover: #f5deb3;
+  --border: #dcb388;
+  --text-muted: #785a3c;
+  --text-soft: #a88661;
+  --paper-line: rgba(67, 52, 34, 0.08);
+
+  --bg-highlight: rgba(255,255,255,0.4);
+  --bg-grad-top: #fdf6e3;
+  --bg-grad-bottom: #e1cda1;
+}
+
+/* App is themed via data-theme attribute */
 
 * {
   box-sizing: border-box;
@@ -34,11 +77,11 @@ html,
 body {
   max-width: 100vw;
   overflow-x: hidden;
-  font-family: var(--font-sans);
+  font-family: var(--app-font);
   background:
-    linear-gradient(180deg, rgba(255,255,255,0.62), rgba(255,255,255,0) 22%),
+    linear-gradient(180deg, var(--bg-highlight), rgba(255,255,255,0) 22%),
     repeating-linear-gradient(0deg, transparent, transparent 31px, var(--paper-line) 32px),
-    radial-gradient(circle at top, #fbf8f2 0%, var(--background) 55%, #e8dfd1 100%);
+    radial-gradient(circle at top, var(--bg-grad-top) 0%, var(--background) 55%, var(--bg-grad-bottom) 100%);
   color: var(--foreground);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;

@@ -23,8 +23,8 @@ export default function Navbar({ readingMode, setReadingMode, editMode, setEditM
       flexDirection: isMobile ? 'column' : 'row',
       gap: isMobile ? '0.85rem' : 0,
       padding: isMobile ? '0.95rem 1rem' : '1rem 2rem 0.9rem',
-      background: 'rgba(255, 253, 250, 0.84)',
-      borderBottom: '1px solid rgba(23, 23, 23, 0.08)',
+      background: 'var(--surface)',
+      borderBottom: '1px solid var(--border)',
       position: 'sticky',
       top: 0,
       zIndex: 20,
@@ -36,12 +36,12 @@ export default function Navbar({ readingMode, setReadingMode, editMode, setEditM
         <div style={{ 
           fontSize: isMobile ? '0.72rem' : '0.78rem', 
           fontWeight: '800', 
-          color: '#5f5b54', 
+          color: 'var(--text-muted)', 
           textTransform: 'uppercase',
           letterSpacing: '0.08em',
-          border: '1px solid rgba(23,23,23,0.1)',
+          border: '1px solid var(--border)',
           padding: '0.35rem 0.7rem',
-          backgroundColor: 'rgba(255,255,255,0.78)',
+          backgroundColor: 'var(--surface-hover)',
           borderRadius: '999px',
           whiteSpace: 'nowrap'
         }}>
@@ -66,10 +66,10 @@ export default function Navbar({ readingMode, setReadingMode, editMode, setEditM
           fontSize: isMobile ? '1rem' : '1.24rem',
           letterSpacing: '-0.06em',
           textTransform: 'uppercase',
-          color: '#171717'
+          color: 'var(--foreground)'
         }}>
           <Link href="/feed" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.55rem' }}>
-            <span style={{ display: 'inline-flex', width: isMobile ? '0.55rem' : '0.7rem', height: isMobile ? '0.55rem' : '0.7rem', borderRadius: '999px', background: '#2647d6' }} />
+            <span style={{ display: 'inline-flex', width: isMobile ? '0.55rem' : '0.7rem', height: isMobile ? '0.55rem' : '0.7rem', borderRadius: '999px', background: 'var(--primary)' }} />
             Kisisel
           </Link>
         </div>
@@ -83,13 +83,13 @@ export default function Navbar({ readingMode, setReadingMode, editMode, setEditM
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            backgroundColor: '#ffffff',
-            border: '1px solid rgba(23,23,23,0.12)',
+            backgroundColor: 'var(--surface)',
+            border: '1px solid var(--border)',
             borderRadius: '999px',
             padding: isMobile ? '0.55rem 0.75rem' : '0.45rem 1rem',
             fontWeight: '800',
             fontSize: '0.82rem',
-            color: '#111827',
+            color: 'var(--foreground)',
             cursor: 'pointer',
             boxShadow: '0 8px 20px rgba(17,24,39,0.08)'
           }}
@@ -138,15 +138,15 @@ export default function Navbar({ readingMode, setReadingMode, editMode, setEditM
           <button 
             onClick={onPageSettings}
             style={{
-              background: '#ffffff',
-              border: '1px solid rgba(23,23,23,0.12)',
+              background: 'var(--surface)',
+              border: '1px solid var(--border)',
               cursor: 'pointer',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
               padding: '0.45rem',
               borderRadius: '999px',
-              color: '#111827',
+              color: 'var(--foreground)',
               transition: 'transform 0.2s ease',
               boxShadow: '0 8px 20px rgba(17,24,39,0.08)'
             }}
@@ -159,7 +159,7 @@ export default function Navbar({ readingMode, setReadingMode, editMode, setEditM
           </button>
         )}
 
-        {/* User avatar/Logout */}
+        {/* Logout */}
         <button 
           onClick={async () => {
             await logoutUser();
@@ -170,21 +170,46 @@ export default function Navbar({ readingMode, setReadingMode, editMode, setEditM
             width: isMobile ? '38px' : '32px', 
             height: isMobile ? '38px' : '32px', 
             borderRadius: '50%', 
-            backgroundColor: '#ffffff', 
-            border: '1px solid rgba(23,23,23,0.12)',
-            color: '#4b5563', 
+            backgroundColor: 'var(--surface)', 
+            border: '1px solid var(--border)',
+            color: '#ef4444', 
             display: 'flex', 
             alignItems: 'center', 
             justifyContent: 'center',
             cursor: 'pointer',
-            boxShadow: '0 8px 20px rgba(17,24,39,0.08)'
+            boxShadow: '0 8px 20px rgba(0,0,0,0.08)'
+          }}
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+            <polyline points="16 17 21 12 16 7" />
+            <line x1="21" y1="12" x2="9" y2="12" />
+          </svg>
+        </button>
+
+        {/* User avatar */}
+        <Link 
+          href="/profile"
+          title="Profile"
+          style={{ 
+            width: isMobile ? '38px' : '32px', 
+            height: isMobile ? '38px' : '32px', 
+            borderRadius: '50%', 
+            backgroundColor: 'var(--surface)', 
+            border: '1px solid var(--border)',
+            color: 'var(--foreground)', 
+            display: 'flex', 
+            alignItems: 'center', 
+            justifyContent: 'center',
+            cursor: 'pointer',
+            boxShadow: '0 8px 20px rgba(0,0,0,0.08)'
           }}
         >
           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
             <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" />
             <circle cx="12" cy="7" r="4" />
           </svg>
-        </button>
+        </Link>
       </div>
 
       </div>
@@ -192,10 +217,10 @@ export default function Navbar({ readingMode, setReadingMode, editMode, setEditM
       <div style={{ 
         display: 'flex', 
         width: '100%', 
-        backgroundColor: 'rgba(255,255,255,0.82)',
+        backgroundColor: 'var(--surface)',
         padding: '4px',
         borderRadius: '999px',
-        border: '1px solid rgba(23,23,23,0.09)',
+        border: '1px solid var(--border)',
         boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.55)'
       }}>
         {(['S', 'H', 'F'] as const).map((mode) => {

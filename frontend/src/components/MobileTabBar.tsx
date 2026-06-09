@@ -10,7 +10,7 @@ const tabs = [
   { id: 'feed', label: 'Feed', href: '/' },
   { id: 'discover', label: 'Discover', href: '/feed' },
   { id: 'notes', label: 'Notes', href: '#' },
-  { id: 'profile', label: 'Profile', href: '/login' },
+  { id: 'profile', label: 'Profile', href: '/profile' },
 ] as const;
 
 export default function MobileTabBar({ active }: MobileTabBarProps) {
