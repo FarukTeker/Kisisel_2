@@ -320,9 +320,20 @@ struct WidgetCardView: View {
     }
 
     private var emptyFeedState: some View {
-        VStack(spacing: 6) {
-            ProgressView().tint(Color.accent)
-            Text("Loading live articles…").font(.kisiselCaption).foregroundStyle(Color.textMuted)
+        let isLoading = widget.sourceId.map { store.isLoadingArticles(for: $0) } ?? false
+        return VStack(spacing: 6) {
+            if isLoading {
+                ProgressView().tint(Color.accent)
+                Text("Loading live articles…")
+                    .font(.kisiselCaption)
+                    .foregroundStyle(Color.textMuted)
+            } else {
+                Image(systemName: widget.sourceId == nil ? "exclamationmark.circle" : "newspaper")
+                    .foregroundStyle(Color.textSoft)
+                Text(widget.sourceId == nil ? "No source configured" : "No articles available yet")
+                    .font(.kisiselCaption)
+                    .foregroundStyle(Color.textMuted)
+            }
         }
         .frame(maxWidth: .infinity)
         .padding(.vertical, 18)

@@ -1,10 +1,7 @@
 import SwiftUI
 import UIKit
 
-// MARK: - Auth flow (UC-01 Register account, UC-02 Log in)
-//
-// Mirrors `frontend/src/app/login/page.tsx`: a single screen toggling between
-// login and register forms, backed by mock validation in `AppStore`.
+// MARK: - Auth flow (UC-01 Register, UC-01 Verify, UC-02 Log in)
 
 struct AuthFlowView: View {
     @EnvironmentObject private var store: AppStore
@@ -14,48 +11,114 @@ struct AuthFlowView: View {
     @State private var email = ""
     @State private var password = ""
     @State private var confirmPassword = ""
+    @State private var verificationCode = ""
 
     private enum Mode { case login, register }
 
     var body: some View {
         ScrollView {
             VStack(spacing: 26) {
-                header
-
-                modeSwitcher
-
-                VStack(spacing: 14) {
-                    if mode == .register {
-                        KTextField(label: "Full name", text: $name, icon: "person", contentType: .name)
-                    }
-                    KTextField(label: "Email", text: $email, icon: "envelope", keyboard: .emailAddress, contentType: .emailAddress)
-                    KTextField(label: "Password", text: $password, icon: "lock", isSecure: true, contentType: mode == .login ? .password : .newPassword)
-                    if mode == .register {
-                        KTextField(label: "Confirm password", text: $confirmPassword, icon: "lock.rotation", isSecure: true, contentType: .newPassword)
-                    }
+                if let pendingEmail = store.pendingVerificationEmail {
+                    verifyView(email: pendingEmail)
+                } else {
+                    loginOrRegisterView
                 }
-
-                if let error = store.authError {
-                    Text(error)
-                        .font(.kisiselLabel)
-                        .foregroundStyle(Color.danger)
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                        .padding(.horizontal, 4)
-                }
-
-                KBtn(title: mode == .login ? "Log in" : "Create account", kind: .primary, action: submit)
-
-                Button(mode == .login ? "Don't have an account? Register" : "Already have an account? Log in") {
-                    withAnimation { toggleMode() }
-                }
-                .font(.kisiselLabel)
-                .foregroundStyle(Color.accent)
             }
             .padding(24)
         }
         .background(Color.paper.ignoresSafeArea())
         .scrollDismissesKeyboard(.interactively)
+        .disabled(store.isLoading)
+        .overlay {
+            if store.isLoading {
+                ProgressView()
+                    .padding(20)
+                    .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 14))
+            }
+        }
     }
+
+    // MARK: Login / Register
+
+    private var loginOrRegisterView: some View {
+        VStack(spacing: 26) {
+            header
+
+            modeSwitcher
+
+            VStack(spacing: 14) {
+                if mode == .register {
+                    KTextField(label: "Full name", text: $name, icon: "person", contentType: .name)
+                }
+                KTextField(label: "Email", text: $email, icon: "envelope", keyboard: .emailAddress, contentType: .emailAddress)
+                KTextField(label: "Password", text: $password, icon: "lock", isSecure: true,
+                           contentType: mode == .login ? .password : .newPassword)
+                if mode == .register {
+                    KTextField(label: "Confirm password", text: $confirmPassword, icon: "lock.rotation",
+                               isSecure: true, contentType: .newPassword)
+                }
+            }
+
+            if let error = store.authError {
+                Text(error)
+                    .font(.kisiselLabel)
+                    .foregroundStyle(Color.danger)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding(.horizontal, 4)
+            }
+
+            KBtn(title: mode == .login ? "Log in" : "Create account", kind: .primary, action: submit)
+
+            Button(mode == .login ? "Don't have an account? Register" : "Already have an account? Log in") {
+                withAnimation { toggleMode() }
+            }
+            .font(.kisiselLabel)
+            .foregroundStyle(Color.accent)
+        }
+    }
+
+    // MARK: Verify email
+
+    private func verifyView(email: String) -> some View {
+        VStack(spacing: 26) {
+            VStack(spacing: 6) {
+                Text("Check your email")
+                    .font(.kisiselDisplay)
+                    .foregroundStyle(Color.ink)
+                Text("We sent a verification code to **\(email)**. Enter it below to activate your account.")
+                    .font(.kisiselBody)
+                    .foregroundStyle(Color.textMuted)
+                    .multilineTextAlignment(.center)
+            }
+            .frame(maxWidth: .infinity)
+            .padding(.top, 12)
+
+            KTextField(label: "Verification code", text: $verificationCode, icon: "key",
+                       keyboard: .numberPad, contentType: nil)
+
+            if let error = store.authError {
+                Text(error)
+                    .font(.kisiselLabel)
+                    .foregroundStyle(Color.danger)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding(.horizontal, 4)
+            }
+
+            KBtn(title: "Verify & continue", kind: .primary) {
+                store.verifyEmail(code: verificationCode)
+            }
+
+            Button("Use a different email") {
+                store.pendingVerificationEmail = nil
+                store.authError = nil
+                withAnimation { mode = .register }
+            }
+            .font(.kisiselLabel)
+            .foregroundStyle(Color.accent)
+        }
+    }
+
+    // MARK: Helpers
 
     private var header: some View {
         VStack(spacing: 6) {
@@ -75,8 +138,12 @@ struct AuthFlowView: View {
 
     private var modeSwitcher: some View {
         HStack(spacing: 0) {
-            modeTab("Log in", isSelected: mode == .login) { withAnimation { mode = .login; store.authError = nil } }
-            modeTab("Register", isSelected: mode == .register) { withAnimation { mode = .register; store.authError = nil } }
+            modeTab("Log in", isSelected: mode == .login) {
+                withAnimation { mode = .login; store.authError = nil }
+            }
+            modeTab("Register", isSelected: mode == .register) {
+                withAnimation { mode = .register; store.authError = nil }
+            }
         }
         .padding(4)
         .background(Color.surfaceHover)
@@ -115,14 +182,11 @@ struct AuthFlowView: View {
     }
 }
 
-// MARK: - Reusable text field (login/register/source-add forms)
+// MARK: - Reusable text field
 
 struct KTextField: View {
     enum FieldContentType {
-        case name
-        case emailAddress
-        case password
-        case newPassword
+        case name, emailAddress, password, newPassword
     }
 
     let label: String
@@ -170,16 +234,11 @@ struct KTextField: View {
 
     private var swiftUIContentType: UITextContentType? {
         switch contentType {
-        case .name:
-            return .name
-        case .emailAddress:
-            return .emailAddress
-        case .password:
-            return .password
-        case .newPassword:
-            return .newPassword
-        case nil:
-            return nil
+        case .name:         return .name
+        case .emailAddress: return .emailAddress
+        case .password:     return .password
+        case .newPassword:  return .newPassword
+        case nil:           return nil
         }
     }
 }
