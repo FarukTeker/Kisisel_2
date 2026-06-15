@@ -67,7 +67,7 @@ export default function Widget({
     ? '3px solid #4f46e5'
     : editMode
       ? '2.2px dashed #4f46e5'
-      : '1.5px solid #111827';
+      : '1.5px solid var(--foreground)';
 
   const startIndex = parseInt(layoutType.replace('card', '')) - 1;
 
@@ -181,7 +181,7 @@ export default function Widget({
   };
 
   const renderTitle = (t: string, fontSize = '1.1rem') => (
-    <h3 style={{ fontSize, fontWeight: 800, color: '#0f172a', lineHeight: 1.3, letterSpacing: '-0.02em', margin: 0 }}>
+    <h3 style={{ fontSize, fontWeight: 800, color: 'var(--foreground)', lineHeight: 1.3, letterSpacing: '-0.02em', margin: 0 }}>
       {t}
     </h3>
   );
@@ -223,7 +223,7 @@ export default function Widget({
     <button
       type="button"
       onClick={() => openSource(article)}
-      style={{ display: 'inline-flex', alignItems: 'center', gap: '0.25rem', padding: size === 'sm' ? '0.28rem 0.65rem' : '0.38rem 0.8rem', border: '1px solid #d1d5db', borderRadius: '999px', backgroundColor: '#ffffff', fontSize: size === 'sm' ? '0.68rem' : '0.75rem', fontWeight: 700, color: '#374151', cursor: 'pointer', whiteSpace: 'nowrap', flexShrink: 0 }}
+      style={{ display: 'inline-flex', alignItems: 'center', gap: '0.25rem', padding: size === 'sm' ? '0.28rem 0.65rem' : '0.38rem 0.8rem', border: '1px solid var(--border)', borderRadius: '999px', backgroundColor: 'var(--surface)', fontSize: size === 'sm' ? '0.68rem' : '0.75rem', fontWeight: 700, color: 'var(--foreground)', cursor: 'pointer', whiteSpace: 'nowrap', flexShrink: 0 }}
     >
       Source
       <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
@@ -233,11 +233,11 @@ export default function Widget({
   const renderMetadata = (article: LiveArticle) => (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '0.35rem', margin: '0.3rem 0 0.1rem' }}>
       <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', flexWrap: 'wrap' }}>
-        <span style={{ fontSize: '0.7rem', fontWeight: 700, color: '#374151' }}>{article.publisher}</span>
-        <span style={{ color: '#d1d5db', fontSize: '0.65rem' }}>·</span>
-        <span style={{ fontSize: '0.68rem', color: '#6b7280' }}>{article.author}</span>
-        <span style={{ color: '#d1d5db', fontSize: '0.65rem' }}>·</span>
-        <span style={{ fontSize: '0.68rem', color: '#9ca3af' }}>{article.date}</span>
+        <span style={{ fontSize: '0.7rem', fontWeight: 700, color: 'var(--text-soft)' }}>{article.publisher}</span>
+        <span style={{ color: 'var(--border)', fontSize: '0.65rem' }}>·</span>
+        <span style={{ fontSize: '0.68rem', color: 'var(--text-muted)' }}>{article.author}</span>
+        <span style={{ color: 'var(--border)', fontSize: '0.65rem' }}>·</span>
+        <span style={{ fontSize: '0.68rem', color: 'var(--text-muted)' }}>{article.date}</span>
         {renderCategoryPill(article.category)}
       </div>
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '0.5rem', flexWrap: 'wrap' }}>
@@ -266,9 +266,9 @@ export default function Widget({
             <span style={{ padding: '0.35rem 0.55rem', borderRadius: '999px', border: '1.5px solid #111827', backgroundColor: badgeBg, color: '#111827', fontSize: '0.68rem', fontWeight: 800 }}>{badgeLabel}</span>
           </div>
           {[0, 1].map((i) => (
-            <div key={i} style={{ padding: '0.9rem', border: '1.5px solid #e5e7eb', borderRadius: '14px', backgroundColor: '#f9fafb', animation: 'pulse 1.5s ease-in-out infinite' }}>
-              <div style={{ height: '0.85rem', backgroundColor: '#e5e7eb', borderRadius: '4px', marginBottom: '0.5rem', width: '80%' }} />
-              <div style={{ height: '0.65rem', backgroundColor: '#f3f4f6', borderRadius: '4px', width: '50%' }} />
+            <div key={i} style={{ padding: '0.9rem', border: '1.5px solid var(--border)', borderRadius: '14px', backgroundColor: 'var(--surface-hover)', animation: 'pulse 1.5s ease-in-out infinite' }}>
+              <div style={{ height: '0.85rem', backgroundColor: 'var(--border)', borderRadius: '4px', marginBottom: '0.5rem', width: '80%' }} />
+              <div style={{ height: '0.65rem', backgroundColor: 'var(--background)', borderRadius: '4px', width: '50%' }} />
             </div>
           ))}
         </div>
@@ -285,21 +285,21 @@ export default function Widget({
             <p style={{ fontSize: '0.72rem', fontWeight: 900, letterSpacing: '0.08em', textTransform: 'uppercase', color: accentColor, marginBottom: '0.35rem' }}>{subLabel}</p>
             {renderTitle(title || (isPop ? 'Popular Picks' : 'Random Discovery'), compact ? '1rem' : '1.15rem')}
           </div>
-          <span style={{ padding: '0.35rem 0.55rem', borderRadius: '999px', border: '1.5px solid #111827', backgroundColor: badgeBg, color: '#111827', fontSize: '0.68rem', fontWeight: 800, whiteSpace: 'nowrap' }}>{badgeLabel}</span>
+          <span style={{ padding: '0.35rem 0.55rem', borderRadius: '999px', border: '1.5px solid var(--foreground)', backgroundColor: badgeBg, color: '#111827', fontSize: '0.68rem', fontWeight: 800, whiteSpace: 'nowrap' }}>{badgeLabel}</span>
         </div>
 
         <div style={{ display: 'flex', flexDirection: 'column', gap: '0.65rem', overflowY: 'auto', paddingRight: '4px', flex: 1, minHeight: 0 }}>
           {shown.map((article, index) => (
-          <div key={`${article.id}-${index}`} style={{ padding: compact ? '0.75rem' : '0.9rem', border: '1.5px solid #111827', borderRadius: '14px', backgroundColor: '#ffffff', display: 'flex', flexDirection: 'column', gap: '0.45rem' }}>
+          <div key={`${article.id}-${index}`} style={{ padding: compact ? '0.75rem' : '0.9rem', border: '1.5px solid var(--foreground)', borderRadius: '14px', backgroundColor: 'var(--surface-hover)', display: 'flex', flexDirection: 'column', gap: '0.45rem' }}>
             <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: '0.5rem' }}>
-              <h4 style={{ fontSize: compact ? '0.88rem' : '0.96rem', fontWeight: 900, lineHeight: 1.25, margin: 0, flex: 1, color: '#0f172a' }}>{article.title}</h4>
+              <h4 style={{ fontSize: compact ? '0.88rem' : '0.96rem', fontWeight: 900, lineHeight: 1.25, margin: 0, flex: 1, color: 'var(--foreground)' }}>{article.title}</h4>
               {renderCategoryPill(article.category)}
             </div>
-            <p style={{ fontSize: '0.7rem', color: '#6b7280', margin: 0, fontWeight: 600 }}>
+            <p style={{ fontSize: '0.7rem', color: 'var(--text-muted)', margin: 0, fontWeight: 600 }}>
               {isPop ? '↑ Cross-source momentum' : '⟳ Unexpected angle'} · {article.publisher} · {article.date}
             </p>
             {readingMode !== 'H' && (
-              <p style={{ fontSize: compact ? '0.78rem' : '0.82rem', lineHeight: 1.45, color: '#374151', margin: 0 }}>
+              <p style={{ fontSize: compact ? '0.78rem' : '0.82rem', lineHeight: 1.45, color: 'var(--foreground)', margin: 0 }}>
                 {getSummary(article)}
               </p>
             )}
@@ -308,7 +308,7 @@ export default function Widget({
               <button
                 type="button"
                 onClick={() => openSource(article)}
-                style={{ padding: '0.3rem 0.6rem', border: '1.5px solid #111827', borderRadius: '999px', backgroundColor: '#fffdf8', color: '#111827', fontSize: '0.7rem', fontWeight: 800, cursor: 'pointer' }}
+                style={{ padding: '0.3rem 0.6rem', border: '1.5px solid var(--foreground)', borderRadius: '999px', backgroundColor: 'var(--surface)', color: 'var(--foreground)', fontSize: '0.7rem', fontWeight: 800, cursor: 'pointer' }}
               >
                 Open source
               </button>
@@ -318,7 +318,7 @@ export default function Widget({
         </div>
 
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '0.75rem', marginTop: 'auto', flexShrink: 0 }}>
-          <span style={{ fontSize: '0.72rem', color: '#9ca3af', fontWeight: 600 }}>
+          <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)', fontWeight: 600 }}>
             {isPop ? `${items.length} stories scored from live feeds` : 'Sampled from all sources'}
           </span>
           <span style={{ fontSize: '0.72rem', color: accentColor, fontWeight: 800, cursor: 'pointer' }}>Live</span>
@@ -336,9 +336,9 @@ export default function Widget({
               <p style={{ fontSize: '0.72rem', fontWeight: 900, letterSpacing: '0.08em', textTransform: 'uppercase', color: '#315efb', marginBottom: '0.35rem' }}>Curator note</p>
               {renderTitle(title || 'Editorial Note', compact ? '1.05rem' : '1.2rem')}
             </div>
-            <span style={{ padding: '0.35rem 0.55rem', borderRadius: '999px', border: '1.5px solid #111827', backgroundColor: '#eef3ff', color: '#111827', fontSize: '0.68rem', fontWeight: 800, whiteSpace: 'nowrap' }}>Public</span>
+            <span style={{ padding: '0.35rem 0.55rem', borderRadius: '999px', border: '1.5px solid var(--foreground)', backgroundColor: '#eef3ff', color: '#111827', fontSize: '0.68rem', fontWeight: 800, whiteSpace: 'nowrap' }}>Public</span>
           </div>
-          <div style={{ borderTop: '1.5px dashed #111827', opacity: 0.28 }} />
+          <div style={{ borderTop: '1.5px dashed var(--foreground)', opacity: 0.28 }} />
           {editMode && onEditorialBodyChange ? (
             <textarea
               value={editorialBody || ''}
@@ -348,28 +348,28 @@ export default function Widget({
               style={{
                 fontSize: compact ? '0.82rem' : '0.9rem',
                 lineHeight: 1.6,
-                color: '#111827',
+                color: 'var(--foreground)',
                 margin: 0,
                 flex: 1,
                 width: '100%',
                 minHeight: '90px',
                 resize: 'vertical',
-                border: '1.5px dashed #111827',
+                border: '1.5px dashed var(--foreground)',
                 borderRadius: '6px',
                 padding: '0.6rem',
                 outline: 'none',
                 fontFamily: 'inherit',
-                backgroundColor: '#fffdf8',
+                backgroundColor: 'var(--surface-hover)',
               }}
             />
           ) : (
-            <p style={{ fontSize: compact ? '0.82rem' : '0.9rem', lineHeight: 1.6, color: '#111827', margin: 0, flex: 1 }}>
+            <p style={{ fontSize: compact ? '0.82rem' : '0.9rem', lineHeight: 1.6, color: 'var(--foreground)', margin: 0, flex: 1 }}>
               {editorialBody || 'Add your editorial note to frame why this story matters, what readers should question, or how related stories connect.'}
             </p>
           )}
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '0.75rem' }}>
-            <span style={{ fontSize: '0.74rem', color: '#6b7280', fontWeight: 700 }}>Visible in shared newspapers</span>
-            <span style={{ fontSize: '0.74rem', color: '#111827', fontWeight: 800 }}>Author's note</span>
+            <span style={{ fontSize: '0.74rem', color: 'var(--text-muted)', fontWeight: 700 }}>Visible in shared newspapers</span>
+            <span style={{ fontSize: '0.74rem', color: 'var(--foreground)', fontWeight: 800 }}>Author's note</span>
           </div>
         </div>
       );
@@ -384,13 +384,13 @@ export default function Widget({
       return (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', height: '100%', minHeight: 0, overflowY: 'auto', paddingRight: '4px' }}>
           {displayArticles.map((art, idx) => (
-            <div key={`${art.id}-${idx}`} style={{ backgroundColor: '#ffffff', border: '1px solid #e5e7eb', borderRadius: '8px', padding: '0.65rem 0.85rem', display: 'flex', alignItems: 'center', gap: '0.75rem', boxShadow: '0 1px 3px rgba(0,0,0,0.04)' }}>
+            <div key={`${art.id}-${idx}`} style={{ backgroundColor: 'var(--surface-hover)', border: '1px solid var(--border)', borderRadius: '8px', padding: '0.65rem 0.85rem', display: 'flex', alignItems: 'center', gap: '0.75rem', boxShadow: '0 1px 3px rgba(0,0,0,0.04)' }}>
               <div style={{ flex: 1, minWidth: 0 }}>
-                <h4 style={{ fontSize: '0.88rem', fontWeight: 800, color: '#0f172a', margin: 0, lineHeight: 1.3, overflow: 'hidden', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical' }}>
+                <h4 style={{ fontSize: '0.88rem', fontWeight: 800, color: 'var(--foreground)', margin: 0, lineHeight: 1.3, overflow: 'hidden', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical' }}>
                   {art.title}
                 </h4>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', marginTop: '0.2rem', flexWrap: 'wrap' }}>
-                  <span style={{ fontSize: '0.65rem', color: '#9ca3af' }}>{art.date}</span>
+                  <span style={{ fontSize: '0.65rem', color: 'var(--text-muted)' }}>{art.date}</span>
                   {renderCategoryPill(art.category)}
                 </div>
               </div>
@@ -406,15 +406,15 @@ export default function Widget({
       return (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '0.65rem', height: '100%', minHeight: 0, overflowY: 'auto', paddingRight: '4px' }}>
           {displayArticles.map((art, idx) => (
-            <div key={`${art.id}-${idx}`} style={{ backgroundColor: '#ffffff', border: '1px solid #e5e7eb', borderRadius: '10px', padding: '0.9rem 1rem', display: 'flex', flexDirection: 'column', gap: '0.45rem', boxShadow: '0 1px 3px rgba(0,0,0,0.04)' }}>
+            <div key={`${art.id}-${idx}`} style={{ backgroundColor: 'var(--surface-hover)', border: '1px solid var(--border)', borderRadius: '10px', padding: '0.9rem 1rem', display: 'flex', flexDirection: 'column', gap: '0.45rem', boxShadow: '0 1px 3px rgba(0,0,0,0.04)' }}>
               <div style={{ display: 'flex', alignItems: 'flex-start', gap: '0.5rem', justifyContent: 'space-between' }}>
-                <h4 style={{ fontSize: '0.95rem', fontWeight: 800, color: '#0f172a', margin: 0, lineHeight: 1.3, flex: 1 }}>{art.title}</h4>
+                <h4 style={{ fontSize: '0.95rem', fontWeight: 800, color: 'var(--foreground)', margin: 0, lineHeight: 1.3, flex: 1 }}>{art.title}</h4>
                 {renderCategoryPill(art.category)}
               </div>
-              <p style={{ fontSize: '0.65rem', color: '#9ca3af', margin: 0, fontWeight: 600 }}>
+              <p style={{ fontSize: '0.65rem', color: 'var(--text-muted)', margin: 0, fontWeight: 600 }}>
                 {art.publisher} · {art.author} · {art.date}
               </p>
-              <p style={{ fontSize: '0.83rem', lineHeight: 1.55, color: '#374151', margin: 0 }}>
+              <p style={{ fontSize: '0.83rem', lineHeight: 1.55, color: 'var(--foreground)', margin: 0 }}>
                 {getSummary(art)}
               </p>
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '0.5rem', flexWrap: 'wrap' }}>
@@ -438,7 +438,7 @@ export default function Widget({
           <div style={{ display: 'flex', flexDirection: 'column', height: '100%', minHeight: 0, gap: '1rem' }}>
             <div style={{ display: 'flex', gap: '1rem', alignItems: 'flex-start' }}>
               {article.imageUrl && (
-                <div style={{ width: '100px', height: '100px', flexShrink: 0, position: 'relative', border: '1px solid #e5e7eb', borderRadius: '8px', overflow: 'hidden' }}>
+                <div style={{ width: '100px', height: '100px', flexShrink: 0, position: 'relative', border: '1px solid var(--border)', borderRadius: '8px', overflow: 'hidden' }}>
                   <Image src={article.imageUrl} alt={article.title} fill style={{ objectFit: 'cover' }} unoptimized draggable={false} />
                 </div>
               )}
@@ -447,11 +447,11 @@ export default function Widget({
                 {renderMetadata(article)}
               </div>
             </div>
-            <p style={{ fontSize: '0.9rem', lineHeight: '1.5', color: '#111827', flex: 1, textAlign: 'justify' }}>
+            <p style={{ fontSize: '0.9rem', lineHeight: '1.5', color: 'var(--foreground)', flex: 1, textAlign: 'justify' }}>
               {getSummary(article)}
             </p>
             <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-              <button type="button" onClick={() => openSource(article)} style={{ padding: '0.45rem 0.75rem', border: '1.5px solid #111827', borderRadius: '999px', backgroundColor: '#fffdf8', color: '#111827', fontSize: '0.74rem', fontWeight: 800, cursor: 'pointer' }}>
+              <button type="button" onClick={() => openSource(article)} style={{ padding: '0.45rem 0.75rem', border: '1.5px solid var(--foreground)', borderRadius: '999px', backgroundColor: 'var(--surface)', color: 'var(--foreground)', fontSize: '0.74rem', fontWeight: 800, cursor: 'pointer' }}>
                 Read original source
               </button>
             </div>
@@ -461,18 +461,18 @@ export default function Widget({
         {layoutType === 'card2' && (
           <div style={{ display: 'flex', gap: '1.25rem', alignItems: 'center', height: '100%' }}>
             {article.imageUrl && (
-              <div style={{ width: '130px', height: '100px', flexShrink: 0, position: 'relative', border: '1px solid #e5e7eb', borderRadius: '8px', overflow: 'hidden' }}>
+              <div style={{ width: '130px', height: '100px', flexShrink: 0, position: 'relative', border: '1px solid var(--border)', borderRadius: '8px', overflow: 'hidden' }}>
                 <Image src={article.imageUrl} alt={article.title} fill style={{ objectFit: 'cover' }} unoptimized draggable={false} />
               </div>
             )}
             <div style={{ flex: 1 }}>
               {renderTitle(article.title, '1.35rem')}
               {renderMetadata(article)}
-              <p style={{ fontSize: '0.875rem', color: '#4b5563', marginTop: '0.25rem', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
+              <p style={{ fontSize: '0.875rem', color: 'var(--foreground)', marginTop: '0.25rem', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
                 {getSummary(article)}
               </p>
               <div style={{ marginTop: '0.55rem', display: 'flex', justifyContent: 'flex-end' }}>
-                <button type="button" onClick={() => openSource(article)} style={{ padding: '0.4rem 0.7rem', border: '1.5px solid #111827', borderRadius: '999px', backgroundColor: '#fffdf8', color: '#111827', fontSize: '0.72rem', fontWeight: 800, cursor: 'pointer' }}>
+                <button type="button" onClick={() => openSource(article)} style={{ padding: '0.4rem 0.7rem', border: '1.5px solid var(--foreground)', borderRadius: '999px', backgroundColor: 'var(--surface)', color: 'var(--foreground)', fontSize: '0.72rem', fontWeight: 800, cursor: 'pointer' }}>
                   Open source
                 </button>
               </div>
@@ -484,7 +484,7 @@ export default function Widget({
           <div style={{ display: 'flex', flexDirection: 'column', height: '100%', minHeight: 0, gap: '0.75rem' }}>
             <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'flex-start' }}>
               {article.imageUrl && (
-                <div style={{ width: '80px', height: '80px', flexShrink: 0, position: 'relative', border: '1px solid #e5e7eb', borderRadius: '8px', overflow: 'hidden' }}>
+                <div style={{ width: '80px', height: '80px', flexShrink: 0, position: 'relative', border: '1px solid var(--border)', borderRadius: '8px', overflow: 'hidden' }}>
                   <Image src={article.imageUrl} alt={article.title} fill style={{ objectFit: 'cover' }} unoptimized draggable={false} />
                 </div>
               )}
@@ -493,11 +493,11 @@ export default function Widget({
                 {renderMetadata(article)}
               </div>
             </div>
-            <p style={{ fontSize: '0.85rem', lineHeight: '1.45', color: '#111827', flex: 1, textAlign: 'justify' }}>
+            <p style={{ fontSize: '0.85rem', lineHeight: '1.45', color: 'var(--foreground)', flex: 1, textAlign: 'justify' }}>
               {getSummary(article).substring(0, 220)}…
             </p>
             <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-              <button type="button" onClick={() => openSource(article)} style={{ padding: '0.4rem 0.7rem', border: '1.5px solid #111827', borderRadius: '999px', backgroundColor: '#fffdf8', color: '#111827', fontSize: '0.72rem', fontWeight: 800, cursor: 'pointer' }}>
+              <button type="button" onClick={() => openSource(article)} style={{ padding: '0.4rem 0.7rem', border: '1.5px solid var(--foreground)', borderRadius: '999px', backgroundColor: 'var(--surface)', color: 'var(--foreground)', fontSize: '0.72rem', fontWeight: 800, cursor: 'pointer' }}>
                 Open source
               </button>
             </div>
@@ -508,11 +508,11 @@ export default function Widget({
           <div style={{ display: 'flex', flexDirection: 'column', height: '100%', minHeight: 0, gap: '0.5rem' }}>
             {renderTitle(article.title, '1.15rem')}
             {renderMetadata(article)}
-            <p style={{ fontSize: '0.85rem', lineHeight: '1.5', color: '#111827', flex: 1, textAlign: 'justify' }}>
+            <p style={{ fontSize: '0.85rem', lineHeight: '1.5', color: 'var(--foreground)', flex: 1, textAlign: 'justify' }}>
               {getSummary(article)}
             </p>
             <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-              <button type="button" onClick={() => openSource(article)} style={{ padding: '0.4rem 0.7rem', border: '1.5px solid #111827', borderRadius: '999px', backgroundColor: '#fffdf8', color: '#111827', fontSize: '0.72rem', fontWeight: 800, cursor: 'pointer' }}>
+              <button type="button" onClick={() => openSource(article)} style={{ padding: '0.4rem 0.7rem', border: '1.5px solid var(--foreground)', borderRadius: '999px', backgroundColor: 'var(--surface)', color: 'var(--foreground)', fontSize: '0.72rem', fontWeight: 800, cursor: 'pointer' }}>
                 Open source
               </button>
             </div>
@@ -526,15 +526,15 @@ export default function Widget({
               {renderMetadata(article)}
             </div>
             {article.imageUrl && (
-              <div style={{ width: '100%', height: '180px', position: 'relative', border: '1px solid #e5e7eb', borderRadius: '8px', overflow: 'hidden', flexShrink: 0 }}>
+              <div style={{ width: '100%', height: '180px', position: 'relative', border: '1px solid var(--border)', borderRadius: '8px', overflow: 'hidden', flexShrink: 0 }}>
                 <Image src={article.imageUrl} alt={article.title} fill style={{ objectFit: 'cover' }} unoptimized draggable={false} />
               </div>
             )}
-            <p style={{ fontSize: '0.875rem', lineHeight: '1.5', color: '#111827', flex: 1, textAlign: 'justify' }}>
+            <p style={{ fontSize: '0.875rem', lineHeight: '1.5', color: 'var(--foreground)', flex: 1, textAlign: 'justify' }}>
               {getSummary(article)}
             </p>
             <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-              <button type="button" onClick={() => openSource(article)} style={{ padding: '0.4rem 0.7rem', border: '1.5px solid #111827', borderRadius: '999px', backgroundColor: '#fffdf8', color: '#111827', fontSize: '0.72rem', fontWeight: 800, cursor: 'pointer' }}>
+              <button type="button" onClick={() => openSource(article)} style={{ padding: '0.4rem 0.7rem', border: '1.5px solid var(--foreground)', borderRadius: '999px', backgroundColor: 'var(--surface)', color: 'var(--foreground)', fontSize: '0.72rem', fontWeight: 800, cursor: 'pointer' }}>
                 Open source
               </button>
             </div>
@@ -559,7 +559,7 @@ export default function Widget({
               return imgs.length > 0 ? (
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '0.5rem' }}>
                   {imgs.map((url, i) => (
-                    <div key={i} style={{ height: '100px', position: 'relative', border: '1px solid #e5e7eb', borderRadius: '8px', overflow: 'hidden' }}>
+                    <div key={i} style={{ height: '100px', position: 'relative', border: '1px solid var(--border)', borderRadius: '8px', overflow: 'hidden' }}>
                       <Image src={url} alt={`Image ${i + 1}`} fill style={{ objectFit: 'cover' }} unoptimized draggable={false} />
                     </div>
                   ))}
@@ -567,22 +567,22 @@ export default function Widget({
               ) : null;
             })()}
 
-            <p style={{ fontSize: '0.875rem', lineHeight: '1.5', color: '#111827', textAlign: 'justify' }}>
+            <p style={{ fontSize: '0.875rem', lineHeight: '1.5', color: 'var(--foreground)', textAlign: 'justify' }}>
               {getSummary(article)}
             </p>
             <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-              <button type="button" onClick={() => openSource(article)} style={{ padding: '0.4rem 0.7rem', border: '1.5px solid #111827', borderRadius: '999px', backgroundColor: '#fffdf8', color: '#111827', fontSize: '0.72rem', fontWeight: 800, cursor: 'pointer' }}>
+              <button type="button" onClick={() => openSource(article)} style={{ padding: '0.4rem 0.7rem', border: '1.5px solid var(--foreground)', borderRadius: '999px', backgroundColor: 'var(--surface)', color: 'var(--foreground)', fontSize: '0.72rem', fontWeight: 800, cursor: 'pointer' }}>
                 Open source
               </button>
             </div>
 
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginTop: '0.25rem' }}>
               {article.imageUrl && (
-                <div style={{ width: '28px', height: '28px', borderRadius: '8px', border: '1.5px solid #111827', overflow: 'hidden', position: 'relative', flexShrink: 0 }}>
+                <div style={{ width: '28px', height: '28px', borderRadius: '8px', border: '1.5px solid var(--foreground)', overflow: 'hidden', position: 'relative', flexShrink: 0 }}>
                   <Image src={article.imageUrl} alt="Publisher" fill style={{ objectFit: 'cover' }} unoptimized draggable={false} />
                 </div>
               )}
-              <span style={{ fontSize: '0.75rem', fontWeight: 'bold', color: '#111827' }}>{article.publisher}</span>
+              <span style={{ fontSize: '0.75rem', fontWeight: 'bold', color: 'var(--foreground)' }}>{article.publisher}</span>
             </div>
           </div>
         )}
@@ -604,8 +604,8 @@ export default function Widget({
         flexDirection: 'column',
         border: borderStyle,
         borderRadius: '12px',
-        backgroundColor: '#ffffff',
-        color: '#111827',
+        backgroundColor: 'var(--surface)',
+        color: 'var(--foreground)',
         position: 'relative',
         cursor: editMode ? 'grab' : 'default',
         boxSizing: 'border-box',
@@ -624,10 +624,10 @@ export default function Widget({
         <button
           onClick={(e) => { e.stopPropagation(); if (onSettingsClick) onSettingsClick(); }}
           className="widget-settings-btn"
-          style={{ position: 'absolute', top: compact ? '-10px' : '-12px', left: compact ? '-10px' : '-12px', background: '#ffffff', border: '2px solid #111827', borderRadius: '50%', width: compact ? '24px' : '26px', height: compact ? '24px' : '26px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', boxShadow: '2px 2px 0px #111827', zIndex: 10 }}
+          style={{ position: 'absolute', top: compact ? '-10px' : '-12px', left: compact ? '-10px' : '-12px', background: 'var(--surface)', border: '2px solid var(--foreground)', borderRadius: '50%', width: compact ? '24px' : '26px', height: compact ? '24px' : '26px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', boxShadow: '2px 2px 0px var(--foreground)', zIndex: 10 }}
           title="Widget Settings"
         >
-          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#111827" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--foreground)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
             <path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73v.18a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.1a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z" />
             <circle cx="12" cy="12" r="3" />
           </svg>
@@ -638,7 +638,7 @@ export default function Widget({
       {editMode && onDelete && (
         <button
           onClick={(e) => { e.stopPropagation(); onDelete(); }}
-          style={{ position: 'absolute', top: compact ? '-10px' : '-12px', right: compact ? '-10px' : '-12px', background: '#ffffff', border: '2px solid #ef4444', borderRadius: '50%', width: compact ? '24px' : '26px', height: compact ? '24px' : '26px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', boxShadow: '2px 2px 0px #ef4444', zIndex: 10, color: '#ef4444', fontSize: '14px', lineHeight: 1, fontWeight: 900 }}
+          style={{ position: 'absolute', top: compact ? '-10px' : '-12px', right: compact ? '-10px' : '-12px', background: 'var(--surface)', border: '2px solid #ef4444', borderRadius: '50%', width: compact ? '24px' : '26px', height: compact ? '24px' : '26px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', boxShadow: '2px 2px 0px #ef4444', zIndex: 10, color: '#ef4444', fontSize: '14px', lineHeight: 1, fontWeight: 900 }}
           title="Remove widget"
         >
           ×
@@ -652,7 +652,7 @@ export default function Widget({
 
       {/* Selected badge */}
       {isSelected && (
-        <div style={{ position: 'absolute', right: '0.9rem', bottom: '0.8rem', backgroundColor: '#ffffff', padding: '0.15rem 0.35rem', borderRadius: '8px', color: '#4f46e5', fontWeight: '900', fontSize: '0.75rem', pointerEvents: 'none', textTransform: 'uppercase', letterSpacing: '0.5px', zIndex: 5 }}>
+        <div style={{ position: 'absolute', right: '0.9rem', bottom: '0.8rem', backgroundColor: 'var(--surface)', padding: '0.15rem 0.35rem', borderRadius: '8px', color: '#4f46e5', fontWeight: '900', fontSize: '0.75rem', pointerEvents: 'none', textTransform: 'uppercase', letterSpacing: '0.5px', zIndex: 5 }}>
           Selected Widget
         </div>
       )}

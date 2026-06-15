@@ -51,6 +51,29 @@ export default function SharedNewspaperView({ newspaper }: SharedNewspaperViewPr
   return (
     <div style={{ minHeight: '100vh', padding: '1.2rem 1rem 3rem' }}>
       <div style={{ maxWidth: '1280px', margin: '0 auto', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+        <button
+          onClick={() => router.back()}
+          style={{
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: '0.45rem',
+            padding: '0.55rem 1rem',
+            backgroundColor: 'rgba(255,253,248,0.92)',
+            backdropFilter: 'blur(8px)',
+            border: '1.5px solid #111827',
+            borderRadius: '999px',
+            boxShadow: '2px 2px 0px #111827',
+            fontSize: '0.78rem',
+            fontWeight: 800,
+            color: '#111827',
+            cursor: 'pointer',
+            alignSelf: 'flex-start',
+          }}
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+          Back
+        </button>
+
         <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between', gap: '1rem', padding: '1.15rem 1.25rem', border: '1px solid rgba(23,23,23,0.12)', borderRadius: '26px', background: 'linear-gradient(180deg, rgba(255,255,255,0.95) 0%, #fffaf1 100%)', boxShadow: '0 18px 40px rgba(17,24,39,0.09)' }}>
           <div style={{ minWidth: 0 }}>
             <p style={{ fontSize: '0.72rem', fontWeight: 900, letterSpacing: '0.1em', textTransform: 'uppercase', color: '#315efb', marginBottom: '0.45rem' }}>

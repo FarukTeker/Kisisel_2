@@ -473,10 +473,10 @@ export default function Home() {
                           style={{
                             padding: '0.5rem 0.75rem',
                             fontSize: '0.8rem',
-                            border: '1.5px solid #111827',
+                            border: '1.5px solid var(--foreground)',
                             borderRadius: '4px',
-                            backgroundColor: isSelected ? '#111827' : '#ffffff',
-                            color: isSelected ? '#ffffff' : '#111827',
+                            backgroundColor: isSelected ? 'var(--foreground)' : 'var(--surface)',
+                            color: isSelected ? 'var(--surface)' : 'var(--foreground)',
                             fontWeight: '800',
                             cursor: 'pointer',
                           }}
@@ -509,12 +509,13 @@ export default function Home() {
                     style={{
                       width: '100%',
                       padding: '0.7rem 0.8rem',
-                      border: '1.5px solid #111827',
+                      border: '1.5px solid var(--foreground)',
                       borderRadius: '8px',
                       outline: 'none',
                       fontWeight: '800',
                       fontSize: '0.88rem',
-                      backgroundColor: '#ffffff'
+                      backgroundColor: 'var(--surface)',
+                      color: 'var(--foreground)'
                     }}
                   />
                   <textarea
@@ -529,12 +530,14 @@ export default function Home() {
                       flex: 1,
                       minHeight: '120px',
                       padding: '0.5rem',
-                      border: editorialSaveError ? '1.5px solid #b91c1c' : '1.5px solid #111827',
+                      border: editorialSaveError ? '1.5px solid #b91c1c' : '1.5px solid var(--foreground)',
                       borderRadius: '4px',
                       outline: 'none',
                       resize: 'none',
                       fontFamily: 'inherit',
-                      fontSize: '0.85rem'
+                      fontSize: '0.85rem',
+                      backgroundColor: 'var(--surface)',
+                      color: 'var(--foreground)'
                     }}
                   />
                   {editorialSaveError && (
@@ -641,7 +644,7 @@ export default function Home() {
                               }
                             }
                           }}
-                          style={{ width: '100%', padding: '0.6rem 0.75rem', border: '1px solid #e5e7eb', borderRadius: '8px', outline: 'none', fontWeight: 700, fontSize: '0.85rem', backgroundColor: '#ffffff', color: '#111827', appearance: 'auto' }}
+                          style={{ width: '100%', padding: '0.6rem 0.75rem', border: '1px solid var(--border)', borderRadius: '8px', outline: 'none', fontWeight: 700, fontSize: '0.85rem', backgroundColor: 'var(--surface)', color: 'var(--foreground)', appearance: 'auto' }}
                         >
                           {liveSources.length > 0 && (
                             <optgroup label="Live RSS sources">
@@ -961,19 +964,19 @@ export default function Home() {
                       placeholder="Feed name"
                       value={newSourceName}
                       onChange={(e) => { setNewSourceName(e.target.value); setSourceAddError(''); }}
-                      style={{ padding: '0.5rem 0.7rem', border: sourceAddError && !newSourceName.trim() ? '1.5px solid #ef4444' : '1px solid #e5e7eb', borderRadius: '8px', fontSize: '0.82rem', outline: 'none' }}
+                      style={{ padding: '0.5rem 0.7rem', border: sourceAddError && !newSourceName.trim() ? '1.5px solid #ef4444' : '1px solid var(--border)', borderRadius: '8px', fontSize: '0.82rem', outline: 'none', backgroundColor: 'var(--surface)', color: 'var(--foreground)' }}
                     />
                     <input
                       type="url"
                       placeholder="https://example.com/feed.xml"
                       value={newSourceUrl}
                       onChange={(e) => { setNewSourceUrl(e.target.value); setSourceAddError(''); }}
-                      style={{ padding: '0.5rem 0.7rem', border: sourceAddError && !newSourceUrl.trim() ? '1.5px solid #ef4444' : '1px solid #e5e7eb', borderRadius: '8px', fontSize: '0.82rem', outline: 'none' }}
+                      style={{ padding: '0.5rem 0.7rem', border: sourceAddError && !newSourceUrl.trim() ? '1.5px solid #ef4444' : '1px solid var(--border)', borderRadius: '8px', fontSize: '0.82rem', outline: 'none', backgroundColor: 'var(--surface)', color: 'var(--foreground)' }}
                     />
                     <select
                       value={newSourceCategory}
                       onChange={(e) => setNewSourceCategory(e.target.value)}
-                      style={{ padding: '0.5rem 0.7rem', border: '1px solid #e5e7eb', borderRadius: '8px', fontSize: '0.82rem', backgroundColor: '#ffffff', outline: 'none' }}
+                      style={{ padding: '0.5rem 0.7rem', border: '1px solid var(--border)', borderRadius: '8px', fontSize: '0.82rem', backgroundColor: 'var(--surface)', color: 'var(--foreground)', outline: 'none' }}
                     >
                       {['Technology', 'Science', 'Finance', 'Food', 'Culture'].map((cat) => (
                         <option key={cat} value={cat}>{cat}</option>
@@ -1008,8 +1011,8 @@ export default function Home() {
               )}
 
               {/* Bottom Actions inside content panel */}
-              <div style={{ display: 'flex', gap: '0.5rem', marginTop: 'auto', paddingTop: '1rem', borderTop: '1px solid #f3f4f6' }}>
-                <button onClick={() => setIsWidgetSettingsOpen(false)} style={{ padding: '0.45rem 1.1rem', border: '1px solid #e5e7eb', borderRadius: '8px', backgroundColor: '#ffffff', fontWeight: 700, cursor: 'pointer', fontSize: '0.85rem', color: '#374151' }}>
+              <div style={{ display: 'flex', gap: '0.5rem', marginTop: 'auto', paddingTop: '1rem', borderTop: '1px solid var(--border)' }}>
+                <button onClick={() => setIsWidgetSettingsOpen(false)} style={{ padding: '0.45rem 1.1rem', border: '1px solid var(--border)', borderRadius: '8px', backgroundColor: 'var(--surface)', fontWeight: 700, cursor: 'pointer', fontSize: '0.85rem', color: 'var(--foreground)' }}>
                   Cancel
                 </button>
                 <button onClick={() => {

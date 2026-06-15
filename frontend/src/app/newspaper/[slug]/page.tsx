@@ -1,6 +1,7 @@
 import { notFound } from 'next/navigation';
 import SharedNewspaperView from '@/components/SharedNewspaperView';
 import type { SharedNewspaper } from '@/lib/prototypeNewspapers';
+import { getSharedNewspaperBySlug } from '@/lib/prototypeNewspapers';
 
 interface NewspaperPageProps {
   params: Promise<{ slug: string }>;
@@ -50,7 +51,9 @@ async function fetchSharedNewspaper(slug: string): Promise<SharedNewspaper | nul
 
 export default async function NewspaperPage({ params }: NewspaperPageProps) {
   const { slug } = await params;
-  const newspaper = await fetchSharedNewspaper(slug);
+
+  // Try API first, fall back to local prototype data
+  const newspaper = await fetchSharedNewspaper(slug) ?? getSharedNewspaperBySlug(slug) ?? null;
 
   if (!newspaper) {
     notFound();

@@ -220,21 +220,21 @@ export default function Feed() {
     return (
       <div style={{ minHeight: '100vh', padding: '1rem 0.85rem 6.5rem', background: 'var(--background)' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '1.25rem' }}>
-          <Link href="/" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '38px', height: '38px', borderRadius: '50%', border: '1.5px solid #111827', backgroundColor: 'var(--surface)', color: '#111827' }}>
+          <Link href="/" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '38px', height: '38px', borderRadius: '50%', border: '1.5px solid var(--foreground)', backgroundColor: 'var(--surface)', color: 'var(--foreground)' }}>
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="19" y1="12" x2="5" y2="12" /><polyline points="12 19 5 12 12 5" /></svg>
           </Link>
           <div style={{ flex: 1 }}>
-            <p style={{ fontSize: '0.68rem', fontWeight: 900, letterSpacing: '0.1em', textTransform: 'uppercase', color: '#2647d6' }}>Discover</p>
-            <h1 style={{ fontSize: '1.15rem', fontWeight: 900, letterSpacing: '-0.04em', color: '#111827' }}>Public newspapers</h1>
+            <p style={{ fontSize: '0.68rem', fontWeight: 900, letterSpacing: '0.1em', textTransform: 'uppercase', color: 'var(--primary)' }}>Discover</p>
+            <h1 style={{ fontSize: '1.15rem', fontWeight: 900, letterSpacing: '-0.04em', color: 'var(--foreground)' }}>Public newspapers</h1>
           </div>
-          <button onClick={() => setIsFilterOpen(true)} style={{ padding: '0.5rem 0.75rem', border: '1.5px solid #111827', borderRadius: '999px', backgroundColor: '#111827', color: '#fff', fontWeight: 800, fontSize: '0.78rem', cursor: 'pointer' }}>
+          <button onClick={() => setIsFilterOpen(true)} style={{ padding: '0.5rem 0.75rem', border: '1.5px solid var(--foreground)', borderRadius: '999px', backgroundColor: 'var(--foreground)', color: 'var(--surface)', fontWeight: 800, fontSize: '0.78rem', cursor: 'pointer' }}>
             Filter
           </button>
         </div>
 
         <div style={{ display: 'flex', gap: '0.45rem', overflowX: 'auto', marginBottom: '1.1rem', paddingBottom: '0.1rem' }}>
           {['All', 'Following', 'Popular', 'Suggested'].map((tab, i) => (
-            <span key={tab} style={{ padding: '0.45rem 0.8rem', border: '1.5px solid #111827', borderRadius: '999px', backgroundColor: i === 0 ? '#111827' : 'var(--surface)', color: i === 0 ? '#fff' : '#111827', fontWeight: 800, whiteSpace: 'nowrap', fontSize: '0.76rem' }}>
+            <span key={tab} style={{ padding: '0.45rem 0.8rem', border: '1.5px solid var(--foreground)', borderRadius: '999px', backgroundColor: i === 0 ? 'var(--foreground)' : 'var(--surface)', color: i === 0 ? 'var(--surface)' : 'var(--foreground)', fontWeight: 800, whiteSpace: 'nowrap', fontSize: '0.76rem' }}>
               {tab}
             </span>
           ))}
@@ -246,24 +246,24 @@ export default function Feed() {
             const isFollowed = isFollowingSlug(feed.slug);
             const modeColor = READING_MODE_COLOR[feed.readingMode] || '#2647d6';
             return (
-              <article key={feed.slug} style={{ backgroundColor: 'var(--surface)', border: '1.5px solid #111827', borderRadius: '16px', overflow: 'hidden', boxShadow: '3px 3px 0px rgba(17,24,39,0.10)', color: '#111827' }}>
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0.6rem 1rem', borderBottom: '1px solid #e5e7eb', backgroundColor: '#f9fafb' }}>
-                  <span style={{ fontSize: '0.65rem', fontWeight: 900, letterSpacing: '0.08em', textTransform: 'uppercase', color: '#6b7280' }}>{feed.dateLabel}</span>
+              <article key={feed.slug} style={{ backgroundColor: 'var(--surface)', border: '1.5px solid var(--foreground)', borderRadius: '16px', overflow: 'hidden', boxShadow: '3px 3px 0px var(--foreground)', color: 'var(--foreground)' }}>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0.6rem 1rem', borderBottom: '1px solid var(--border)', backgroundColor: 'var(--surface-hover)' }}>
+                  <span style={{ fontSize: '0.65rem', fontWeight: 900, letterSpacing: '0.08em', textTransform: 'uppercase', color: 'var(--text-muted)' }}>{feed.dateLabel}</span>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                    <span style={{ fontSize: '0.65rem', color: '#6b7280', fontWeight: 700 }}>{feed.viewCount.toLocaleString()} views</span>
-                    <span style={{ padding: '0.2rem 0.5rem', borderRadius: '999px', backgroundColor: modeColor + '18', color: modeColor, fontSize: '0.62rem', fontWeight: 900, letterSpacing: '0.05em' }}>
+                    <span style={{ fontSize: '0.65rem', color: 'var(--text-muted)', fontWeight: 700 }}>{feed.viewCount.toLocaleString()} views</span>
+                    <span style={{ padding: '0.2rem 0.55rem', borderRadius: '999px', backgroundColor: modeColor + '18', color: modeColor, fontSize: '0.62rem', fontWeight: 900, letterSpacing: '0.05em' }}>
                       {READING_MODE_LABEL[feed.readingMode]}
                     </span>
                   </div>
                 </div>
                 <div style={{ padding: '0.9rem 1rem 0' }}>
-                  <h2 style={{ fontSize: '1.1rem', fontWeight: 900, lineHeight: 1.2, letterSpacing: '-0.03em', marginBottom: '0.35rem', color: '#111827' }}>{feed.name}</h2>
+                  <h2 style={{ fontSize: '1.1rem', fontWeight: 900, lineHeight: 1.2, letterSpacing: '-0.03em', marginBottom: '0.35rem', color: 'var(--foreground)' }}>{feed.name}</h2>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', marginBottom: '0.5rem' }}>
                     <CuratorAvatar name={feed.curator} />
-                    <span style={{ fontSize: '0.75rem', color: '#6b7280', fontWeight: 700 }}>by {feed.curator}</span>
+                    <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontWeight: 700 }}>by {feed.curator}</span>
                   </div>
-                  <p style={{ fontSize: '0.78rem', color: '#4b5563', lineHeight: 1.45, marginBottom: '0.75rem' }}>{feed.description}</p>
-                  <div style={{ display: 'grid', gridTemplateColumns: '1.2fr 1fr 1fr', gridTemplateRows: 'repeat(4, 1fr)', gap: '0.3rem', height: '100px', padding: '0.3rem', backgroundColor: '#f3f4f6', border: '1px solid #e5e7eb', borderRadius: '8px', marginBottom: '0.75rem' }}>
+                  <p style={{ fontSize: '0.78rem', color: 'var(--text-soft)', lineHeight: 1.45, marginBottom: '0.75rem' }}>{feed.description}</p>
+                  <div style={{ display: 'grid', gridTemplateColumns: '1.2fr 1fr 1fr', gridTemplateRows: 'repeat(4, 1fr)', gap: '0.3rem', height: '100px', padding: '0.3rem', backgroundColor: 'var(--background)', border: '1px solid var(--border)', borderRadius: '8px', marginBottom: '0.75rem' }}>
                     {[
                       { style: { gridColumn: '1', gridRow: '1 / 3' } },
                       { style: { gridColumn: '2 / 4', gridRow: '1' } },
@@ -272,18 +272,18 @@ export default function Feed() {
                       { style: { gridColumn: '1', gridRow: '3 / 5' } },
                       { style: { gridColumn: '2 / 4', gridRow: '3 / 5' } },
                     ].map((slot, idx) => (
-                      <div key={idx} style={{ ...slot.style, borderRadius: '5px', border: '1px solid #d1d5db', backgroundColor: getWidgetSlotColor(idx, feed) }} />
+                      <div key={idx} style={{ ...slot.style, borderRadius: '5px', border: '1px solid var(--border)', backgroundColor: getWidgetSlotColor(idx, feed) }} />
                     ))}
                   </div>
                   <div style={{ display: 'flex', gap: '0.35rem', flexWrap: 'wrap', marginBottom: '0.85rem' }}>
                     {tags.map((tag) => (
-                      <span key={tag} style={{ padding: '0.22rem 0.55rem', borderRadius: '999px', border: '1px solid #d1d5db', fontSize: '0.65rem', fontWeight: 800, color: '#374151', backgroundColor: 'var(--surface)' }}>{tag}</span>
+                      <span key={tag} style={{ padding: '0.22rem 0.55rem', borderRadius: '999px', border: '1px solid var(--border)', fontSize: '0.65rem', fontWeight: 800, color: 'var(--text-soft)', backgroundColor: 'var(--surface)' }}>{tag}</span>
                     ))}
                   </div>
                 </div>
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', borderTop: '1.5px solid #111827' }}>
-                  <button onClick={() => openSharedNewspaper(feed.slug)} style={{ padding: '0.75rem', fontWeight: 800, fontSize: '0.82rem', borderRight: '1px solid #111827', backgroundColor: 'transparent', color: '#111827', cursor: 'pointer' }}>Open ↗</button>
-                  <button onClick={() => handleFollowToggle(feed.slug)} style={{ padding: '0.75rem', fontWeight: 800, fontSize: '0.82rem', backgroundColor: isFollowed ? '#f0fdf4' : '#111827', color: isFollowed ? '#059669' : '#fff', cursor: 'pointer' }}>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', borderTop: '1.5px solid var(--foreground)' }}>
+                  <button onClick={() => openSharedNewspaper(feed.slug)} style={{ padding: '0.75rem', fontWeight: 800, fontSize: '0.82rem', borderRight: '1px solid var(--foreground)', backgroundColor: 'transparent', color: 'var(--foreground)', cursor: 'pointer' }}>Open ↗</button>
+                  <button onClick={() => handleFollowToggle(feed.slug)} style={{ padding: '0.75rem', fontWeight: 800, fontSize: '0.82rem', backgroundColor: isFollowed ? '#f0fdf4' : 'var(--foreground)', color: isFollowed ? '#059669' : 'var(--surface)', cursor: 'pointer' }}>
                     {isFollowed ? '✓ Following' : 'Follow'}
                   </button>
                 </div>
@@ -294,21 +294,21 @@ export default function Feed() {
 
         <Modal isOpen={isFilterOpen} onClose={() => setIsFilterOpen(false)} title="Filter" maxWidth="420px">
           <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', border: '1.5px solid #111827', borderRadius: '8px', padding: '0.6rem 0.85rem', backgroundColor: 'var(--surface)' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', border: '1.5px solid var(--foreground)', borderRadius: '8px', padding: '0.6rem 0.85rem', backgroundColor: 'var(--surface)' }}>
               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#9ca3af" strokeWidth="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-              <input type="text" placeholder="Category, author, or keyword…" style={{ flex: 1, border: 'none', outline: 'none', fontSize: '0.9rem', backgroundColor: 'transparent', color: '#111827' }} />
+              <input type="text" placeholder="Category, author, or keyword…" style={{ flex: 1, border: 'none', outline: 'none', fontSize: '0.9rem', backgroundColor: 'transparent', color: 'var(--foreground)' }} />
             </div>
             <div style={{ display: 'flex', gap: '0.4rem', flexWrap: 'wrap' }}>
               {['Technology', 'Science', 'Food', 'Finance', 'Culture'].map((cat) => (
-                <label key={cat} style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', padding: '0.45rem 0.7rem', border: '1.5px solid #111827', borderRadius: '999px', cursor: 'pointer', fontSize: '0.8rem', fontWeight: 700, backgroundColor: 'var(--surface)', color: '#111827' }}>
-                  <input type="checkbox" defaultChecked style={{ accentColor: '#111827' }} />
+                <label key={cat} style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', padding: '0.45rem 0.7rem', border: '1.5px solid var(--foreground)', borderRadius: '999px', cursor: 'pointer', fontSize: '0.8rem', fontWeight: 700, backgroundColor: 'var(--surface)', color: 'var(--foreground)' }}>
+                  <input type="checkbox" defaultChecked style={{ accentColor: 'var(--foreground)' }} />
                   {cat}
                 </label>
               ))}
             </div>
             <div style={{ display: 'flex', gap: '0.5rem' }}>
-              <button onClick={() => setIsFilterOpen(false)} style={{ flex: 1, padding: '0.65rem', border: '1.5px solid #111827', borderRadius: '8px', fontWeight: 700, color: '#111827', backgroundColor: 'transparent', cursor: 'pointer' }}>Cancel</button>
-              <button onClick={() => setIsFilterOpen(false)} style={{ flex: 1, padding: '0.65rem', border: 'none', borderRadius: '8px', backgroundColor: '#111827', color: '#fff', fontWeight: 700, cursor: 'pointer' }}>Apply</button>
+              <button onClick={() => setIsFilterOpen(false)} style={{ flex: 1, padding: '0.65rem', border: '1.5px solid var(--foreground)', borderRadius: '8px', fontWeight: 700, color: 'var(--foreground)', backgroundColor: 'transparent', cursor: 'pointer' }}>Cancel</button>
+              <button onClick={() => setIsFilterOpen(false)} style={{ flex: 1, padding: '0.65rem', border: 'none', borderRadius: '8px', backgroundColor: 'var(--foreground)', color: 'var(--surface)', fontWeight: 700, cursor: 'pointer' }}>Apply</button>
             </div>
           </div>
         </Modal>
@@ -333,8 +333,8 @@ export default function Feed() {
         width: '100vw',
         height: '100vh',
         overflow: 'hidden',
-        backgroundColor: '#f7f5f2',
-        backgroundImage: 'radial-gradient(circle, #c8c0b8 1px, transparent 1px)',
+        backgroundColor: 'var(--background)',
+        backgroundImage: 'radial-gradient(circle, var(--border) 1px, transparent 1px)',
         backgroundSize: '22px 22px',
         cursor: canvasCursor,
         userSelect: 'none',
@@ -370,25 +370,25 @@ export default function Feed() {
                 if (draggingCardRef.current) return;
                 const el = e.currentTarget;
                 el.style.transform = `rotate(0deg) scale(1.03)`;
-                el.style.boxShadow = '8px 10px 0px #111827';
+                el.style.boxShadow = '8px 10px 0px var(--foreground)';
               }}
               onMouseLeave={(e) => {
                 if (isBeingDragged) return;
                 const el = e.currentTarget;
                 el.style.transform = `rotate(${feed.rotation}deg)`;
-                el.style.boxShadow = '4px 5px 0px #111827';
+                el.style.boxShadow = '4px 5px 0px var(--foreground)';
               }}
               style={{
                 position: 'absolute',
                 left: `${coords.x}px`,
                 top: `${coords.y}px`,
                 width: '360px',
-                backgroundColor: '#ffffff',
-                color: '#111827',
-                border: '1.5px solid #111827',
+                backgroundColor: 'var(--surface)',
+                color: 'var(--foreground)',
+                border: '1.5px solid var(--foreground)',
                 borderRadius: '12px',
                 overflow: 'hidden',
-                boxShadow: isBeingDragged ? '12px 14px 0px #111827' : '4px 5px 0px #111827',
+                boxShadow: isBeingDragged ? '12px 14px 0px var(--foreground)' : '4px 5px 0px var(--foreground)',
                 transform: isBeingDragged ? 'rotate(1.5deg) scale(1.04)' : `rotate(${feed.rotation}deg)`,
                 transition: isBeingDragged ? 'box-shadow 0.08s ease, transform 0.08s ease' : 'transform 0.15s ease, box-shadow 0.15s ease',
                 zIndex: isBeingDragged || isOnTop ? 50 : 1,
@@ -428,19 +428,19 @@ export default function Feed() {
 
               {/* Card body */}
               <div style={{ padding: '1rem 1rem 0' }}>
-                <h3 style={{ fontSize: '1.22rem', fontWeight: 900, lineHeight: 1.2, letterSpacing: '-0.035em', color: '#111827', marginBottom: '0.4rem' }}>
+                <h3 style={{ fontSize: '1.22rem', fontWeight: 900, lineHeight: 1.2, letterSpacing: '-0.035em', color: 'var(--foreground)', marginBottom: '0.4rem' }}>
                   {feed.name}
                 </h3>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '0.45rem', marginBottom: '0.6rem' }}>
                   <CuratorAvatar name={feed.curator} />
-                  <span style={{ fontSize: '0.74rem', fontWeight: 700, color: '#6b7280' }}>by {feed.curator}</span>
+                  <span style={{ fontSize: '0.74rem', fontWeight: 700, color: 'var(--text-muted)' }}>by {feed.curator}</span>
                 </div>
-                <p style={{ fontSize: '0.78rem', color: '#4b5563', lineHeight: 1.5, marginBottom: '0.85rem', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
+                <p style={{ fontSize: '0.78rem', color: 'var(--text-soft)', lineHeight: 1.5, marginBottom: '0.85rem', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
                   {feed.description}
                 </p>
 
                 {/* Layout preview */}
-                <div style={{ display: 'grid', gridTemplateColumns: '1.2fr 1fr 1fr', gridTemplateRows: 'repeat(4, 1fr)', gap: '0.28rem', height: '112px', padding: '0.3rem', backgroundColor: '#f0ede8', border: '1px solid #d1ccc5', borderRadius: '8px', marginBottom: '0.8rem' }}>
+                <div style={{ display: 'grid', gridTemplateColumns: '1.2fr 1fr 1fr', gridTemplateRows: 'repeat(4, 1fr)', gap: '0.28rem', height: '112px', padding: '0.3rem', backgroundColor: 'var(--background)', border: '1px solid var(--border)', borderRadius: '8px', marginBottom: '0.8rem' }}>
                   {[
                     { style: { gridColumn: '1', gridRow: '1 / 3' } },
                     { style: { gridColumn: '2 / 4', gridRow: '1' } },
@@ -449,14 +449,14 @@ export default function Feed() {
                     { style: { gridColumn: '1', gridRow: '3 / 5' } },
                     { style: { gridColumn: '2 / 4', gridRow: '3 / 5' } },
                   ].map((slot, idx) => (
-                    <div key={idx} style={{ ...slot.style, borderRadius: '5px', border: '1px solid #c8c0b8', backgroundColor: getWidgetSlotColor(idx, feed) }} />
+                    <div key={idx} style={{ ...slot.style, borderRadius: '5px', border: '1px solid var(--border)', backgroundColor: getWidgetSlotColor(idx, feed) }} />
                   ))}
                 </div>
 
                 {/* Tags */}
                 <div style={{ display: 'flex', gap: '0.35rem', flexWrap: 'wrap', marginBottom: '0.85rem' }}>
                   {tags.map((tag) => (
-                    <span key={tag} style={{ padding: '0.22rem 0.55rem', borderRadius: '999px', border: '1px solid #d1ccc5', fontSize: '0.64rem', fontWeight: 800, color: '#374151', backgroundColor: '#ffffff' }}>
+                    <span key={tag} style={{ padding: '0.22rem 0.55rem', borderRadius: '999px', border: '1px solid var(--border)', fontSize: '0.64rem', fontWeight: 800, color: 'var(--text-soft)', backgroundColor: 'var(--surface)' }}>
                       {tag}
                     </span>
                   ))}
@@ -467,12 +467,12 @@ export default function Feed() {
               </div>
 
               {/* CTA row — interactive, stops card drag propagation */}
-              <div className="np-card-interactive" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', borderTop: '1.5px solid #111827' }}>
+              <div className="np-card-interactive" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', borderTop: '1.5px solid var(--foreground)' }}>
                 <button
                   className="np-card-interactive"
                   onMouseDown={(e) => e.stopPropagation()}
                   onClick={(e) => { e.stopPropagation(); openSharedNewspaper(feed.slug); }}
-                  style={{ padding: '0.75rem', fontWeight: 800, fontSize: '0.8rem', borderRight: '1px solid #111827', backgroundColor: 'transparent', color: '#111827', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.35rem', cursor: 'pointer' }}
+                  style={{ padding: '0.75rem', fontWeight: 800, fontSize: '0.8rem', borderRight: '1px solid var(--foreground)', backgroundColor: 'transparent', color: 'var(--foreground)', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.35rem', cursor: 'pointer' }}
                 >
                   Open
                   <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
@@ -481,7 +481,7 @@ export default function Feed() {
                   className="np-card-interactive"
                   onMouseDown={(e) => e.stopPropagation()}
                   onClick={(e) => { e.stopPropagation(); handleFollowToggle(feed.slug); }}
-                  style={{ padding: '0.75rem', fontWeight: 800, fontSize: '0.8rem', backgroundColor: isFollowed ? '#f0fdf4' : '#111827', color: isFollowed ? '#059669' : '#fff', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.35rem' }}
+                  style={{ padding: '0.75rem', fontWeight: 800, fontSize: '0.8rem', backgroundColor: isFollowed ? '#f0fdf4' : 'var(--foreground)', color: isFollowed ? '#059669' : 'var(--surface)', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.35rem' }}
                 >
                   {isFollowed ? (
                     <><svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><polyline points="20 6 9 17 4 12"/></svg>Following</>
@@ -495,16 +495,16 @@ export default function Feed() {
 
       {/* ── Fixed Chrome ──────────────────────────────────────────── */}
 
-      <div style={{ position: 'fixed', top: '24px', left: '50%', transform: 'translateX(-50%)', display: 'flex', alignItems: 'center', gap: '0.75rem', padding: '0.5rem 1rem', backgroundColor: 'rgba(255,253,248,0.92)', backdropFilter: 'blur(8px)', border: '1.5px solid #111827', borderRadius: '999px', boxShadow: '2px 2px 0px #111827', zIndex: 100, pointerEvents: 'none' }}>
-        <span style={{ fontSize: '0.65rem', fontWeight: 900, letterSpacing: '0.1em', textTransform: 'uppercase', color: '#2647d6' }}>Discover</span>
-        <span style={{ width: '3px', height: '3px', borderRadius: '50%', backgroundColor: '#d1d5db' }} />
-        <span style={{ fontSize: '0.65rem', fontWeight: 700, color: '#6b7280' }}>{extendedFeed.length} newspapers</span>
+      <div style={{ position: 'fixed', top: '24px', left: '50%', transform: 'translateX(-50%)', display: 'flex', alignItems: 'center', gap: '0.75rem', padding: '0.5rem 1rem', backgroundColor: 'var(--surface)', border: '1.5px solid var(--foreground)', borderRadius: '999px', boxShadow: '2px 2px 0px var(--foreground)', zIndex: 100, pointerEvents: 'none' }}>
+        <span style={{ fontSize: '0.65rem', fontWeight: 900, letterSpacing: '0.1em', textTransform: 'uppercase', color: 'var(--primary)' }}>Discover</span>
+        <span style={{ width: '3px', height: '3px', borderRadius: '50%', backgroundColor: 'var(--border)' }} />
+        <span style={{ fontSize: '0.65rem', fontWeight: 700, color: 'var(--text-muted)' }}>{extendedFeed.length} newspapers</span>
       </div>
 
       <Link
         href="/"
         onMouseDown={(e) => e.stopPropagation()}
-        style={{ position: 'fixed', top: '24px', left: '24px', display: 'flex', alignItems: 'center', gap: '0.45rem', padding: '0.5rem 0.85rem', backgroundColor: 'rgba(255,253,248,0.92)', backdropFilter: 'blur(8px)', border: '1.5px solid #111827', borderRadius: '999px', boxShadow: '2px 2px 0px #111827', fontSize: '0.75rem', fontWeight: 800, color: '#111827', zIndex: 100, textDecoration: 'none' }}
+        style={{ position: 'fixed', top: '24px', left: '24px', display: 'flex', alignItems: 'center', gap: '0.45rem', padding: '0.5rem 0.85rem', backgroundColor: 'var(--surface)', border: '1.5px solid var(--foreground)', borderRadius: '999px', boxShadow: '2px 2px 0px var(--foreground)', fontSize: '0.75rem', fontWeight: 800, color: 'var(--foreground)', zIndex: 100, textDecoration: 'none' }}
       >
         <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
         My newspaper
@@ -521,7 +521,7 @@ export default function Feed() {
         className="np-card-interactive"
         onClick={() => setIsFilterOpen(true)}
         onMouseDown={(e) => e.stopPropagation()}
-        style={{ position: 'fixed', bottom: '28px', left: '50%', transform: 'translateX(-50%)', display: 'flex', alignItems: 'center', gap: '0.55rem', padding: '0.65rem 1.1rem', backgroundColor: 'rgba(255,253,248,0.95)', backdropFilter: 'blur(8px)', border: '1.5px solid #111827', borderRadius: '999px', boxShadow: '2px 2px 0px #111827', fontSize: '0.78rem', fontWeight: 800, color: '#111827', cursor: 'pointer', zIndex: 100 }}
+        style={{ position: 'fixed', bottom: '28px', left: '50%', transform: 'translateX(-50%)', display: 'flex', alignItems: 'center', gap: '0.55rem', padding: '0.65rem 1.1rem', backgroundColor: 'var(--surface)', border: '1.5px solid var(--foreground)', borderRadius: '999px', boxShadow: '2px 2px 0px var(--foreground)', fontSize: '0.78rem', fontWeight: 800, color: 'var(--foreground)', cursor: 'pointer', zIndex: 100 }}
       >
         <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg>
         Filter &amp; sort
@@ -529,24 +529,24 @@ export default function Feed() {
 
       <Modal isOpen={isFilterOpen} onClose={() => setIsFilterOpen(false)} title="Filter newspapers" maxWidth="440px">
         <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', border: '1.5px solid #111827', borderRadius: '8px', padding: '0.6rem 0.85rem', backgroundColor: 'var(--surface)' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', border: '1.5px solid var(--foreground)', borderRadius: '8px', padding: '0.6rem 0.85rem', backgroundColor: 'var(--surface)' }}>
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#9ca3af" strokeWidth="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-            <input type="text" placeholder="Category, curator, or keyword…" style={{ flex: 1, border: 'none', outline: 'none', fontSize: '0.9rem', backgroundColor: 'transparent', color: '#111827' }} />
+            <input type="text" placeholder="Category, curator, or keyword…" style={{ flex: 1, border: 'none', outline: 'none', fontSize: '0.9rem', backgroundColor: 'transparent', color: 'var(--foreground)' }} />
           </div>
           <div>
-            <h4 style={{ fontWeight: 800, marginBottom: '0.65rem', fontSize: '0.88rem', color: '#111827' }}>Categories</h4>
+            <h4 style={{ fontWeight: 800, marginBottom: '0.65rem', fontSize: '0.88rem', color: 'var(--foreground)' }}>Categories</h4>
             <div style={{ display: 'flex', gap: '0.4rem', flexWrap: 'wrap' }}>
               {['Technology', 'Science', 'Food', 'Finance', 'Culture'].map((cat) => (
-                <label key={cat} style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', padding: '0.4rem 0.7rem', border: '1.5px solid #111827', borderRadius: '999px', cursor: 'pointer', fontSize: '0.8rem', fontWeight: 700, backgroundColor: 'var(--surface)', color: '#111827' }}>
-                  <input type="checkbox" defaultChecked style={{ accentColor: '#111827' }} />
+                <label key={cat} style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', padding: '0.4rem 0.7rem', border: '1.5px solid var(--foreground)', borderRadius: '999px', cursor: 'pointer', fontSize: '0.8rem', fontWeight: 700, backgroundColor: 'var(--surface)', color: 'var(--foreground)' }}>
+                  <input type="checkbox" defaultChecked style={{ accentColor: 'var(--foreground)' }} />
                   {cat}
                 </label>
               ))}
             </div>
           </div>
-          <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '0.5rem', borderTop: '1px solid #e5e7eb', paddingTop: '1rem' }}>
-            <button onClick={() => setIsFilterOpen(false)} style={{ padding: '0.45rem 1rem', border: '1.5px solid #111827', borderRadius: '6px', backgroundColor: 'var(--surface)', color: '#111827', fontWeight: 700, cursor: 'pointer', fontSize: '0.85rem' }}>Cancel</button>
-            <button onClick={() => setIsFilterOpen(false)} style={{ padding: '0.45rem 1rem', border: 'none', borderRadius: '6px', backgroundColor: '#111827', color: '#fff', fontWeight: 700, cursor: 'pointer', fontSize: '0.85rem' }}>Apply</button>
+          <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '0.5rem', borderTop: '1px solid var(--border)', paddingTop: '1rem' }}>
+            <button onClick={() => setIsFilterOpen(false)} style={{ padding: '0.45rem 1rem', border: '1.5px solid var(--foreground)', borderRadius: '6px', backgroundColor: 'var(--surface)', color: 'var(--foreground)', fontWeight: 700, cursor: 'pointer', fontSize: '0.85rem' }}>Cancel</button>
+            <button onClick={() => setIsFilterOpen(false)} style={{ padding: '0.45rem 1rem', border: 'none', borderRadius: '6px', backgroundColor: 'var(--foreground)', color: 'var(--surface)', fontWeight: 700, cursor: 'pointer', fontSize: '0.85rem' }}>Apply</button>
           </div>
         </div>
       </Modal>
