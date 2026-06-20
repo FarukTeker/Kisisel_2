@@ -1,0 +1,102 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String      @id @default(cuid())
+  name         String
+  email        String      @unique
+  passwordHash String
+  newspapers   Newspaper[]
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+}
+
+model Newspaper {
+  id          String   @id @default(cuid())
+  slug        String   @unique
+  name        String
+  description String?
+  readingMode String   @default("F") // 'S' | 'H' | 'F'
+  columns     Int      @default(3)
+  theme       String   @default("Light") // 'Light' | 'Dark' | 'Sepia'
+  font        String   @default("Sans-Serif (Modern Clean)")
+  curatorId   String
+  curator     User     @relation(fields: [curatorId], references: [id], onDelete: Cascade)
+  widgets     Widget[]
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Widget {
+  id             String    @id
+  newspaperId    String
+  newspaper      Newspaper @relation(fields: [newspaperId], references: [id], onDelete: Cascade)
+  title          String
+  layoutType     String // 'card1'..'card6' | 'editorial' | 'discovery'
+  kind           String // 'news' | 'editorial' | 'popular' | 'random'
+  publisherId    String?
+  editorialBody  String?
+  categoryFilter String?
+
+  // react-grid-layout geometry
+  layoutX    Int @default(0)
+  layoutY    Int @default(0)
+  layoutW    Int @default(1)
+  layoutH    Int @default(1)
+  layoutMinW Int @default(1)
+  layoutMinH Int @default(1)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Publisher {
+  id        String    @id
+  name      String
+  url       String
+  category  String
+  language  String    @default("en")
+  articles  Article[]
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+}
+
+model Article {
+  id          String @id
+  title       String
+  summary     String // RSS excerpt (~280 chars)
+  fullContent String
+
+  // AI enrichment outputs — generated once, shared by all users.
+  aiSummary  String? // Scan mode (S): 2 short sentences
+  aiHeadings String? // Skim mode (H): JSON string of string[]
+  aiFull     String? // Full mode (F): cleaned/rewritten full read
+
+  author    String
+  date      String // ISO yyyy-mm-dd
+  category  String
+  publisher Publisher @relation(fields: [sourceId], references: [id], onDelete: Cascade)
+  sourceUrl String
+  sourceId  String
+  imageUrl  String?
+
+  // Enrichment tracking.
+  enrichmentStatus String    @default("PENDING") // PENDING | PROCESSING | ENRICHED | FAILED
+  enrichRetries    Int       @default(0)
+  enrichLastError  String?
+  enrichedAt       DateTime?
+  contentHash      String // hash(title+fullContent) — enrichment idempotency key
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([sourceId, date(sort: Desc)])
+  @@index([date(sort: Desc)])
+  @@index([enrichmentStatus, enrichRetries])
+}
