@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useAuthStore } from "@/features/auth/store";
 import { useLogout } from "@/features/auth/queries";
@@ -71,6 +72,12 @@ export default function Navbar({
 
         {/* Right: actions */}
         <div className="flex items-center gap-2.5">
+          <Link
+            href="/discover"
+            className="hidden rounded-pill border border-line bg-surface px-3 py-1.5 text-xs font-extrabold uppercase text-ink shadow-sm hover:bg-surface-hover sm:block"
+          >
+            Discover
+          </Link>
           <button
             onClick={onShare}
             className="hidden rounded-pill border border-line bg-surface px-3 py-1.5 text-xs font-extrabold uppercase text-ink shadow-sm hover:bg-surface-hover sm:block"

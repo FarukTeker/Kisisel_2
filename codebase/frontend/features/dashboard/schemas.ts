@@ -36,5 +36,20 @@ export const dashboardResponseSchema = z.object({ newspaper: newspaperSchema });
 export const sharedResponseSchema = z.object({ newspaper: newspaperSchema });
 export const shareResponseSchema = z.object({ slug: z.string() });
 
+/** Lightweight metadata for the Discover listing. */
+export const discoverNewspaperSchema = z.object({
+  slug: z.string(),
+  name: z.string(),
+  description: z.string().nullable(),
+  curator: z.string(),
+  readingMode: readingModeSchema,
+  widgetCount: z.number(),
+  widgets: z.array(z.object({ kind: z.string(), layoutType: z.string() })),
+});
+export const discoverResponseSchema = z.object({
+  newspapers: z.array(discoverNewspaperSchema),
+});
+export type DiscoverNewspaper = z.infer<typeof discoverNewspaperSchema>;
+
 export type WidgetRow = z.infer<typeof widgetRowSchema>;
 export type Newspaper = z.infer<typeof newspaperSchema>;

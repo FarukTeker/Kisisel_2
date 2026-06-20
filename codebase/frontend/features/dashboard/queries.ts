@@ -3,6 +3,7 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useAuthStore } from "@/features/auth/store";
 import {
+  fetchDiscover,
   loadDashboard,
   saveDashboard,
   shareDashboard,
@@ -11,7 +12,16 @@ import {
 
 export const dashboardKeys = {
   dashboard: ["dashboard"] as const,
+  discover: ["discover"] as const,
 };
+
+export function useDiscover() {
+  return useQuery({
+    queryKey: dashboardKeys.discover,
+    queryFn: fetchDiscover,
+    staleTime: 60 * 1000,
+  });
+}
 
 export function useDashboard() {
   const token = useAuthStore((s) => s.token);

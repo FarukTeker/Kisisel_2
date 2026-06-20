@@ -1,8 +1,10 @@
 import { apiRequest } from "@/lib/api/client";
 import {
   dashboardResponseSchema,
+  discoverResponseSchema,
   shareResponseSchema,
   sharedResponseSchema,
+  type DiscoverNewspaper,
   type Newspaper,
 } from "./schemas";
 import {
@@ -113,6 +115,14 @@ export async function shareDashboard(
     },
   });
   return data.slug;
+}
+
+export async function fetchDiscover(): Promise<DiscoverNewspaper[]> {
+  const data = await apiRequest("/newspapers/discover", {
+    schema: discoverResponseSchema,
+    auth: false,
+  });
+  return data.newspapers;
 }
 
 export async function fetchSharedNewspaper(slug: string): Promise<DashboardState> {

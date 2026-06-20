@@ -1,7 +1,6 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
-import { useAuthStore } from "@/features/auth/store";
 import {
   fetchArticles,
   fetchPopular,
@@ -18,47 +17,37 @@ export const articleKeys = {
   random: (count: number) => ["articles", "random", count] as const,
 };
 
-/** Articles are only fetched once authenticated (endpoints are guarded). */
-function useAuthed() {
-  return Boolean(useAuthStore((s) => s.token));
-}
+// Article endpoints are public, so these run without a token too — required for
+// the logged-out shared-newspaper view.
 
 export function useSources() {
-  const enabled = useAuthed();
   return useQuery({
     queryKey: articleKeys.sources,
     queryFn: fetchSources,
-    enabled,
     staleTime: 30 * 60 * 1000,
   });
 }
 
 export function useArticles(sourceId?: string, limit = 20) {
-  const enabled = useAuthed();
   return useQuery({
     queryKey: articleKeys.list(sourceId, limit),
     queryFn: () => fetchArticles({ sourceId, limit }),
-    enabled,
     staleTime: 5 * 60 * 1000,
   });
 }
 
 export function usePopularArticles(limit = 8) {
-  const enabled = useAuthed();
   return useQuery({
     queryKey: articleKeys.popular(limit),
     queryFn: () => fetchPopular(limit),
-    enabled,
     staleTime: 5 * 60 * 1000,
   });
 }
 
 export function useRandomArticles(count = 5) {
-  const enabled = useAuthed();
   return useQuery({
     queryKey: articleKeys.random(count),
     queryFn: () => fetchRandom(count),
-    enabled,
     staleTime: 5 * 60 * 1000,
   });
 }
