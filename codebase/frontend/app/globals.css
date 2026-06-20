@@ -1,11 +1,98 @@
 @import "tailwindcss";
 @config "../tailwind.config.ts";
 
+/* ---- Theme tokens (switched at runtime via [data-theme]) ---- */
+:root {
+  --background: #f3eee6;
+  --foreground: #171717;
+  --primary: #2647d6;
+  --primary-hover: #1d37a4;
+  --surface: #fffdfa;
+  --surface-hover: #f8f3eb;
+  --border: #d7ccbd;
+  --text-muted: #6a665f;
+  --text-soft: #8b8478;
+  --bg-grad-top: #f9f5ee;
+  --bg-grad-bottom: #efe6d8;
+
+  /* Font tokens (the *-var names are wired in app/layout.tsx) */
+  --font-sans-stack: var(--font-sans), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-serif-stack: var(--font-serif), Georgia, "Times New Roman", serif;
+  --font-lora-stack: var(--font-lora), Georgia, serif;
+  --font-outfit-stack: var(--font-outfit), sans-serif;
+  --font-mono-stack: var(--font-mono), Menlo, Monaco, "Courier New", monospace;
+  --app-font: var(--font-sans-stack);
+}
+
+[data-theme="Dark"] {
+  --background: #111827;
+  --foreground: #f9fafb;
+  --primary: #3b82f6;
+  --primary-hover: #60a5fa;
+  --surface: #1f2937;
+  --surface-hover: #374151;
+  --border: #4b5563;
+  --text-muted: #9ca3af;
+  --text-soft: #d1d5db;
+  --bg-grad-top: #1f2937;
+  --bg-grad-bottom: #030712;
+}
+
+[data-theme="Sepia"] {
+  --background: #f4ecd8;
+  --foreground: #433422;
+  --primary: #c2410c;
+  --primary-hover: #9a3412;
+  --surface: #fdf6e3;
+  --surface-hover: #f5deb3;
+  --border: #dcb388;
+  --text-muted: #785a3c;
+  --text-soft: #a88661;
+  --bg-grad-top: #fdf6e3;
+  --bg-grad-bottom: #e1cda1;
+}
+
 body {
-  background: linear-gradient(180deg, #f9f5ee 0%, #efe6d8 100%);
+  background: linear-gradient(180deg, var(--bg-grad-top) 0%, var(--bg-grad-bottom) 100%);
   background-attachment: fixed;
-  color: #171717;
-  font-family: var(--font-sans), Arial, Helvetica, sans-serif;
+  color: var(--foreground);
+  font-family: var(--app-font);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ---- react-grid-layout ---- */
+.feed-rgl .react-grid-item {
+  transition: transform 260ms cubic-bezier(0.22, 1, 0.36, 1),
+    width 260ms cubic-bezier(0.22, 1, 0.36, 1),
+    height 260ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+.feed-rgl .react-grid-item.react-grid-placeholder {
+  background: rgba(49, 94, 251, 0.12);
+  border: 2px dashed #315efb;
+  border-radius: 20px;
+}
+.feed-rgl .react-grid-item.react-draggable-dragging,
+.feed-rgl .react-grid-item.resizing {
+  transition: none;
+  z-index: 20;
+}
+.feed-rgl-editing .react-grid-item {
+  cursor: grab;
+}
+.react-resizable-handle {
+  position: absolute;
+  width: 18px;
+  height: 18px;
+  right: 6px;
+  bottom: 6px;
+  background: var(--surface);
+  border: 1.5px solid var(--foreground);
+  border-radius: 999px;
+  cursor: nwse-resize;
+  display: none;
+}
+.feed-rgl-editing .react-resizable-handle {
+  display: block;
 }
 
 @keyframes fade-in {
@@ -18,7 +105,6 @@ body {
     transform: translateY(0);
   }
 }
-
 .animate-fade-in {
   animation: fade-in 0.35s ease-out;
 }
