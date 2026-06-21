@@ -25,6 +25,7 @@ export class NewspapersService {
         name: p.name,
         description: p.description,
         curator: p.curator.name,
+        curatorId: p.curatorId,
         readingMode: p.readingMode,
         widgetCount: p.widgets.length,
         widgets: p.widgets.map((w) => ({ kind: w.kind, layoutType: w.layoutType })),

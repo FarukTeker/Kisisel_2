@@ -8,6 +8,7 @@ import { AuthModule } from './auth/auth.module';
 import { IngestionModule } from './ingestion/ingestion.module';
 import { ArticlesModule } from './articles/articles.module';
 import { NewspapersModule } from './newspapers/newspapers.module';
+import { FollowsModule } from './follows/follows.module';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { NewspapersModule } from './newspapers/newspapers.module';
     IngestionModule,
     ArticlesModule,
     NewspapersModule,
+    FollowsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

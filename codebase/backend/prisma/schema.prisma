@@ -13,8 +13,22 @@ model User {
   email        String      @unique
   passwordHash String
   newspapers   Newspaper[]
+  following    Follow[]    @relation("following")
+  followers    Follow[]    @relation("followers")
   createdAt    DateTime    @default(now())
   updatedAt    DateTime    @updatedAt
+}
+
+model Follow {
+  id          String   @id @default(cuid())
+  followerId  String
+  followingId String
+  follower    User     @relation("following", fields: [followerId], references: [id], onDelete: Cascade)
+  following   User     @relation("followers", fields: [followingId], references: [id], onDelete: Cascade)
+  createdAt   DateTime @default(now())
+
+  @@unique([followerId, followingId])
+  @@index([followerId])
 }
 
 model Newspaper {
