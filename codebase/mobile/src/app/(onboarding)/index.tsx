@@ -54,8 +54,15 @@ export default function OnboardingScreen() {
   };
 
   const next = () => {
-    if (isLast) void completeOnboarding();
-    else listRef.current?.scrollToIndex({ index: index + 1 });
+    if (isLast) {
+      void completeOnboarding();
+      return;
+    }
+    // Optimistically advance the index so the button label / isLast stay correct
+    // even on platforms where programmatic scroll doesn't fire onMomentumScrollEnd.
+    const nextIndex = index + 1;
+    setIndex(nextIndex);
+    listRef.current?.scrollToIndex({ index: nextIndex });
   };
 
   return (
