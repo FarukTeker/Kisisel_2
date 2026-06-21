@@ -1,6 +1,6 @@
 "use client";
 
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useAuthStore } from "@/features/auth/store";
 import {
   fetchDiscover,
@@ -34,8 +34,14 @@ export function useDashboard() {
 }
 
 export function useSaveDashboard() {
+  const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (state: DashboardState) => saveDashboard(state),
+    // Keep the dashboard cache in sync with what we just saved, so navigating
+    // away and back (which remounts and re-hydrates from cache) reflects edits.
+    onSuccess: (_data, state) => {
+      queryClient.setQueryData(dashboardKeys.dashboard, state);
+    },
   });
 }
 

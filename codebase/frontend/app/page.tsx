@@ -73,15 +73,29 @@ export default function Dashboard() {
     setHydrated(true);
   }, [loaded, hydrated, setTheme, setFont]);
 
-  // Debounced autosave.
+  // Debounced autosave. `stateRef` always holds the latest state so we can flush
+  // it on unmount (otherwise a quick navigation within the debounce window drops
+  // the last edit).
   const saveRef = useRef(save);
   saveRef.current = save;
+  const stateRef = useRef<DashboardState | null>(null);
+  stateRef.current = hydrated
+    ? { widgets, layout, readingMode, columns, theme, font }
+    : null;
+
   useEffect(() => {
     if (!hydrated) return;
     const state: DashboardState = { widgets, layout, readingMode, columns, theme, font };
     const t = setTimeout(() => saveRef.current.mutate(state), 500);
     return () => clearTimeout(t);
   }, [widgets, layout, readingMode, columns, theme, font, hydrated]);
+
+  // Flush the latest state when leaving the page.
+  useEffect(() => {
+    return () => {
+      if (stateRef.current) saveRef.current.mutate(stateRef.current);
+    };
+  }, []);
 
   const selectedWidget = selectedId
     ? widgets.find((w) => w.id === selectedId) ?? null
