@@ -19,17 +19,21 @@ import {
   type WidgetKind,
   type WidgetLayoutType,
 } from "@/features/dashboard/widgets";
+import type { ShareStatus } from "@/features/dashboard/schemas";
 
 interface SettingsModalProps {
   isOpen: boolean;
   onClose: () => void;
   selectedWidget: WidgetConfig | null;
+  name: string;
+  onNameChange: (name: string) => void;
   columns: number;
   onColumnsChange: (n: number) => void;
   onAddWidget: (w: { title: string; kind: WidgetKind; layoutType: WidgetLayoutType; publisherId?: string }) => void;
   onUpdateWidget: (id: string, patch: Partial<WidgetConfig>) => void;
   onDeleteWidget: (id: string) => void;
   onShare: () => void;
+  shareStatus?: ShareStatus;
 }
 
 const GLOBAL_TABS = ["Design", "Layout", "Widgets", "Share"] as const;
@@ -60,11 +64,14 @@ export default function SettingsModal(props: SettingsModalProps) {
 }
 
 function GlobalSettings({
+  name,
+  onNameChange,
   columns,
   onColumnsChange,
   onAddWidget,
   onShare,
   onClose,
+  shareStatus,
 }: SettingsModalProps) {
   const t = useT();
   const [tab, setTab] = useState<(typeof GLOBAL_TABS)[number]>("Design");
@@ -95,6 +102,17 @@ function GlobalSettings({
         <div className="min-h-[380px] flex-1">
           {tab === "Design" && (
             <div className="flex flex-col gap-5">
+              <Field label={t("settings.name")}>
+                <input
+                  type="text"
+                  value={name}
+                  onChange={(e) => onNameChange(e.target.value)}
+                  placeholder={t("settings.namePlaceholder")}
+                  maxLength={60}
+                  className="w-full rounded-lg border border-line bg-surface px-3 py-2 text-sm font-semibold text-ink outline-none focus:border-brand"
+                />
+                <p className="mt-2 text-xs text-muted">{t("settings.nameHint")}</p>
+              </Field>
               <Field label={t("settings.theme")}>
                 <div className="flex gap-2">
                   {THEMES.map((th) => (
@@ -167,9 +185,20 @@ function GlobalSettings({
           {tab === "Share" && (
             <div className="flex flex-col gap-3">
               <p className="text-sm text-ink-soft">{t("settings.shareHint")}</p>
+              {shareStatus && !shareStatus.isOpen && (
+                <p className="text-sm font-bold text-amber-600">
+                  {t("share.opensAt").replace("{hour}", String(shareStatus.opensAtHour))}
+                </p>
+              )}
+              {shareStatus?.alreadySharedToday && (
+                <p className="text-sm font-bold text-emerald-600">
+                  {t("share.alreadyToday")}
+                </p>
+              )}
               <button
                 onClick={onShare}
-                className="self-start rounded-pill bg-brand px-5 py-2 text-sm font-extrabold uppercase text-white"
+                disabled={shareStatus ? !shareStatus.canShare : false}
+                className="self-start rounded-pill bg-brand px-5 py-2 text-sm font-extrabold uppercase text-white disabled:cursor-not-allowed disabled:opacity-50"
               >
                 {t("settings.shareButton")}
               </button>

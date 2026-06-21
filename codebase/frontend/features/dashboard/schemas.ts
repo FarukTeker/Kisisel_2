@@ -39,6 +39,14 @@ export const dashboardResponseSchema = z.object({ newspaper: newspaperSchema });
 export const sharedResponseSchema = z.object({ newspaper: newspaperSchema });
 export const shareResponseSchema = z.object({ slug: z.string() });
 
+export const shareStatusSchema = z.object({
+  canShare: z.boolean(),
+  isOpen: z.boolean(),
+  alreadySharedToday: z.boolean(),
+  opensAtHour: z.number(),
+});
+export type ShareStatus = z.infer<typeof shareStatusSchema>;
+
 /** Lightweight metadata for the Discover listing. */
 export const discoverNewspaperSchema = z.object({
   slug: z.string(),

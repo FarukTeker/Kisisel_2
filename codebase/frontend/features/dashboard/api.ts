@@ -3,9 +3,11 @@ import {
   dashboardResponseSchema,
   discoverResponseSchema,
   shareResponseSchema,
+  shareStatusSchema,
   sharedResponseSchema,
   type DiscoverNewspaper,
   type Newspaper,
+  type ShareStatus,
 } from "./schemas";
 import {
   type LayoutItem,
@@ -17,6 +19,7 @@ import type { ReadingMode } from "@/features/articles/reading-mode";
 import type { Language, Theme } from "@/features/settings/store";
 
 export interface DashboardState {
+  name: string;
   widgets: WidgetConfig[];
   layout: LayoutItem[];
   readingMode: ReadingMode;
@@ -29,6 +32,7 @@ export interface DashboardState {
 /** Split a backend newspaper into widget config + react-grid-layout geometry. */
 export function newspaperToState(np: Newspaper): DashboardState {
   return {
+    name: np.name,
     widgets: np.widgets.map((w) => ({
       id: w.id,
       title: w.title,
@@ -89,6 +93,7 @@ export async function saveDashboard(state: DashboardState): Promise<void> {
     method: "POST",
     schema: dashboardResponseSchema,
     body: {
+      name: state.name,
       widgets: stateToWidgets(state),
       readingMode: state.readingMode,
       columns: state.columns,
@@ -119,6 +124,10 @@ export async function shareDashboard(
     },
   });
   return data.slug;
+}
+
+export async function fetchShareStatus(): Promise<ShareStatus> {
+  return apiRequest("/newspapers/share-status", { schema: shareStatusSchema });
 }
 
 export async function fetchDiscover(): Promise<DiscoverNewspaper[]> {

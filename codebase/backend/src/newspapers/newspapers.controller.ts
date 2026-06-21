@@ -35,6 +35,13 @@ export class NewspapersController {
     return this.newspapers.share(user.sub, dto);
   }
 
+  // Whether the current user may share right now (daily window + once-per-day).
+  @Get('share-status')
+  @UseGuards(JwtAuthGuard)
+  shareStatus(@CurrentUser() user: JwtPayload) {
+    return this.newspapers.shareStatus(user.sub);
+  }
+
   // Public — list of shared newspapers for the Discover page.
   @Get('discover')
   discover() {

@@ -55,7 +55,11 @@ export class IngestionService implements OnApplicationBootstrap {
     await this.runIngestion();
   }
 
-  async runIngestion(): Promise<void> {
+  /**
+   * Runs the daily ingest. `force` bypasses the once-per-day guard so a manual
+   * trigger can re-fetch even when today's edition already has articles.
+   */
+  async runIngestion(force = false): Promise<void> {
     if (this.isIngesting) {
       this.logger.warn('Ingestion already running — skipping this trigger');
       return;
@@ -64,7 +68,7 @@ export class IngestionService implements OnApplicationBootstrap {
     const editionDate = this.todayEditionDate();
     // Exactly one ingestion per day: if today's edition already has articles, stop.
     const tagged = await this.prisma.articleEdition.count({ where: { editionDate } });
-    if (tagged > 0) {
+    if (!force && tagged > 0) {
       this.logger.log(`Already ingested edition ${editionDate} — skipping`);
       return;
     }

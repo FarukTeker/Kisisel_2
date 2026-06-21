@@ -16,7 +16,9 @@ import {
   useDashboard,
   useSaveDashboard,
   useShareDashboard,
+  useShareStatus,
 } from "@/features/dashboard/queries";
+import { ApiError } from "@/lib/api/client";
 import type { DashboardState } from "@/features/dashboard/api";
 import {
   DEFAULT_LAYOUT,
@@ -34,6 +36,7 @@ export default function Dashboard() {
   const { data: loaded, isLoading } = useDashboard();
   const save = useSaveDashboard();
   const share = useShareDashboard();
+  const { data: shareStatus } = useShareStatus();
   const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null);
 
   const theme = useSettingsStore((s) => s.theme);
@@ -44,6 +47,7 @@ export default function Dashboard() {
   const setLanguage = useSettingsStore((s) => s.setLanguage);
   const applySettings = useSettingsStore((s) => s.apply);
 
+  const [name, setName] = useState("My Newspaper");
   const [widgets, setWidgets] = useState<WidgetConfig[]>(DEFAULT_WIDGETS);
   const [layout, setLayout] = useState<LayoutItem[]>(DEFAULT_LAYOUT);
   const [readingMode, setReadingMode] = useState<ReadingMode>("S");
@@ -76,6 +80,7 @@ export default function Dashboard() {
       setWidgets(loaded.widgets);
       setLayout(loaded.layout);
     }
+    if (loaded.name) setName(loaded.name);
     setReadingMode(loaded.readingMode);
     setColumns(loaded.columns);
     setTheme(loaded.theme);
@@ -91,15 +96,15 @@ export default function Dashboard() {
   saveRef.current = save;
   const stateRef = useRef<DashboardState | null>(null);
   stateRef.current = hydrated
-    ? { widgets, layout, readingMode, columns, theme, font, language }
+    ? { name, widgets, layout, readingMode, columns, theme, font, language }
     : null;
 
   useEffect(() => {
     if (!hydrated) return;
-    const state: DashboardState = { widgets, layout, readingMode, columns, theme, font, language };
+    const state: DashboardState = { name, widgets, layout, readingMode, columns, theme, font, language };
     const t = setTimeout(() => saveRef.current.mutate(state), 500);
     return () => clearTimeout(t);
-  }, [widgets, layout, readingMode, columns, theme, font, language, hydrated]);
+  }, [name, widgets, layout, readingMode, columns, theme, font, language, hydrated]);
 
   // Flush the latest state when leaving the page.
   useEffect(() => {
@@ -159,15 +164,30 @@ export default function Dashboard() {
   );
 
   async function handleShare() {
+    // Guard early so the daily rules are clear even before hitting the API.
+    if (shareStatus && !shareStatus.isOpen) {
+      setToast(t("share.opensAt").replace("{hour}", String(shareStatus.opensAtHour)));
+      return;
+    }
+    if (shareStatus?.alreadySharedToday) {
+      setToast(t("share.alreadyToday"));
+      return;
+    }
     try {
-      const state: DashboardState = { widgets, layout, readingMode, columns, theme, font, language };
-      const slug = await share.mutateAsync({ state, name: "My Newspaper", description: "" });
+      const state: DashboardState = { name, widgets, layout, readingMode, columns, theme, font, language };
+      const slug = await share.mutateAsync({ state, name, description: "" });
       const url = `${window.location.origin}/newspaper/${slug}`;
       await navigator.clipboard.writeText(url).catch(() => {});
-      setToast(`Link copied! ${url}`);
+      setToast(`${t("share.success")} ${url}`);
       setSettingsOpen(false);
-    } catch {
-      setToast("Failed to share newspaper.");
+    } catch (err) {
+      if (err instanceof ApiError && err.status === 409) {
+        setToast(t("share.alreadyToday"));
+      } else if (err instanceof ApiError && err.status === 403) {
+        setToast(t("share.opensAt").replace("{hour}", String(shareStatus?.opensAtHour ?? 9)));
+      } else {
+        setToast(t("share.failed"));
+      }
     }
   }
 
@@ -193,6 +213,7 @@ export default function Dashboard() {
           if (!v) setSelectedId(null);
         }}
         onShare={handleShare}
+        canShare={shareStatus?.canShare ?? true}
         onSettings={() => {
           setSelectedId(null);
           setSettingsOpen(true);
@@ -246,12 +267,15 @@ export default function Dashboard() {
         isOpen={settingsOpen}
         onClose={() => setSettingsOpen(false)}
         selectedWidget={selectedWidget}
+        name={name}
+        onNameChange={setName}
         columns={columns}
         onColumnsChange={setColumns}
         onAddWidget={addWidget}
         onUpdateWidget={updateWidget}
         onDeleteWidget={deleteWidget}
         onShare={handleShare}
+        shareStatus={shareStatus}
       />
  
       <Toast message={toast} onDone={() => setToast(null)} />

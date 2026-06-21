@@ -1,12 +1,62 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  ConflictException,
+  ForbiddenException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import type { WidgetDto } from './dto/widget.dto';
 import type { SaveDashboardDto } from './dto/save-dashboard.dto';
 import type { ShareDashboardDto } from './dto/share-dashboard.dto';
 
+/** Daily sharing window: opens at 09:00 in this timezone, once per calendar day. */
+const SHARE_TIMEZONE = 'Europe/Istanbul';
+const SHARE_OPEN_HOUR = 9;
+
 @Injectable()
 export class NewspapersService {
   constructor(private readonly prisma: PrismaService) {}
+
+  /** Current calendar day (YYYY-MM-DD) and hour (0–23) in the share timezone. */
+  private nowParts() {
+    const now = new Date();
+    const day = now.toLocaleDateString('en-CA', { timeZone: SHARE_TIMEZONE });
+    const hour = Number(
+      new Intl.DateTimeFormat('en-GB', {
+        timeZone: SHARE_TIMEZONE,
+        hourCycle: 'h23',
+        hour: '2-digit',
+      }).format(now),
+    );
+    return { day, hour };
+  }
+
+  /** Has this curator already published a share on the given calendar day? */
+  private async hasSharedOn(userId: string, day: string) {
+    const latest = await this.prisma.newspaper.findFirst({
+      where: { curatorId: userId, slug: { startsWith: 'share-' } },
+      orderBy: { createdAt: 'desc' },
+      select: { createdAt: true },
+    });
+    if (!latest) return false;
+    const sharedDay = latest.createdAt.toLocaleDateString('en-CA', {
+      timeZone: SHARE_TIMEZONE,
+    });
+    return sharedDay === day;
+  }
+
+  /** Whether the current user may share right now, for the UI to reflect. */
+  async shareStatus(userId: string) {
+    const { day, hour } = this.nowParts();
+    const isOpen = hour >= SHARE_OPEN_HOUR;
+    const alreadySharedToday = await this.hasSharedOn(userId, day);
+    return {
+      canShare: isOpen && !alreadySharedToday,
+      isOpen,
+      alreadySharedToday,
+      opensAtHour: SHARE_OPEN_HOUR,
+    };
+  }
 
   /** Public list of shared newspapers for the Discover page. */
   async discover() {
@@ -58,6 +108,7 @@ export class NewspapersService {
     });
 
     const settings = {
+      ...(dto.name ? { name: dto.name } : {}),
       ...(dto.readingMode ? { readingMode: dto.readingMode } : {}),
       ...(dto.columns ? { columns: dto.columns } : {}),
       ...(dto.theme ? { theme: dto.theme } : {}),
@@ -91,6 +142,16 @@ export class NewspapersService {
 
   /** Snapshot the current layout into a public, shareable newspaper. */
   async share(userId: string, dto: ShareDashboardDto) {
+    const { day, hour } = this.nowParts();
+    if (hour < SHARE_OPEN_HOUR) {
+      throw new ForbiddenException(
+        `Sharing opens at ${SHARE_OPEN_HOUR}:00.`,
+      );
+    }
+    if (await this.hasSharedOn(userId, day)) {
+      throw new ConflictException('You have already shared today.');
+    }
+
     const slug = `share-${Math.random().toString(36).slice(2, 8)}`;
     const newspaper = await this.prisma.newspaper.create({
       data: {

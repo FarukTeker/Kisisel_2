@@ -12,6 +12,10 @@ import {
 import { WidgetDto } from './widget.dto';
 
 export class SaveDashboardDto {
+  @IsOptional()
+  @IsString()
+  name?: string;
+
   @IsArray()
   @ValidateNested({ each: true })
   @Type(() => WidgetDto)

@@ -1,10 +1,12 @@
 import { Module } from '@nestjs/common';
+import { AuthModule } from '../auth/auth.module';
 import { PipelineRunner } from './pipeline/pipeline.runner';
 import { INGESTION_STAGES, ENRICHMENT_STAGES } from './pipeline/tokens';
 import { RssSourcesService } from './rss/rss-sources.service';
 import { RssFetcherService } from './rss/rss-fetcher.service';
 import { GroqService } from './groq/groq.service';
 import { IngestionService } from './ingestion.service';
+import { IngestionController } from './ingestion.controller';
 import { EnrichmentWorker } from './enrichment.worker';
 import { NormalizeStage } from './stages/normalize.stage';
 import { PersistStage } from './stages/persist.stage';
@@ -15,6 +17,8 @@ import { AiFullStage } from './stages/ai-full.stage';
 import { TranslateStage } from './stages/translate.stage';
 
 @Module({
+  imports: [AuthModule],
+  controllers: [IngestionController],
   providers: [
     PipelineRunner,
     RssSourcesService,

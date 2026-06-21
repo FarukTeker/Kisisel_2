@@ -23,6 +23,12 @@ export const DICTIONARY = {
   "settings.tab.layout": { en: "Layout", tr: "Düzen" },
   "settings.tab.widgets": { en: "Widgets", tr: "Bileşenler" },
   "settings.tab.share": { en: "Share", tr: "Paylaş" },
+  "settings.name": { en: "Newspaper name", tr: "Gazete adı" },
+  "settings.namePlaceholder": { en: "My Newspaper", tr: "Gazetem" },
+  "settings.nameHint": {
+    en: "The title shown on Discover and on your shared newspaper.",
+    tr: "Keşfet sayfasında ve paylaştığınız gazetede görünen başlık.",
+  },
   "settings.theme": { en: "Theme", tr: "Tema" },
   "settings.font": { en: "Font", tr: "Yazı tipi" },
   "settings.language": { en: "Language", tr: "Dil" },
@@ -38,6 +44,19 @@ export const DICTIONARY = {
   "settings.shareButton": {
     en: "Generate link & copy",
     tr: "Bağlantı oluştur & kopyala",
+  },
+  "share.success": { en: "Link copied!", tr: "Bağlantı kopyalandı!" },
+  "share.failed": {
+    en: "Failed to share newspaper.",
+    tr: "Gazete paylaşılamadı.",
+  },
+  "share.opensAt": {
+    en: "Sharing opens at {hour}:00.",
+    tr: "Paylaşım saat {hour}:00'da açılır.",
+  },
+  "share.alreadyToday": {
+    en: "You have already shared today.",
+    tr: "Bugün zaten paylaştınız.",
   },
 
   // Audio / narration
