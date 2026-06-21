@@ -120,7 +120,7 @@ export default function Dashboard() {
 
   const addWidget = useCallback(
     (w: { title: string; kind: WidgetConfig["kind"]; layoutType: WidgetConfig["layoutType"]; publisherId?: string }) => {
-      const id = `widget-${Date.now()}`;
+      const id = `widget-${crypto.randomUUID()}`;
       const config: WidgetConfig = {
         id,
         title: w.title,
