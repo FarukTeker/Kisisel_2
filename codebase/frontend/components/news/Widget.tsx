@@ -106,7 +106,7 @@ function ArticleBody({ config, mode }: { config: WidgetConfig; mode: ReadingMode
 }
 
 function FullCard({ article, showImage }: { article: Article; showImage: boolean }) {
-  const { text, pending } = readingContent(article, "F");
+  const { text } = readingContent(article, "F");
   return (
     <article className="flex flex-col gap-2">
       {showImage && article.imageUrl && (
@@ -116,13 +116,13 @@ function FullCard({ article, showImage }: { article: Article; showImage: boolean
       <Meta article={article} />
       <h3 className="font-serif text-lg font-bold leading-tight text-ink">{article.title}</h3>
       <p className="whitespace-pre-line text-sm leading-relaxed text-ink-soft">{text}</p>
-      <Footer article={article} pending={pending} />
+      <Footer article={article} />
     </article>
   );
 }
 
 function ScanRow({ article, showImage }: { article: Article; showImage: boolean }) {
-  const { text, pending } = readingContent(article, "S");
+  const { text } = readingContent(article, "S");
   return (
     <article className="flex gap-3 border-b border-line pb-3 last:border-0">
       {showImage && article.imageUrl && (
@@ -135,7 +135,6 @@ function ScanRow({ article, showImage }: { article: Article; showImage: boolean 
         <p className="mt-1 line-clamp-2 text-[0.8rem] leading-relaxed text-ink-soft">{text}</p>
         <div className="mt-1.5 flex items-center gap-2">
           <ListenButton articleId={article.id} />
-          {pending && <PendingPill />}
         </div>
       </div>
     </article>
@@ -143,7 +142,7 @@ function ScanRow({ article, showImage }: { article: Article; showImage: boolean 
 }
 
 function SkimRow({ article }: { article: Article }) {
-  const { headings, pending } = readingContent(article, "H");
+  const { headings } = readingContent(article, "H");
   return (
     <article className="border-b border-line pb-3 last:border-0">
       <Meta article={article} />
@@ -155,7 +154,6 @@ function SkimRow({ article }: { article: Article }) {
       </ul>
       <div className="mt-1.5 flex items-center gap-2">
         <ListenButton articleId={article.id} />
-        {pending && <PendingPill />}
       </div>
     </article>
   );
@@ -173,7 +171,7 @@ function Meta({ article }: { article: Article }) {
   );
 }
 
-function Footer({ article, pending }: { article: Article; pending: boolean }) {
+function Footer({ article }: { article: Article }) {
   return (
     <div className="mt-1 flex flex-wrap items-center gap-2">
       <a
@@ -185,16 +183,7 @@ function Footer({ article, pending }: { article: Article; pending: boolean }) {
         Open source ↗
       </a>
       <ListenButton articleId={article.id} />
-      {pending && <PendingPill />}
     </div>
-  );
-}
-
-function PendingPill() {
-  return (
-    <span className="mt-1 inline-block rounded-pill bg-amber-100 px-2 py-0.5 text-[0.6rem] font-bold uppercase text-amber-700">
-      AI generating…
-    </span>
   );
 }
 
