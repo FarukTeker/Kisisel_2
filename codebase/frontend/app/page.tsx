@@ -7,6 +7,8 @@ import Navbar from "@/components/layout/Navbar";
 import Widget from "@/components/news/Widget";
 import SettingsModal from "@/components/dashboard/SettingsModal";
 import Toast from "@/components/ui/Toast";
+import Modal from "@/components/ui/Modal";
+import { useT } from "@/features/i18n/useT";
 import { useAuthStore } from "@/features/auth/store";
 import { useSettingsStore } from "@/features/settings/store";
 import { useEditions } from "@/features/articles/queries";
@@ -28,9 +30,11 @@ import type { ReadingMode } from "@/features/articles/reading-mode";
 export default function Dashboard() {
   const router = useRouter();
   const token = useAuthStore((s) => s.token);
+  const t = useT();
   const { data: loaded, isLoading } = useDashboard();
   const save = useSaveDashboard();
   const share = useShareDashboard();
+  const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null);
 
   const theme = useSettingsStore((s) => s.theme);
   const font = useSettingsStore((s) => s.font);
@@ -110,6 +114,24 @@ export default function Dashboard() {
 
   const updateWidget = useCallback((id: string, patch: Partial<WidgetConfig>) => {
     setWidgets((prev) => prev.map((w) => (w.id === id ? { ...w, ...patch } : w)));
+    if (patch.layoutType) {
+      setLayout((prev) =>
+        prev.map((item) => {
+          if (item.i === id) {
+            const isWide = patch.layoutType === "card2" || patch.layoutType === "card6";
+            const isTall = patch.layoutType === "card1" || patch.layoutType === "card5";
+            const isEditorial = patch.layoutType === "editorial";
+            const isDiscovery = patch.layoutType === "discovery";
+            return {
+              ...item,
+              w: isEditorial || isWide || isDiscovery ? 2 : 1,
+              h: isEditorial ? 3 : isDiscovery ? 2 : isTall ? 4 : 3,
+            };
+          }
+          return item;
+        })
+      );
+    }
   }, []);
 
   const deleteWidget = useCallback((id: string) => {
@@ -120,7 +142,7 @@ export default function Dashboard() {
 
   const addWidget = useCallback(
     (w: { title: string; kind: WidgetConfig["kind"]; layoutType: WidgetConfig["layoutType"]; publisherId?: string }) => {
-      const id = `widget-${Date.now()}`;
+      const id = `widget-${crypto.randomUUID()}`;
       const config: WidgetConfig = {
         id,
         title: w.title,
@@ -212,14 +234,14 @@ export default function Dashboard() {
                     setSelectedId(w.id);
                     setSettingsOpen(true);
                   }}
-                  onDelete={() => deleteWidget(w.id)}
+                  onDelete={() => setDeleteConfirmId(w.id)}
                 />
               </div>
             ))}
           </Responsive>
         )}
       </main>
-
+ 
       <SettingsModal
         isOpen={settingsOpen}
         onClose={() => setSettingsOpen(false)}
@@ -231,8 +253,40 @@ export default function Dashboard() {
         onDeleteWidget={deleteWidget}
         onShare={handleShare}
       />
-
+ 
       <Toast message={toast} onDone={() => setToast(null)} />
+
+      <Modal
+        isOpen={deleteConfirmId !== null}
+        onClose={() => setDeleteConfirmId(null)}
+        title={t("widget.deleteConfirmTitle")}
+        maxWidth={420}
+      >
+        <div className="flex flex-col gap-4">
+          <p className="text-sm text-ink-soft leading-relaxed">
+            {t("widget.deleteConfirmMessage")}
+          </p>
+          <div className="flex justify-end gap-3">
+            <button
+              onClick={() => setDeleteConfirmId(null)}
+              className="rounded-pill border border-line px-5 py-2 text-sm font-extrabold uppercase text-ink hover:bg-surface-hover"
+            >
+              {t("action.cancel")}
+            </button>
+            <button
+              onClick={() => {
+                if (deleteConfirmId) {
+                  deleteWidget(deleteConfirmId);
+                  setDeleteConfirmId(null);
+                }
+              }}
+              className="rounded-pill bg-red-600 px-5 py-2 text-sm font-extrabold uppercase text-white hover:bg-red-700"
+            >
+              {t("action.delete")}
+            </button>
+          </div>
+        </div>
+      </Modal>
     </div>
   );
 }
