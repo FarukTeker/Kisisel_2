@@ -47,6 +47,13 @@ export const DICTIONARY = {
   "audio.error": { en: "Audio failed", tr: "Ses hatası" },
   "audio.addToQueue": { en: "Add to Queue (Play continuously)", tr: "Sıraya Ekle (Kesintisiz dinle)" },
   "audio.removeFromQueue": { en: "Remove from queue", tr: "Sıradan kaldır" },
+  "audio.nowPlaying": { en: "Now Playing", tr: "Şimdi Çalıyor" },
+  "audio.player.skipNext": { en: "Skip to next", tr: "Sonrakine geç" },
+  "audio.player.queueToggle": { en: "Up Next Queue", tr: "Sıradaki listesi" },
+  "audio.player.close": { en: "Close Player", tr: "Oynatıcıyı kapat" },
+  "audio.player.upNext": { en: "Up Next", tr: "Sıradakiler" },
+  "audio.player.clearAll": { en: "Clear All", tr: "Tümünü temizle" },
+  "audio.player.emptyQueue": { en: "No articles in queue.", tr: "Sırada makale yok." },
 
   // Discover
   "discover.title": { en: "Discover", tr: "Keşfet" },

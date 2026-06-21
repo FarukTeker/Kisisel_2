@@ -43,7 +43,7 @@ export default function QueueButton({
           </svg>
         </span>
         <span className="pointer-events-none absolute bottom-full mb-1.5 scale-75 opacity-0 group-hover/tooltip:scale-100 group-hover/tooltip:opacity-100 transition-all duration-150 rounded bg-ink px-2 py-0.5 text-[0.62rem] font-extrabold uppercase tracking-wider text-surface shadow-md whitespace-nowrap z-30">
-          Now Playing
+          {t("audio.nowPlaying")}
         </span>
       </div>
     );

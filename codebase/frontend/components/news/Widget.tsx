@@ -10,6 +10,7 @@ import {
   readingContent,
   type ReadingMode,
 } from "@/features/articles/reading-mode";
+import type { WidgetConfig } from "@/features/dashboard/widgets";
 import ListenButton from "@/components/news/ListenButton";
 import QueueButton from "@/components/news/QueueButton";
 
