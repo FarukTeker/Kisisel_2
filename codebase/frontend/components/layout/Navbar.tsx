@@ -8,6 +8,7 @@ import { useSettingsStore } from "@/features/settings/store";
 import { useT } from "@/features/i18n/useT";
 import type { ReadingMode } from "@/features/articles/reading-mode";
 import type { TranslationKey } from "@/features/i18n/dictionary";
+import type { Edition } from "@/features/articles/schemas";
 
 const MODES: { id: ReadingMode; labelKey: TranslationKey }[] = [
   { id: "S", labelKey: "mode.S" },
@@ -22,6 +23,10 @@ interface NavbarProps {
   setEditMode: (mode: boolean) => void;
   onShare: () => void;
   onSettings: () => void;
+  /** Daily-edition history (newest first); selecting one drives the dashboard. */
+  editions?: Edition[];
+  selectedDate?: string;
+  onSelectDate?: (date: string | undefined) => void;
 }
 
 export default function Navbar({
@@ -31,27 +36,63 @@ export default function Navbar({
   setEditMode,
   onShare,
   onSettings,
+  editions = [],
+  selectedDate,
+  onSelectDate,
 }: NavbarProps) {
   const router = useRouter();
   const user = useAuthStore((s) => s.user);
   const logout = useLogout();
   const t = useT();
   const language = useSettingsStore((s) => s.language);
+  const locale = language === "tr" ? "tr-TR" : "en-US";
 
-  const today = new Date().toLocaleDateString(language === "tr" ? "tr-TR" : "en-US", {
-    weekday: "short",
-    month: "short",
-    day: "numeric",
-  });
+  const fmtDate = (date: string) =>
+    new Date(date + "T00:00:00").toLocaleDateString(locale, {
+      weekday: "short",
+      month: "short",
+      day: "numeric",
+    });
+
+  const latest = editions[0]?.date;
+  const value = selectedDate ?? latest;
+  const isPast = value !== undefined && value !== latest;
+  const todayLabel = language === "tr" ? "Bugün" : "Today";
 
   return (
     <header className="sticky top-0 z-20 border-b border-line bg-surface/85 backdrop-blur">
       <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-3 px-5 py-3">
-        {/* Left: date + brand */}
+        {/* Left: edition selector + brand */}
         <div className="flex items-center gap-3">
-          <span className="rounded-pill border border-line bg-surface-hover px-2.5 py-1 text-[0.7rem] font-extrabold uppercase tracking-wide text-muted">
-            {today}
-          </span>
+          {editions.length > 0 ? (
+            <select
+              value={value}
+              onChange={(e) =>
+                onSelectDate?.(e.target.value === latest ? undefined : e.target.value)
+              }
+              title="Edition"
+              className={`rounded-pill border px-2.5 py-1 text-[0.7rem] font-extrabold uppercase tracking-wide ${
+                isPast
+                  ? "border-brand bg-brand/10 text-brand"
+                  : "border-line bg-surface-hover text-muted"
+              }`}
+            >
+              {editions.map((ed) => (
+                <option key={ed.date} value={ed.date}>
+                  {ed.date === latest ? `${todayLabel} · ` : ""}
+                  {fmtDate(ed.date)}
+                </option>
+              ))}
+            </select>
+          ) : (
+            <span className="rounded-pill border border-line bg-surface-hover px-2.5 py-1 text-[0.7rem] font-extrabold uppercase tracking-wide text-muted">
+              {new Date().toLocaleDateString(locale, {
+                weekday: "short",
+                month: "short",
+                day: "numeric",
+              })}
+            </span>
+          )}
           <h1 className="flex items-center gap-1.5 font-serif text-xl font-black uppercase tracking-tight text-ink">
             <span className="h-2 w-2 rounded-full bg-brand" />
             Kişisel

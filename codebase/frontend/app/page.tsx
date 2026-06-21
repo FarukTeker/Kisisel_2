@@ -6,7 +6,6 @@ import { Responsive, useContainerWidth, type Layout } from "react-grid-layout";
 import Navbar from "@/components/layout/Navbar";
 import Widget from "@/components/news/Widget";
 import SettingsModal from "@/components/dashboard/SettingsModal";
-import EditionPicker from "@/components/dashboard/EditionPicker";
 import Toast from "@/components/ui/Toast";
 import { useAuthStore } from "@/features/auth/store";
 import { useSettingsStore } from "@/features/settings/store";
@@ -176,12 +175,9 @@ export default function Dashboard() {
           setSelectedId(null);
           setSettingsOpen(true);
         }}
-      />
-
-      <EditionPicker
         editions={editions ?? []}
-        value={selectedDate}
-        onChange={setSelectedDate}
+        selectedDate={selectedDate}
+        onSelectDate={setSelectedDate}
       />
 
       <main ref={containerRef} className="mx-auto max-w-6xl px-4 py-6">
