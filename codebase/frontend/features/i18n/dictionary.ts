@@ -81,6 +81,20 @@ export const DICTIONARY = {
     en: "Something went wrong. Try again.",
     tr: "Bir şeyler ters gitti. Tekrar dene.",
   },
+  "login.forgot": { en: "Forgot password?", tr: "Parolanı mı unuttun?" },
+  "login.forgotTitle": { en: "Reset", tr: "Sıfırla" },
+  "login.forgotIntro": {
+    en: "Enter your email. If it matches an account, you can set a new password.",
+    tr: "E-postanı gir. Bir hesapla eşleşiyorsa yeni bir parola belirleyebilirsin.",
+  },
+  "login.continue": { en: "Continue", tr: "Devam et" },
+  "login.newPassword": { en: "new password", tr: "yeni parola" },
+  "login.resetSubmit": { en: "Set new password", tr: "Yeni parolayı kaydet" },
+  "login.backToLogin": { en: "Back to login", tr: "Girişe dön" },
+  "login.emailNotFound": {
+    en: "No account found for that email.",
+    tr: "Bu e-postayla bir hesap bulunamadı.",
+  },
 } as const;
 
 export type TranslationKey = keyof typeof DICTIONARY;

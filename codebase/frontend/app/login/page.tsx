@@ -5,11 +5,16 @@ import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { ApiError } from "@/lib/api/client";
 import { useAuthStore } from "@/features/auth/store";
-import { useLogin, useRegister } from "@/features/auth/queries";
+import {
+  useForgotPassword,
+  useLogin,
+  useRegister,
+  useResetPassword,
+} from "@/features/auth/queries";
 import { loginSchema, registerSchema } from "@/features/auth/schemas";
 import { useT } from "@/features/i18n/useT";
 
-type Mode = "login" | "register";
+type Mode = "login" | "register" | "forgot";
 
 const inputClass =
   "rounded-xl border border-line bg-white px-3.5 py-2.5 text-sm font-semibold text-zinc-900 outline-none focus:border-brand";
@@ -22,6 +27,8 @@ export default function LoginPage() {
   const token = useAuthStore((s) => s.token);
 
   const [mode, setMode] = useState<Mode>("login");
+  // Forgot flow: once the email is confirmed, reveal the new-password fields.
+  const [emailVerified, setEmailVerified] = useState(false);
   const [form, setForm] = useState({
     name: "",
     email: "",
@@ -32,7 +39,10 @@ export default function LoginPage() {
 
   const login = useLogin();
   const register = useRegister();
-  const isPending = login.isPending || register.isPending;
+  const forgot = useForgotPassword();
+  const reset = useResetPassword();
+  const isPending =
+    login.isPending || register.isPending || forgot.isPending || reset.isPending;
 
   // Already signed in → leave the auth screen.
   useEffect(() => {
@@ -42,6 +52,12 @@ export default function LoginPage() {
   const update = (key: keyof typeof form) => (value: string) =>
     setForm((prev) => ({ ...prev, [key]: value }));
 
+  function goMode(next: Mode) {
+    setError(null);
+    setEmailVerified(false);
+    setMode(next);
+  }
+
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setError(null);
@@ -49,39 +65,76 @@ export default function LoginPage() {
     try {
       if (mode === "login") {
         const parsed = loginSchema.safeParse(form);
-        if (!parsed.success) {
-          setError(parsed.error.issues[0].message);
-          return;
-        }
+        if (!parsed.success) return setError(parsed.error.issues[0].message);
         await login.mutateAsync(parsed.data);
-      } else {
+        router.replace("/");
+      } else if (mode === "register") {
         const parsed = registerSchema.safeParse(form);
-        if (!parsed.success) {
-          setError(parsed.error.issues[0].message);
-          return;
-        }
+        if (!parsed.success) return setError(parsed.error.issues[0].message);
         await register.mutateAsync(parsed.data);
+        router.replace("/");
+      } else if (mode === "forgot" && !emailVerified) {
+        // Step 1 — confirm the email exists.
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) {
+          return setError("Enter a valid email");
+        }
+        try {
+          await forgot.mutateAsync(form.email);
+          setEmailVerified(true);
+        } catch (err) {
+          return setError(
+            err instanceof ApiError && err.status === 404
+              ? t("login.emailNotFound")
+              : t("login.genericError"),
+          );
+        }
+      } else {
+        // Step 2 — set the new password.
+        if (form.password.length < 6) {
+          return setError("Password must be at least 6 characters");
+        }
+        if (form.password !== form.repeatPassword) {
+          return setError("Passwords do not match");
+        }
+        await reset.mutateAsync({ email: form.email, password: form.password });
+        router.replace("/");
       }
-      router.replace("/");
     } catch (err) {
       setError(err instanceof ApiError ? err.message : t("login.genericError"));
     }
   }
+
+  const title =
+    mode === "login"
+      ? t("login.loginTitle")
+      : mode === "register"
+        ? t("login.registerTitle")
+        : t("login.forgotTitle");
+
+  const submitLabel = isPending
+    ? t("login.wait")
+    : mode === "login"
+      ? t("login.submitLogin")
+      : mode === "register"
+        ? t("login.submitRegister")
+        : !emailVerified
+          ? t("login.continue")
+          : t("login.resetSubmit");
 
   return (
     <div className="flex min-h-screen items-center justify-center p-4">
       <div className="animate-fade-in w-full max-w-[460px] rounded-[28px] border border-line bg-surface px-6 py-9 shadow-[0_22px_50px_rgba(17,24,39,0.12)]">
         <div className="mb-5 flex items-center justify-end">
           <span className="text-[0.78rem] font-bold text-zinc-500">
-            {mode === "login" ? t("login.welcomeBack") : t("login.newCurator")}
+            {mode === "register" ? t("login.newCurator") : t("login.welcomeBack")}
           </span>
         </div>
 
         <h1 className="mb-5 text-center font-serif text-3xl font-black uppercase tracking-tight text-zinc-900">
-          Kişisel {mode === "login" ? t("login.loginTitle") : t("login.registerTitle")}
+          Kişisel {title}
         </h1>
         <p className="mx-auto mb-7 max-w-sm text-center text-[0.92rem] leading-relaxed text-zinc-500">
-          {t("login.intro")}
+          {mode === "forgot" ? t("login.forgotIntro") : t("login.intro")}
         </p>
 
         <div className="mx-auto mb-8 h-[100px] w-[100px] overflow-hidden rounded-[18px] border-[2.5px] border-zinc-900 bg-surface shadow-[0_14px_30px_rgba(17,24,39,0.10)]">
@@ -102,42 +155,47 @@ export default function LoginPage() {
               type="email"
               placeholder={t("login.email")}
               value={form.email}
+              disabled={mode === "forgot" && emailVerified}
               onChange={(e) => update("email")(e.target.value)}
-              className={inputClass}
+              className={`${inputClass} disabled:opacity-60`}
             />
           </Field>
 
-          <Field label={t("login.password")}>
-            <input
-              type="password"
-              placeholder={t("login.password")}
-              value={form.password}
-              onChange={(e) => update("password")(e.target.value)}
-              className={inputClass}
-            />
-          </Field>
+          {/* Password (login/register) or new password (forgot step 2) */}
+          {(mode !== "forgot" || emailVerified) && (
+            <Field label={mode === "forgot" ? t("login.newPassword") : t("login.password")}>
+              <input
+                type="password"
+                placeholder={mode === "forgot" ? t("login.newPassword") : t("login.password")}
+                value={form.password}
+                onChange={(e) => update("password")(e.target.value)}
+                className={inputClass}
+              />
+            </Field>
+          )}
+
+          {(mode === "register" || (mode === "forgot" && emailVerified)) && (
+            <Field label={t("login.repeat")}>
+              <input
+                type="password"
+                placeholder={t("login.repeatPlaceholder")}
+                value={form.repeatPassword}
+                onChange={(e) => update("repeatPassword")(e.target.value)}
+                className={inputClass}
+              />
+            </Field>
+          )}
 
           {mode === "register" && (
-            <>
-              <Field label={t("login.repeat")}>
-                <input
-                  type="password"
-                  placeholder={t("login.repeatPlaceholder")}
-                  value={form.repeatPassword}
-                  onChange={(e) => update("repeatPassword")(e.target.value)}
-                  className={inputClass}
-                />
-              </Field>
-              <Field label={t("login.name")}>
-                <input
-                  type="text"
-                  placeholder={t("login.namePlaceholder")}
-                  value={form.name}
-                  onChange={(e) => update("name")(e.target.value)}
-                  className={inputClass}
-                />
-              </Field>
-            </>
+            <Field label={t("login.name")}>
+              <input
+                type="text"
+                placeholder={t("login.namePlaceholder")}
+                value={form.name}
+                onChange={(e) => update("name")(e.target.value)}
+                className={inputClass}
+              />
+            </Field>
           )}
 
           {error && (
@@ -146,7 +204,7 @@ export default function LoginPage() {
             </div>
           )}
 
-          <div className="mt-3 flex flex-col items-center gap-4">
+          <div className="mt-3 flex flex-col items-center gap-3">
             <button
               type="submit"
               disabled={isPending}
@@ -158,21 +216,29 @@ export default function LoginPage() {
                     : "linear-gradient(180deg, #315efb 0%, #2647d6 100%)",
               }}
             >
-              {isPending
-                ? t("login.wait")
-                : mode === "login"
-                  ? t("login.submitLogin")
-                  : t("login.submitRegister")}
+              {submitLabel}
             </button>
+
+            {mode === "login" && (
+              <button
+                type="button"
+                onClick={() => goMode("forgot")}
+                className="text-[0.8rem] font-bold text-zinc-500 underline"
+              >
+                {t("login.forgot")}
+              </button>
+            )}
+
             <button
               type="button"
-              onClick={() => {
-                setError(null);
-                setMode((m) => (m === "login" ? "register" : "login"));
-              }}
+              onClick={() => goMode(mode === "login" ? "register" : "login")}
               className="text-[0.85rem] font-extrabold text-zinc-900 underline"
             >
-              {mode === "login" ? t("login.toRegister") : t("login.toLogin")}
+              {mode === "login"
+                ? t("login.toRegister")
+                : mode === "register"
+                  ? t("login.toLogin")
+                  : t("login.backToLogin")}
             </button>
           </div>
         </form>

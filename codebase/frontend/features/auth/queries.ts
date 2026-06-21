@@ -1,7 +1,13 @@
 "use client";
 
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { fetchProfile, loginRequest, registerRequest } from "./api";
+import {
+  fetchProfile,
+  forgotPasswordRequest,
+  loginRequest,
+  registerRequest,
+  resetPasswordRequest,
+} from "./api";
 import { useAuthStore } from "./store";
 import type { AuthResponse } from "./schemas";
 
@@ -48,6 +54,19 @@ export function useRegister() {
   const onAuthSuccess = useAuthSuccess();
   return useMutation({
     mutationFn: registerRequest,
+    onSuccess: onAuthSuccess,
+  });
+}
+
+export function useForgotPassword() {
+  return useMutation({ mutationFn: forgotPasswordRequest });
+}
+
+export function useResetPassword() {
+  const onAuthSuccess = useAuthSuccess();
+  return useMutation({
+    mutationFn: ({ email, password }: { email: string; password: string }) =>
+      resetPasswordRequest(email, password),
     onSuccess: onAuthSuccess,
   });
 }

@@ -1,6 +1,7 @@
 import {
   ConflictException,
   Injectable,
+  NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
@@ -50,6 +51,29 @@ export class AuthService {
       throw new UnauthorizedException('Invalid email or password');
     }
 
+    return this.buildAuthResponse(user.id, user.email, user.name);
+  }
+
+  /** Step 1 of password reset: confirm an account exists for this email. */
+  async checkEmail(email: string) {
+    const user = await this.prisma.user.findUnique({ where: { email } });
+    if (!user) {
+      throw new NotFoundException('No account found for that email');
+    }
+    return { ok: true };
+  }
+
+  /** Step 2: set a new password (no email verification) and sign the user in. */
+  async resetPassword(email: string, password: string) {
+    const user = await this.prisma.user.findUnique({ where: { email } });
+    if (!user) {
+      throw new NotFoundException('No account found for that email');
+    }
+    const passwordHash = await bcrypt.hash(password, 10);
+    await this.prisma.user.update({
+      where: { id: user.id },
+      data: { passwordHash },
+    });
     return this.buildAuthResponse(user.id, user.email, user.name);
   }
 
