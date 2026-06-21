@@ -45,6 +45,8 @@ export const DICTIONARY = {
   "audio.loading": { en: "Preparing…", tr: "Hazırlanıyor…" },
   "audio.stop": { en: "Stop", tr: "Durdur" },
   "audio.error": { en: "Audio failed", tr: "Ses hatası" },
+  "audio.addToQueue": { en: "Add to Queue (Play continuously)", tr: "Sıraya Ekle (Kesintisiz dinle)" },
+  "audio.removeFromQueue": { en: "Remove from queue", tr: "Sıradan kaldır" },
 
   // Discover
   "discover.title": { en: "Discover", tr: "Keşfet" },
