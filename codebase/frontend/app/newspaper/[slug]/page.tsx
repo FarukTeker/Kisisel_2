@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { use, useEffect, useState } from "react";
 import { Responsive, useContainerWidth, type Layout } from "react-grid-layout";
 import Widget from "@/components/news/Widget";
@@ -49,7 +50,13 @@ export default function SharedNewspaperPage({
   return (
     <div className="min-h-screen">
       <header className="sticky top-0 z-20 border-b border-line bg-surface/85 px-5 py-3 backdrop-blur">
-        <div className="mx-auto max-w-6xl">
+        <div className="mx-auto flex max-w-6xl items-center gap-3">
+          <Link
+            href="/discover"
+            className="flex items-center gap-1.5 rounded-full border border-line bg-white px-3 py-1.5 text-xs font-extrabold uppercase tracking-tight text-ink transition-colors hover:bg-[#f5efe4]"
+          >
+            <span aria-hidden>←</span> Back
+          </Link>
           <h1 className="flex items-center gap-1.5 font-serif text-xl font-black uppercase tracking-tight text-ink">
             <span className="h-2 w-2 rounded-full bg-brand" />
             Kişisel — Shared
