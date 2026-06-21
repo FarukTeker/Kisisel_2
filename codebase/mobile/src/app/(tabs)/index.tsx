@@ -1,4 +1,5 @@
 import { Ionicons } from '@expo/vector-icons';
+import { Image } from 'expo-image';
 import { useRouter } from 'expo-router';
 import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -28,9 +29,14 @@ export default function NewspaperScreen() {
         <Pressable onPress={() => router.push('/share')} hitSlop={8}>
           <Ionicons name="share-outline" size={22} color={colors.ink} />
         </Pressable>
-        <KText variant="h2" numberOfLines={1} style={styles.topTitle}>
-          {newspaper.name}
-        </KText>
+        <View style={styles.brand}>
+          <Image
+            source={require('@/assets/images/kisisel-mark-bg.png')}
+            style={styles.brandMark}
+            contentFit="cover"
+          />
+          <KText variant="h2">Kişisel</KText>
+        </View>
         <Pressable onPress={toggleEditMode} hitSlop={8}>
           <KText variant="button" color={editMode ? colors.accent : colors.ink}>
             {editMode ? 'Done' : 'Edit'}
@@ -98,7 +104,8 @@ const styles = StyleSheet.create({
     paddingVertical: spacing.three,
     gap: spacing.three,
   },
-  topTitle: { flex: 1, textAlign: 'center' },
+  brand: { flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 8 },
+  brandMark: { width: 30, height: 30, borderRadius: 7 },
   content: { padding: spacing.four, paddingBottom: spacing.six, gap: spacing.four },
   modeStrip: { gap: spacing.two },
   empty: { alignItems: 'center', gap: spacing.three, paddingVertical: spacing.six },
