@@ -125,10 +125,23 @@ export async function fetchDiscover(): Promise<DiscoverNewspaper[]> {
   return data.newspapers;
 }
 
-export async function fetchSharedNewspaper(slug: string): Promise<DashboardState> {
+export interface SharedNewspaper {
+  state: DashboardState;
+  name: string;
+  curatorId: string;
+  curatorName: string;
+}
+
+export async function fetchSharedNewspaper(slug: string): Promise<SharedNewspaper> {
   const data = await apiRequest(`/newspapers/shared/${slug}`, {
     schema: sharedResponseSchema,
     auth: false,
   });
-  return newspaperToState(data.newspaper);
+  const np = data.newspaper;
+  return {
+    state: newspaperToState(np),
+    name: np.name,
+    curatorId: np.curatorId,
+    curatorName: np.curator?.name ?? "Anonymous",
+  };
 }

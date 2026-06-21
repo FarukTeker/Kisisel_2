@@ -28,6 +28,7 @@ export const newspaperSchema = z.object({
   columns: z.number(),
   theme: z.string(),
   font: z.string(),
+  curatorId: z.string(),
   widgets: z.array(widgetRowSchema),
   curator: z.object({ name: z.string() }).optional(),
 });
@@ -42,6 +43,7 @@ export const discoverNewspaperSchema = z.object({
   name: z.string(),
   description: z.string().nullable(),
   curator: z.string(),
+  curatorId: z.string(),
   readingMode: readingModeSchema,
   widgetCount: z.number(),
   widgets: z.array(z.object({ kind: z.string(), layoutType: z.string() })),
