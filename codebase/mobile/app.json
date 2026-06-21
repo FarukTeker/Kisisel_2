@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "Kişisel",
-    "slug": "mobile",
+    "slug": "kisisel",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/kisisel-icon.png",
@@ -11,6 +11,8 @@
       "icon": "./assets/images/kisisel-icon.png"
     },
     "android": {
+      "package": "com.kisisel.app",
+      "versionCode": 2,
       "adaptiveIcon": {
         "backgroundColor": "#0A0A0A",
         "foregroundImage": "./assets/images/kisisel-icon.png"
@@ -32,11 +34,27 @@
           "backgroundColor": "#0A0A0A"
         }
       ],
-      "expo-secure-store"
+      "expo-secure-store",
+      [
+        "expo-build-properties",
+        {
+          "android": {
+            "usesCleartextTraffic": true
+          }
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true,
       "reactCompiler": true
-    }
+    },
+    "extra": {
+      "apiUrl": "http://kisisel.ink:4000",
+      "router": {},
+      "eas": {
+        "projectId": "a69348cc-35e5-4c5f-bdcf-beeb43f99a5f"
+      }
+    },
+    "owner": "zybo1000"
   }
 }
