@@ -13,18 +13,22 @@ import {
 } from "@/features/auth/queries";
 import { loginSchema, registerSchema } from "@/features/auth/schemas";
 import { useT } from "@/features/i18n/useT";
+import { useSettingsStore } from "@/features/settings/store";
 
 type Mode = "login" | "register" | "forgot";
 
-const inputClass =
-  "rounded-xl border border-line bg-white px-3.5 py-2.5 text-sm font-semibold text-zinc-900 outline-none focus:border-brand";
-const labelClass =
-  "text-sm font-extrabold uppercase tracking-tight text-zinc-900";
+// Fixed monochrome "newspaper" palette — intentionally theme-independent so the
+// auth screen always reads as black ink on paper.
+const PAPER = "#faf9f6";
+const INK = "#141414";
+const MUTED = "#6b6b6b";
+const HAIR = "#dcd8d0";
 
 export default function LoginPage() {
   const router = useRouter();
   const t = useT();
   const token = useAuthStore((s) => s.token);
+  const language = useSettingsStore((s) => s.language);
 
   const [mode, setMode] = useState<Mode>("login");
   // Forgot flow: once the email is confirmed, reveal the new-password fields.
@@ -111,6 +115,13 @@ export default function LoginPage() {
         ? t("login.registerTitle")
         : t("login.forgotTitle");
 
+  const subtitle =
+    mode === "login"
+      ? t("login.welcomeBack")
+      : mode === "register"
+        ? t("login.newCurator")
+        : t("login.forgotIntro");
+
   const submitLabel = isPending
     ? t("login.wait")
     : mode === "login"
@@ -121,137 +132,296 @@ export default function LoginPage() {
           ? t("login.continue")
           : t("login.resetSubmit");
 
+  const dateline = new Date().toLocaleDateString(
+    language === "tr" ? "tr-TR" : "en-US",
+    { weekday: "long", year: "numeric", month: "long", day: "numeric" },
+  );
+
   return (
-    <div className="flex min-h-screen items-center justify-center p-4">
-      <div className="animate-fade-in w-full max-w-[460px] rounded-[28px] border border-line bg-surface px-6 py-9 shadow-[0_22px_50px_rgba(17,24,39,0.12)]">
-        <div className="mb-5 flex items-center justify-end">
-          <span className="text-[0.78rem] font-bold text-zinc-500">
-            {mode === "register" ? t("login.newCurator") : t("login.welcomeBack")}
-          </span>
+    <div
+      className="grid min-h-screen w-full lg:grid-cols-2"
+      style={{ background: PAPER, color: INK }}
+    >
+      {/* ---- Left: front-page brand panel (desktop) ---- */}
+      <aside
+        className="relative hidden flex-col justify-between overflow-hidden px-12 py-12 lg:flex xl:px-16"
+        style={{ borderRight: `1.5px solid ${INK}` }}
+      >
+        {/* Masthead */}
+        <div className="animate-auth-rise">
+          <div className="flex items-center gap-3">
+            <div
+              className="h-11 w-11 overflow-hidden rounded-[12px]"
+              style={{ border: `2px solid ${INK}` }}
+            >
+              <Image
+                src="/logo.png"
+                alt="Kişisel"
+                width={44}
+                height={44}
+                className="h-full w-full object-cover"
+                priority
+                unoptimized
+              />
+            </div>
+            <span
+              className="text-2xl font-black uppercase tracking-tight"
+              style={{ fontFamily: "var(--font-serif-stack)" }}
+            >
+              Kişisel
+            </span>
+          </div>
+          <div
+            className="mt-4 flex items-center justify-between gap-3 py-2 text-[0.66rem] font-bold uppercase tracking-[0.18em]"
+            style={{
+              borderTop: `1.5px solid ${INK}`,
+              borderBottom: `1.5px solid ${INK}`,
+              color: MUTED,
+            }}
+          >
+            <span>{t("login.brandEyebrow")}</span>
+            <span className="hidden xl:inline">{dateline}</span>
+            <span>Vol. 1</span>
+          </div>
         </div>
 
-        <h1 className="mb-5 text-center font-serif text-3xl font-black uppercase tracking-tight text-zinc-900">
-          Kişisel {title}
-        </h1>
-        <p className="mx-auto mb-7 max-w-sm text-center text-[0.92rem] leading-relaxed text-zinc-500">
-          {mode === "forgot" ? t("login.forgotIntro") : t("login.intro")}
-        </p>
-
-        <div className="mx-auto mb-8 h-[100px] w-[100px] overflow-hidden rounded-[18px] border-[2.5px] border-zinc-900 bg-surface shadow-[0_14px_30px_rgba(17,24,39,0.10)]">
-          <Image
-            src="/logo.png"
-            alt="Kişisel logo"
-            width={100}
-            height={100}
-            className="h-full w-full object-cover"
-            priority
-            unoptimized
-          />
+        {/* Headline */}
+        <div className="animate-auth-rise" style={{ animationDelay: "60ms" }}>
+          <h2
+            className="whitespace-pre-line text-[2.9rem] font-black leading-[1.04] tracking-tight xl:text-[3.4rem]"
+            style={{ fontFamily: "var(--font-serif-stack)" }}
+          >
+            {t("login.brandHeadline")}
+          </h2>
+          <p
+            className="mt-5 max-w-md text-[0.98rem] leading-relaxed"
+            style={{ color: MUTED }}
+          >
+            {t("login.brandTagline")}
+          </p>
         </div>
 
-        <form onSubmit={handleSubmit} className="flex flex-col gap-5">
-          <Field label={t("login.email")}>
-            <input
-              type="email"
-              placeholder={t("login.email")}
-              value={form.email}
-              disabled={mode === "forgot" && emailVerified}
-              onChange={(e) => update("email")(e.target.value)}
-              className={`${inputClass} disabled:opacity-60`}
-            />
-          </Field>
-
-          {/* Password (login/register) or new password (forgot step 2) */}
-          {(mode !== "forgot" || emailVerified) && (
-            <Field label={mode === "forgot" ? t("login.newPassword") : t("login.password")}>
-              <input
-                type="password"
-                placeholder={mode === "forgot" ? t("login.newPassword") : t("login.password")}
-                value={form.password}
-                onChange={(e) => update("password")(e.target.value)}
-                className={inputClass}
-              />
-            </Field>
+        {/* Faux front page — decorative teaser columns */}
+        <div
+          aria-hidden
+          className="animate-auth-rise grid grid-cols-3 gap-6 pt-6"
+          style={{ animationDelay: "120ms", borderTop: `1px solid ${HAIR}` }}
+        >
+          {[t("login.brandTeaser1"), t("login.brandTeaser2"), t("login.brandTeaser3")].map(
+            (teaser, i) => (
+              <div
+                key={i}
+                className={i === 0 ? "" : "pl-6"}
+                style={i === 0 ? undefined : { borderLeft: `1px solid ${HAIR}` }}
+              >
+                <div className="text-[0.58rem] font-black uppercase tracking-[0.16em]">
+                  {t("login.brandColumn")} {i + 1}
+                </div>
+                <div
+                  className="mt-1.5 text-[0.86rem] font-bold leading-snug"
+                  style={{ fontFamily: "var(--font-serif-stack)" }}
+                >
+                  {teaser}
+                </div>
+                <div className="mt-2.5 space-y-1.5">
+                  {[100, 92, 78].map((w) => (
+                    <div
+                      key={w}
+                      className="h-[3px] rounded-full"
+                      style={{ width: `${w}%`, background: HAIR }}
+                    />
+                  ))}
+                </div>
+              </div>
+            ),
           )}
+        </div>
+      </aside>
 
-          {(mode === "register" || (mode === "forgot" && emailVerified)) && (
-            <Field label={t("login.repeat")}>
-              <input
-                type="password"
-                placeholder={t("login.repeatPlaceholder")}
-                value={form.repeatPassword}
-                onChange={(e) => update("repeatPassword")(e.target.value)}
-                className={inputClass}
+      {/* ---- Right: form panel ---- */}
+      <main className="flex items-center justify-center px-5 py-10 sm:px-8">
+        <div className="animate-fade-in w-full max-w-[420px]">
+          {/* Compact masthead (mobile only) */}
+          <div className="mb-8 flex items-center gap-2.5 lg:hidden">
+            <div
+              className="h-9 w-9 overflow-hidden rounded-[10px]"
+              style={{ border: `2px solid ${INK}` }}
+            >
+              <Image
+                src="/logo.png"
+                alt="Kişisel"
+                width={36}
+                height={36}
+                className="h-full w-full object-cover"
+                priority
+                unoptimized
               />
-            </Field>
-          )}
+            </div>
+            <span
+              className="text-lg font-black uppercase tracking-tight"
+              style={{ fontFamily: "var(--font-serif-stack)" }}
+            >
+              Kişisel
+            </span>
+          </div>
 
-          {mode === "register" && (
-            <Field label={t("login.name")}>
-              <input
-                type="text"
-                placeholder={t("login.namePlaceholder")}
-                value={form.name}
-                onChange={(e) => update("name")(e.target.value)}
-                className={inputClass}
-              />
-            </Field>
-          )}
+          {/* Heading */}
+          <h1
+            className="text-[2rem] font-black tracking-tight"
+            style={{ fontFamily: "var(--font-serif-stack)", color: INK }}
+          >
+            {title}
+          </h1>
+          <p className="mt-1.5 text-[0.92rem] leading-relaxed" style={{ color: MUTED }}>
+            {subtitle}
+          </p>
 
-          {error && (
-            <div className="rounded-xl border-[1.5px] border-red-700 bg-red-50 px-3.5 py-3 text-[0.82rem] font-bold text-red-800">
-              {error}
+          {/* Login / Register segmented toggle (hidden during forgot flow) */}
+          {mode !== "forgot" && (
+            <div
+              className="mt-6 grid grid-cols-2 gap-1 rounded-full p-1"
+              style={{ background: "#efece6", border: `1px solid ${INK}` }}
+            >
+              <SegBtn active={mode === "login"} onClick={() => goMode("login")}>
+                {t("login.loginTitle")}
+              </SegBtn>
+              <SegBtn active={mode === "register"} onClick={() => goMode("register")}>
+                {t("login.registerTitle")}
+              </SegBtn>
             </div>
           )}
 
-          <div className="mt-3 flex flex-col items-center gap-3">
+          <form onSubmit={handleSubmit} className="mt-6 flex flex-col gap-4">
+            <Field label={t("login.email")}>
+              <input
+                type="email"
+                placeholder={t("login.email")}
+                value={form.email}
+                disabled={mode === "forgot" && emailVerified}
+                onChange={(e) => update("email")(e.target.value)}
+                className="auth-input px-3.5 py-2.5 text-sm font-semibold disabled:opacity-60"
+              />
+            </Field>
+
+            {/* Password (login/register) or new password (forgot step 2) */}
+            {(mode !== "forgot" || emailVerified) && (
+              <Field label={mode === "forgot" ? t("login.newPassword") : t("login.password")}>
+                <input
+                  type="password"
+                  placeholder={mode === "forgot" ? t("login.newPassword") : t("login.password")}
+                  value={form.password}
+                  onChange={(e) => update("password")(e.target.value)}
+                  className="auth-input px-3.5 py-2.5 text-sm font-semibold"
+                />
+              </Field>
+            )}
+
+            {(mode === "register" || (mode === "forgot" && emailVerified)) && (
+              <Field label={t("login.repeat")}>
+                <input
+                  type="password"
+                  placeholder={t("login.repeatPlaceholder")}
+                  value={form.repeatPassword}
+                  onChange={(e) => update("repeatPassword")(e.target.value)}
+                  className="auth-input px-3.5 py-2.5 text-sm font-semibold"
+                />
+              </Field>
+            )}
+
+            {mode === "register" && (
+              <Field label={t("login.name")}>
+                <input
+                  type="text"
+                  placeholder={t("login.namePlaceholder")}
+                  value={form.name}
+                  onChange={(e) => update("name")(e.target.value)}
+                  className="auth-input px-3.5 py-2.5 text-sm font-semibold"
+                />
+              </Field>
+            )}
+
+            {error && (
+              <div
+                className="rounded-lg px-3.5 py-3 text-[0.82rem] font-bold"
+                style={{ border: `1.5px solid ${INK}`, background: "#efece6", color: INK }}
+              >
+                {error}
+              </div>
+            )}
+
             <button
               type="submit"
               disabled={isPending}
-              className="w-full rounded-full px-9 py-2.5 text-[0.95rem] font-extrabold uppercase text-white shadow-lg transition-opacity disabled:opacity-60"
-              style={{
-                background:
-                  mode === "login"
-                    ? "linear-gradient(180deg, #1e2433 0%, #111827 100%)"
-                    : "linear-gradient(180deg, #315efb 0%, #2647d6 100%)",
-              }}
+              className="mt-1 w-full rounded-full px-9 py-3 text-[0.95rem] font-extrabold uppercase tracking-tight transition-[filter,opacity] hover:brightness-125 disabled:opacity-60"
+              style={{ background: INK, color: PAPER }}
             >
               {submitLabel}
             </button>
+          </form>
 
+          {/* Secondary links */}
+          <div className="mt-5 flex flex-col items-center gap-3">
             {mode === "login" && (
               <button
                 type="button"
                 onClick={() => goMode("forgot")}
-                className="text-[0.8rem] font-bold text-zinc-500 underline"
+                className="text-[0.8rem] font-bold underline"
+                style={{ color: MUTED }}
               >
                 {t("login.forgot")}
               </button>
             )}
-
-            <button
-              type="button"
-              onClick={() => goMode(mode === "login" ? "register" : "login")}
-              className="text-[0.85rem] font-extrabold text-zinc-900 underline"
-            >
-              {mode === "login"
-                ? t("login.toRegister")
-                : mode === "register"
-                  ? t("login.toLogin")
-                  : t("login.backToLogin")}
-            </button>
+            {mode === "forgot" && (
+              <button
+                type="button"
+                onClick={() => goMode("login")}
+                className="text-[0.85rem] font-extrabold underline"
+                style={{ color: INK }}
+              >
+                {t("login.backToLogin")}
+              </button>
+            )}
           </div>
-        </form>
-      </div>
+        </div>
+      </main>
     </div>
   );
 }
 
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
   return (
-    <div className="grid grid-cols-[100px_1fr] items-center gap-4">
-      <label className={labelClass}>{label}</label>
+    <label className="flex flex-col gap-1.5">
+      <span
+        className="text-[0.7rem] font-extrabold uppercase tracking-[0.08em]"
+        style={{ color: MUTED }}
+      >
+        {label}
+      </span>
       {children}
-    </div>
+    </label>
+  );
+}
+
+function SegBtn({
+  active,
+  onClick,
+  children,
+}: {
+  active: boolean;
+  onClick: () => void;
+  children: React.ReactNode;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className="rounded-full py-2 text-[0.82rem] font-extrabold uppercase tracking-tight transition-colors"
+      style={{
+        background: active ? INK : "transparent",
+        color: active ? PAPER : MUTED,
+      }}
+    >
+      {children}
+    </button>
   );
 }

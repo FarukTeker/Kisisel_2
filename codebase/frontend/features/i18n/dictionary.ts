@@ -104,6 +104,23 @@ export const DICTIONARY = {
     en: "No account found for that email.",
     tr: "Bu e-postayla bir hesap bulunamadı.",
   },
+  "login.brandEyebrow": {
+    en: "The personalized daily",
+    tr: "Kişiselleştirilmiş günlük",
+  },
+  "login.brandHeadline": {
+    en: "Read the news\non your terms.",
+    tr: "Haberi kendi\nşartlarınla oku.",
+  },
+  "login.brandTagline": {
+    en: "Compose your own front page from live feeds, AI summaries, and editorial notes — then publish and share your edition.",
+    tr: "Canlı akışlar, yapay zeka özetleri ve editöryel notlardan kendi ön sayfanı oluştur — sonra sürümünü yayınla ve paylaş.",
+  },
+  "login.brandTeaser1": { en: "Live feeds, one calm page", tr: "Canlı akışlar, tek sakin sayfa" },
+  "login.brandTeaser2": { en: "AI summaries on demand", tr: "İstediğinde yapay zeka özetleri" },
+  "login.brandTeaser3": { en: "Publish & share your edition", tr: "Sürümünü yayınla ve paylaş" },
+  "login.brandColumn": { en: "Column", tr: "Sütun" },
+  "login.themeLabel": { en: "Theme", tr: "Tema" },
 
   // General Action buttons / States
   "action.open": { en: "Open ↗", tr: "Aç ↗" },
