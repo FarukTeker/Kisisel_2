@@ -5,10 +5,13 @@ import Modal from "@/components/ui/Modal";
 import { useSources } from "@/features/articles/queries";
 import {
   FONT_OPTIONS,
+  LANGUAGES,
   THEMES,
   useSettingsStore,
+  type Language,
   type Theme,
 } from "@/features/settings/store";
+import { useT } from "@/features/i18n/useT";
 import {
   CATEGORIES,
   WIDGET_TEMPLATES,
@@ -31,11 +34,19 @@ interface SettingsModalProps {
 
 const GLOBAL_TABS = ["Design", "Layout", "Widgets", "Share"] as const;
 
+const TAB_LABEL_KEY = {
+  Design: "settings.tab.design",
+  Layout: "settings.tab.layout",
+  Widgets: "settings.tab.widgets",
+  Share: "settings.tab.share",
+} as const;
+
 export default function SettingsModal(props: SettingsModalProps) {
+  const t = useT();
   const { isOpen, onClose, selectedWidget } = props;
   const title = selectedWidget
     ? `Widget — ${selectedWidget.title}`
-    : "Page settings";
+    : t("settings.page");
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} title={title} maxWidth={680}>
@@ -54,24 +65,27 @@ function GlobalSettings({
   onAddWidget,
   onShare,
 }: SettingsModalProps) {
+  const t = useT();
   const [tab, setTab] = useState<(typeof GLOBAL_TABS)[number]>("Design");
   const theme = useSettingsStore((s) => s.theme);
   const setTheme = useSettingsStore((s) => s.setTheme);
+  const language = useSettingsStore((s) => s.language);
+  const setLanguage = useSettingsStore((s) => s.setLanguage);
   const font = useSettingsStore((s) => s.font);
   const setFont = useSettingsStore((s) => s.setFont);
 
   return (
     <div className="flex flex-col gap-4 sm:flex-row">
       <nav className="flex shrink-0 gap-1 sm:w-32 sm:flex-col">
-        {GLOBAL_TABS.map((t) => (
+        {GLOBAL_TABS.map((tabId) => (
           <button
-            key={t}
-            onClick={() => setTab(t)}
+            key={tabId}
+            onClick={() => setTab(tabId)}
             className={`rounded-lg px-3 py-2 text-left text-sm font-bold ${
-              tab === t ? "bg-brand text-white" : "text-ink-soft hover:bg-surface-hover"
+              tab === tabId ? "bg-brand text-white" : "text-ink-soft hover:bg-surface-hover"
             }`}
           >
-            {t}
+            {t(TAB_LABEL_KEY[tabId])}
           </button>
         ))}
       </nav>
@@ -79,22 +93,37 @@ function GlobalSettings({
       <div className="min-h-[260px] flex-1">
         {tab === "Design" && (
           <div className="flex flex-col gap-5">
-            <Field label="Theme">
+            <Field label={t("settings.theme")}>
               <div className="flex gap-2">
-                {THEMES.map((t) => (
+                {THEMES.map((th) => (
                   <button
-                    key={t}
-                    onClick={() => setTheme(t as Theme)}
+                    key={th}
+                    onClick={() => setTheme(th as Theme)}
                     className={`rounded-lg border px-3 py-2 text-sm font-bold ${
-                      theme === t ? "border-brand bg-brand text-white" : "border-line text-ink hover:bg-surface-hover"
+                      theme === th ? "border-brand bg-brand text-white" : "border-line text-ink hover:bg-surface-hover"
                     }`}
                   >
-                    {t}
+                    {th}
                   </button>
                 ))}
               </div>
             </Field>
-            <Field label="Font">
+            <Field label={t("settings.language")}>
+              <div className="flex gap-2">
+                {LANGUAGES.map((l) => (
+                  <button
+                    key={l.id}
+                    onClick={() => setLanguage(l.id as Language)}
+                    className={`rounded-lg border px-3 py-2 text-sm font-bold ${
+                      language === l.id ? "border-brand bg-brand text-white" : "border-line text-ink hover:bg-surface-hover"
+                    }`}
+                  >
+                    {l.label}
+                  </button>
+                ))}
+              </div>
+            </Field>
+            <Field label={t("settings.font")}>
               <div className="flex flex-col gap-2">
                 {FONT_OPTIONS.map((f) => (
                   <button
@@ -113,7 +142,7 @@ function GlobalSettings({
         )}
 
         {tab === "Layout" && (
-          <Field label="Column count">
+          <Field label={t("settings.columns")}>
             <div className="flex gap-2">
               {[1, 2, 3, 4].map((n) => (
                 <button
@@ -127,9 +156,7 @@ function GlobalSettings({
                 </button>
               ))}
             </div>
-            <p className="mt-2 text-xs text-muted">
-              Changes how many columns the dashboard grid uses.
-            </p>
+            <p className="mt-2 text-xs text-muted">{t("settings.columnsHint")}</p>
           </Field>
         )}
 
@@ -137,14 +164,12 @@ function GlobalSettings({
 
         {tab === "Share" && (
           <div className="flex flex-col gap-3">
-            <p className="text-sm text-ink-soft">
-              Generate a public link to share a snapshot of your current newspaper.
-            </p>
+            <p className="text-sm text-ink-soft">{t("settings.shareHint")}</p>
             <button
               onClick={onShare}
               className="self-start rounded-pill bg-brand px-5 py-2 text-sm font-extrabold uppercase text-white"
             >
-              Generate link &amp; copy
+              {t("settings.shareButton")}
             </button>
           </div>
         )}

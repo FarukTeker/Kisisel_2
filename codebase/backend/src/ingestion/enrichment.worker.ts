@@ -72,7 +72,7 @@ export class EnrichmentWorker implements OnApplicationBootstrap {
         title: true,
         fullContent: true,
         category: true,
-        publisher: { select: { name: true } },
+        publisher: { select: { name: true, language: true } },
       },
     });
     if (!target) return null;
@@ -89,6 +89,7 @@ export class EnrichmentWorker implements OnApplicationBootstrap {
       fullContent: target.fullContent,
       category: target.category,
       publisherName: target.publisher.name,
+      language: target.publisher.language === 'tr' ? 'tr' : 'en',
     };
   }
 

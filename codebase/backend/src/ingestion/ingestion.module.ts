@@ -11,6 +11,7 @@ import { PersistStage } from './stages/persist.stage';
 import { AiSummaryStage } from './stages/ai-summary.stage';
 import { AiHeadingsStage } from './stages/ai-headings.stage';
 import { AiFullStage } from './stages/ai-full.stage';
+import { TranslateStage } from './stages/translate.stage';
 
 @Module({
   providers: [
@@ -26,6 +27,7 @@ import { AiFullStage } from './stages/ai-full.stage';
     AiSummaryStage,
     AiHeadingsStage,
     AiFullStage,
+    TranslateStage,
     // Ordered stage arrays — reorder/add a stage here, nothing else changes.
     {
       provide: INGESTION_STAGES,
@@ -41,10 +43,11 @@ import { AiFullStage } from './stages/ai-full.stage';
         summary: AiSummaryStage,
         headings: AiHeadingsStage,
         full: AiFullStage,
-      ) => [summary, headings, full],
-      inject: [AiSummaryStage, AiHeadingsStage, AiFullStage],
+        translate: TranslateStage,
+      ) => [summary, headings, full, translate],
+      inject: [AiSummaryStage, AiHeadingsStage, AiFullStage, TranslateStage],
     },
   ],
-  exports: [RssSourcesService],
+  exports: [RssSourcesService, GroqService],
 })
 export class IngestionModule {}

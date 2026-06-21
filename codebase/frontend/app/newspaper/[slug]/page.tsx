@@ -4,7 +4,7 @@ import { use, useEffect, useState } from "react";
 import { Responsive, useContainerWidth, type Layout } from "react-grid-layout";
 import Widget from "@/components/news/Widget";
 import { fetchSharedNewspaper, type DashboardState } from "@/features/dashboard/api";
-import type { LayoutItem } from "@/features/dashboard/widgets";
+import { useSettingsStore } from "@/features/settings/store";
 
 export default function SharedNewspaperPage({
   params,
@@ -14,11 +14,19 @@ export default function SharedNewspaperPage({
   const { slug } = use(params);
   const [state, setState] = useState<DashboardState | null>(null);
   const [error, setError] = useState(false);
+  const setLanguage = useSettingsStore((s) => s.setLanguage);
   const { width, containerRef, mounted } = useContainerWidth({ initialWidth: 1200 });
 
   useEffect(() => {
-    fetchSharedNewspaper(slug).then(setState).catch(() => setError(true));
-  }, [slug]);
+    fetchSharedNewspaper(slug)
+      .then((np) => {
+        // Render the shared paper in the language it was published in, so its
+        // widgets fetch the matching localized article text.
+        setLanguage(np.language);
+        setState(np);
+      })
+      .catch(() => setError(true));
+  }, [slug, setLanguage]);
 
   if (error) {
     return (

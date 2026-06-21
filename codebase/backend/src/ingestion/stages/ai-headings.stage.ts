@@ -2,9 +2,9 @@ import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../prisma/prisma.service';
 import { GroqService } from '../groq/groq.service';
 import type { PipelineStage, StageContext } from '../pipeline/pipeline-stage.interface';
-import type { EnrichmentJob } from '../pipeline/enrichment-job.type';
+import { langSuffix, type EnrichmentJob } from '../pipeline/enrichment-job.type';
 
-/** Skim mode (H): 3-5 key points, stored as a JSON string array. */
+/** Skim mode (H): 3-5 key points, stored as a JSON string array (source language). */
 @Injectable()
 export class AiHeadingsStage implements PipelineStage<EnrichmentJob> {
   readonly name = 'ai-headings';
@@ -15,12 +15,13 @@ export class AiHeadingsStage implements PipelineStage<EnrichmentJob> {
   ) {}
 
   async process(ctx: StageContext<EnrichmentJob>): Promise<void> {
-    const { articleId, title, fullContent } = ctx.payload;
+    const { articleId, title, fullContent, language } = ctx.payload;
 
     const raw = await this.groq.complete(
       'You extract key points from news articles for skim reading.',
       [
         'Extract 3 to 5 key points from the article below.',
+        'Write the key points in the same language as the article.',
         'Respond ONLY with a JSON array of short plain strings, e.g. ["point one", "point two"].',
         'No markdown, no numbering, no extra text.',
         `Title: ${title}`,
@@ -33,7 +34,7 @@ export class AiHeadingsStage implements PipelineStage<EnrichmentJob> {
     const headings = this.parseHeadings(raw);
     await this.prisma.article.update({
       where: { id: articleId },
-      data: { aiHeadings: JSON.stringify(headings) },
+      data: { [`aiHeadings${langSuffix(language)}`]: JSON.stringify(headings) },
     });
   }
 
