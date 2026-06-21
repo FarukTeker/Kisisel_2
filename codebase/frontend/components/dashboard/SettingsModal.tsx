@@ -300,6 +300,7 @@ function WidgetSettings({
   const t = useT();
   const { data: sources } = useSources();
   const newsTemplates = WIDGET_TEMPLATES.filter((w) => w.id !== "editorial" && w.id !== "discovery");
+  const [showConfirm, setShowConfirm] = useState(false);
 
   return (
     <div className="flex flex-col gap-5">
@@ -406,10 +407,7 @@ function WidgetSettings({
 
       <div className="flex items-center justify-between border-t border-line pt-4 mt-2">
         <button
-          onClick={() => {
-            onDeleteWidget(widget.id);
-            onClose();
-          }}
+          onClick={() => setShowConfirm(true)}
           className="rounded-pill border border-red-300 bg-red-50 px-5 py-2 text-sm font-extrabold uppercase text-red-600 hover:bg-red-100"
         >
           {t("widget.delete")}
@@ -421,6 +419,37 @@ function WidgetSettings({
           {t("action.done")}
         </button>
       </div>
+
+      <Modal
+        isOpen={showConfirm}
+        onClose={() => setShowConfirm(false)}
+        title={t("widget.deleteConfirmTitle")}
+        maxWidth={420}
+      >
+        <div className="flex flex-col gap-4">
+          <p className="text-sm text-ink-soft leading-relaxed">
+            {t("widget.deleteConfirmMessage")}
+          </p>
+          <div className="flex justify-end gap-3">
+            <button
+              onClick={() => setShowConfirm(false)}
+              className="rounded-pill border border-line px-5 py-2 text-sm font-extrabold uppercase text-ink hover:bg-surface-hover"
+            >
+              {t("action.cancel")}
+            </button>
+            <button
+              onClick={() => {
+                onDeleteWidget(widget.id);
+                setShowConfirm(false);
+                onClose();
+              }}
+              className="rounded-pill bg-red-600 px-5 py-2 text-sm font-extrabold uppercase text-white hover:bg-red-700"
+            >
+              {t("action.delete")}
+            </button>
+          </div>
+        </div>
+      </Modal>
     </div>
   );
 }
