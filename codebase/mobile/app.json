@@ -34,22 +34,14 @@
           "backgroundColor": "#0A0A0A"
         }
       ],
-      "expo-secure-store",
-      [
-        "expo-build-properties",
-        {
-          "android": {
-            "usesCleartextTraffic": true
-          }
-        }
-      ]
+      "expo-secure-store"
     ],
     "experiments": {
       "typedRoutes": true,
       "reactCompiler": true
     },
     "extra": {
-      "apiUrl": "http://kisisel.ink:4000",
+      "apiUrl": "https://kisisel.ink:4000",
       "router": {},
       "eas": {
         "projectId": "a69348cc-35e5-4c5f-bdcf-beeb43f99a5f"
