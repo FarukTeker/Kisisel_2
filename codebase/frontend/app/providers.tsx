@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import GlobalAudioPlayer from "@/components/news/GlobalAudioPlayer";
 
 export function Providers({ children }: { children: React.ReactNode }) {
   // One client per browser session; created lazily so it isn't shared across requests.
@@ -15,6 +16,10 @@ export function Providers({ children }: { children: React.ReactNode }) {
   );
 
   return (
-    <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+    <QueryClientProvider client={queryClient}>
+      {children}
+      <GlobalAudioPlayer />
+    </QueryClientProvider>
   );
 }
+

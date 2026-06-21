@@ -149,7 +149,11 @@ function ScanRow({ article, showImage }: { article: Article; showImage: boolean 
         <h3 className="text-sm font-bold leading-snug text-ink">{article.title}</h3>
         <p className="mt-1 line-clamp-2 text-[0.8rem] leading-relaxed text-ink-soft">{text}</p>
         <div className="mt-1.5 flex items-center gap-2">
-          <ListenButton articleId={article.id} />
+          <ListenButton
+            articleId={article.id}
+            title={article.title}
+            publisher={article.publisher}
+          />
         </div>
       </div>
     </article>
@@ -168,7 +172,11 @@ function SkimRow({ article }: { article: Article }) {
         ))}
       </ul>
       <div className="mt-1.5 flex items-center gap-2">
-        <ListenButton articleId={article.id} />
+        <ListenButton
+          articleId={article.id}
+          title={article.title}
+          publisher={article.publisher}
+        />
       </div>
     </article>
   );
@@ -197,7 +205,11 @@ function Footer({ article }: { article: Article }) {
       >
         Open source ↗
       </a>
-      <ListenButton articleId={article.id} />
+      <ListenButton
+        articleId={article.id}
+        title={article.title}
+        publisher={article.publisher}
+      />
     </div>
   );
 }
