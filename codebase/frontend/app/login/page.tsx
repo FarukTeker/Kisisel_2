@@ -7,6 +7,7 @@ import { ApiError } from "@/lib/api/client";
 import { useAuthStore } from "@/features/auth/store";
 import { useLogin, useRegister } from "@/features/auth/queries";
 import { loginSchema, registerSchema } from "@/features/auth/schemas";
+import { useT } from "@/features/i18n/useT";
 
 type Mode = "login" | "register";
 
@@ -17,6 +18,7 @@ const labelClass =
 
 export default function LoginPage() {
   const router = useRouter();
+  const t = useT();
   const token = useAuthStore((s) => s.token);
 
   const [mode, setMode] = useState<Mode>("login");
@@ -62,9 +64,7 @@ export default function LoginPage() {
       }
       router.replace("/");
     } catch (err) {
-      setError(
-        err instanceof ApiError ? err.message : "Something went wrong. Try again.",
-      );
+      setError(err instanceof ApiError ? err.message : t("login.genericError"));
     }
   }
 
@@ -76,16 +76,15 @@ export default function LoginPage() {
             Mobile ready
           </span>
           <span className="text-[0.78rem] font-bold text-zinc-500">
-            {mode === "login" ? "Welcome back" : "New curator setup"}
+            {mode === "login" ? t("login.welcomeBack") : t("login.newCurator")}
           </span>
         </div>
 
         <h1 className="mb-5 text-center font-serif text-3xl font-black uppercase tracking-tight text-zinc-900">
-          Kişisel {mode === "login" ? "Login" : "Register"}
+          Kişisel {mode === "login" ? t("login.loginTitle") : t("login.registerTitle")}
         </h1>
         <p className="mx-auto mb-7 max-w-sm text-center text-[0.92rem] leading-relaxed text-zinc-500">
-          Build a calmer reading flow, publish your own newspaper, and add
-          editorial context to every story.
+          {t("login.intro")}
         </p>
 
         <div className="mx-auto mb-8 h-[100px] w-[100px] overflow-hidden rounded-[18px] border-[2.5px] border-zinc-900 bg-surface shadow-[0_14px_30px_rgba(17,24,39,0.10)]">
@@ -101,20 +100,20 @@ export default function LoginPage() {
         </div>
 
         <form onSubmit={handleSubmit} className="flex flex-col gap-5">
-          <Field label="email">
+          <Field label={t("login.email")}>
             <input
               type="email"
-              placeholder="email"
+              placeholder={t("login.email")}
               value={form.email}
               onChange={(e) => update("email")(e.target.value)}
               className={inputClass}
             />
           </Field>
 
-          <Field label="password">
+          <Field label={t("login.password")}>
             <input
               type="password"
-              placeholder="password"
+              placeholder={t("login.password")}
               value={form.password}
               onChange={(e) => update("password")(e.target.value)}
               className={inputClass}
@@ -123,19 +122,19 @@ export default function LoginPage() {
 
           {mode === "register" && (
             <>
-              <Field label="repeat">
+              <Field label={t("login.repeat")}>
                 <input
                   type="password"
-                  placeholder="repeat password"
+                  placeholder={t("login.repeatPlaceholder")}
                   value={form.repeatPassword}
                   onChange={(e) => update("repeatPassword")(e.target.value)}
                   className={inputClass}
                 />
               </Field>
-              <Field label="name">
+              <Field label={t("login.name")}>
                 <input
                   type="text"
-                  placeholder="username"
+                  placeholder={t("login.namePlaceholder")}
                   value={form.name}
                   onChange={(e) => update("name")(e.target.value)}
                   className={inputClass}
@@ -163,10 +162,10 @@ export default function LoginPage() {
               }}
             >
               {isPending
-                ? "Please wait…"
+                ? t("login.wait")
                 : mode === "login"
-                  ? "Login"
-                  : "Register"}
+                  ? t("login.submitLogin")
+                  : t("login.submitRegister")}
             </button>
             <button
               type="button"
@@ -176,7 +175,7 @@ export default function LoginPage() {
               }}
               className="text-[0.85rem] font-extrabold text-zinc-900 underline"
             >
-              {mode === "login" ? "New user?" : "Already a user? Login"}
+              {mode === "login" ? t("login.toRegister") : t("login.toLogin")}
             </button>
           </div>
         </form>

@@ -58,11 +58,29 @@ export const DICTIONARY = {
   },
 
   // Login
-  "login.signIn": { en: "Sign in", tr: "Giriş yap" },
-  "login.register": { en: "Create account", tr: "Hesap oluştur" },
-  "login.email": { en: "Email", tr: "E-posta" },
-  "login.password": { en: "Password", tr: "Parola" },
-  "login.name": { en: "Name", tr: "Ad" },
+  "login.loginTitle": { en: "Login", tr: "Giriş" },
+  "login.registerTitle": { en: "Register", tr: "Kayıt" },
+  "login.welcomeBack": { en: "Welcome back", tr: "Tekrar hoş geldin" },
+  "login.newCurator": { en: "New curator setup", tr: "Yeni küratör kaydı" },
+  "login.intro": {
+    en: "Build a calmer reading flow, publish your own newspaper, and add editorial context to every story.",
+    tr: "Daha sakin bir okuma akışı kur, kendi gazeteni yayınla ve her habere editöryel bağlam ekle.",
+  },
+  "login.email": { en: "email", tr: "e-posta" },
+  "login.password": { en: "password", tr: "parola" },
+  "login.repeat": { en: "repeat", tr: "tekrar" },
+  "login.repeatPlaceholder": { en: "repeat password", tr: "parolayı tekrar gir" },
+  "login.name": { en: "name", tr: "ad" },
+  "login.namePlaceholder": { en: "username", tr: "kullanıcı adı" },
+  "login.submitLogin": { en: "Login", tr: "Giriş yap" },
+  "login.submitRegister": { en: "Register", tr: "Kayıt ol" },
+  "login.wait": { en: "Please wait…", tr: "Lütfen bekle…" },
+  "login.toRegister": { en: "New user?", tr: "Yeni kullanıcı?" },
+  "login.toLogin": { en: "Already a user? Login", tr: "Hesabın var mı? Giriş yap" },
+  "login.genericError": {
+    en: "Something went wrong. Try again.",
+    tr: "Bir şeyler ters gitti. Tekrar dene.",
+  },
 } as const;
 
 export type TranslationKey = keyof typeof DICTIONARY;
