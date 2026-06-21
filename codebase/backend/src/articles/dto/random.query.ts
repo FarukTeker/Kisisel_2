@@ -1,7 +1,8 @@
 import { Type } from 'class-transformer';
 import { IsInt, IsOptional, Max, Min } from 'class-validator';
+import { LangQuery } from './lang.query';
 
-export class RandomQuery {
+export class RandomQuery extends LangQuery {
   @IsOptional()
   @Type(() => Number)
   @IsInt()

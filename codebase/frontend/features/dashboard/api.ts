@@ -14,7 +14,7 @@ import {
   type WidgetLayoutType,
 } from "./widgets";
 import type { ReadingMode } from "@/features/articles/reading-mode";
-import type { Theme } from "@/features/settings/store";
+import type { Language, Theme } from "@/features/settings/store";
 
 export interface DashboardState {
   widgets: WidgetConfig[];
@@ -23,6 +23,7 @@ export interface DashboardState {
   columns: number;
   theme: Theme;
   font: string;
+  language: Language;
 }
 
 /** Split a backend newspaper into widget config + react-grid-layout geometry. */
@@ -50,6 +51,7 @@ export function newspaperToState(np: Newspaper): DashboardState {
     columns: np.columns,
     theme: np.theme as Theme,
     font: np.font,
+    language: np.language,
   };
 }
 
@@ -92,6 +94,7 @@ export async function saveDashboard(state: DashboardState): Promise<void> {
       columns: state.columns,
       theme: state.theme,
       font: state.font,
+      language: state.language,
     },
   });
 }
@@ -112,6 +115,7 @@ export async function shareDashboard(
       columns: state.columns,
       theme: state.theme,
       font: state.font,
+      language: state.language,
     },
   });
   return data.slug;

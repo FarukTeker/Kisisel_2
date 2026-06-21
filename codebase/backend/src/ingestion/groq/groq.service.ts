@@ -4,7 +4,8 @@ import type { GroqResponse } from './groq.types';
 
 const GROQ_URL = 'https://api.groq.com/openai/v1/chat/completions';
 const RATE_LIMIT_GAP_MS = 2000; // ~30 RPM (Groq free tier)
-const MAX_RETRIES = 4;
+const MAX_RETRIES = 6;
+const MAX_BACKOFF_MS = 30000;
 
 /**
  * Injectable Groq chat client. All calls pass through a single global serial
@@ -72,8 +73,14 @@ export class GroqService {
         if (attempt === MAX_RETRIES) {
           throw new Error('Groq rate limit exceeded after retries');
         }
-        this.logger.warn(`Groq 429 — retrying in ${backoff}ms`);
-        await this.sleep(backoff);
+        // Honour the server's own hint when present (Retry-After header is in
+        // seconds); otherwise fall back to exponential backoff.
+        const retryAfter = Number(response.headers.get('retry-after'));
+        const wait = Number.isFinite(retryAfter) && retryAfter > 0
+          ? Math.min(retryAfter * 1000 + 500, MAX_BACKOFF_MS)
+          : Math.min(backoff, MAX_BACKOFF_MS);
+        this.logger.debug(`Groq 429 — retrying in ${wait}ms`);
+        await this.sleep(wait);
         backoff *= 2;
         continue;
       }

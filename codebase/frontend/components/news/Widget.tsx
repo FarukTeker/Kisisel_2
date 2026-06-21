@@ -11,6 +11,7 @@ import {
   type ReadingMode,
 } from "@/features/articles/reading-mode";
 import type { WidgetConfig } from "@/features/dashboard/widgets";
+import ListenButton from "@/components/news/ListenButton";
 
 interface WidgetProps {
   config: WidgetConfig;
@@ -132,7 +133,10 @@ function ScanRow({ article, showImage }: { article: Article; showImage: boolean 
         <Meta article={article} />
         <h3 className="text-sm font-bold leading-snug text-ink">{article.title}</h3>
         <p className="mt-1 line-clamp-2 text-[0.8rem] leading-relaxed text-ink-soft">{text}</p>
-        {pending && <PendingPill />}
+        <div className="mt-1.5 flex items-center gap-2">
+          <ListenButton articleId={article.id} />
+          {pending && <PendingPill />}
+        </div>
       </div>
     </article>
   );
@@ -149,7 +153,10 @@ function SkimRow({ article }: { article: Article }) {
           <li key={i}>{h}</li>
         ))}
       </ul>
-      {pending && <PendingPill />}
+      <div className="mt-1.5 flex items-center gap-2">
+        <ListenButton articleId={article.id} />
+        {pending && <PendingPill />}
+      </div>
     </article>
   );
 }
@@ -168,7 +175,7 @@ function Meta({ article }: { article: Article }) {
 
 function Footer({ article, pending }: { article: Article; pending: boolean }) {
   return (
-    <div className="mt-1 flex items-center gap-2">
+    <div className="mt-1 flex flex-wrap items-center gap-2">
       <a
         href={article.sourceUrl}
         target="_blank"
@@ -177,6 +184,7 @@ function Footer({ article, pending }: { article: Article; pending: boolean }) {
       >
         Open source ↗
       </a>
+      <ListenButton articleId={article.id} />
       {pending && <PendingPill />}
     </div>
   );

@@ -1,7 +1,8 @@
 import { Type } from 'class-transformer';
 import { IsInt, IsOptional, IsString, Max, Min } from 'class-validator';
+import { LangQuery } from './lang.query';
 
-export class ListArticlesQuery {
+export class ListArticlesQuery extends LangQuery {
   @IsOptional()
   @IsString()
   sourceId?: string;

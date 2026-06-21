@@ -2,6 +2,10 @@ import { Injectable } from '@nestjs/common';
 import type { Article } from '@prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
 import { RssSourcesService } from '../ingestion/rss/rss-sources.service';
+import {
+  langSuffix,
+  type ContentLang,
+} from '../ingestion/pipeline/enrichment-job.type';
 import type { ArticleResponse } from './dto/article-response.dto';
 
 const STOP_WORDS = new Set([
@@ -21,26 +25,30 @@ export class ArticlesService {
     return this.sources.all();
   }
 
-  async listAll(limit: number): Promise<ArticleResponse[]> {
+  async listAll(limit: number, lang: ContentLang): Promise<ArticleResponse[]> {
     const articles = await this.prisma.article.findMany({
       orderBy: { date: 'desc' },
       take: 100,
       include: { publisher: { select: { name: true } } },
     });
-    return articles.slice(0, limit).map((a) => this.toResponse(a));
+    return articles.slice(0, limit).map((a) => this.toResponse(a, lang));
   }
 
-  async listBySource(sourceId: string, limit: number): Promise<ArticleResponse[]> {
+  async listBySource(
+    sourceId: string,
+    limit: number,
+    lang: ContentLang,
+  ): Promise<ArticleResponse[]> {
     const articles = await this.prisma.article.findMany({
       where: { sourceId },
       orderBy: { date: 'desc' },
       take: limit,
       include: { publisher: { select: { name: true } } },
     });
-    return articles.map((a) => this.toResponse(a));
+    return articles.map((a) => this.toResponse(a, lang));
   }
 
-  async popular(limit: number): Promise<ArticleResponse[]> {
+  async popular(limit: number, lang: ContentLang): Promise<ArticleResponse[]> {
     const articles = await this.prisma.article.findMany({
       orderBy: { date: 'desc' },
       take: 100,
@@ -65,12 +73,12 @@ export class ArticlesService {
     }
 
     return articles
-      .map((a) => ({ ...this.toResponse(a), score: scores.get(a.id) ?? 0 }))
+      .map((a) => ({ ...this.toResponse(a, lang), score: scores.get(a.id) ?? 0 }))
       .sort((a, b) => (b.score ?? 0) - (a.score ?? 0))
       .slice(0, limit);
   }
 
-  async random(count: number): Promise<ArticleResponse[]> {
+  async random(count: number, lang: ContentLang): Promise<ArticleResponse[]> {
     const articles = await this.prisma.article.findMany({
       orderBy: { date: 'desc' },
       take: 100,
@@ -79,7 +87,7 @@ export class ArticlesService {
     return [...articles]
       .sort(() => Math.random() - 0.5)
       .slice(0, count)
-      .map((a) => this.toResponse(a));
+      .map((a) => this.toResponse(a, lang));
   }
 
   private recencyScore(dateStr: string): number {
@@ -103,14 +111,23 @@ export class ArticlesService {
 
   private toResponse(
     article: Article & { publisher: { name: string } },
+    lang: ContentLang,
   ): ArticleResponse {
+    // Serve the requested language, falling back to the other language and then
+    // the raw RSS values so a not-yet-translated article still renders.
+    const want = langSuffix(lang);
+    const other = want === 'En' ? 'Tr' : 'En';
+    const pick = (base: 'aiTitle' | 'aiSummary' | 'aiHeadings' | 'aiFull') =>
+      (article[`${base}${want}`] as string | null) ??
+      (article[`${base}${other}`] as string | null);
+
     return {
       id: article.id,
-      title: article.title,
+      title: pick('aiTitle') ?? article.title,
       summary: article.summary,
-      aiSummary: article.aiSummary,
-      aiHeadings: this.parseHeadings(article.aiHeadings),
-      aiFull: article.aiFull,
+      aiSummary: pick('aiSummary'),
+      aiHeadings: this.parseHeadings(pick('aiHeadings')),
+      aiFull: pick('aiFull'),
       fullContent: article.fullContent,
       author: article.author,
       date: article.date,

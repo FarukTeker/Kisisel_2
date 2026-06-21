@@ -4,12 +4,15 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useAuthStore } from "@/features/auth/store";
 import { useLogout } from "@/features/auth/queries";
+import { useSettingsStore } from "@/features/settings/store";
+import { useT } from "@/features/i18n/useT";
 import type { ReadingMode } from "@/features/articles/reading-mode";
+import type { TranslationKey } from "@/features/i18n/dictionary";
 
-const MODES: { id: ReadingMode; label: string }[] = [
-  { id: "S", label: "Summary" },
-  { id: "H", label: "Headline" },
-  { id: "F", label: "Focused" },
+const MODES: { id: ReadingMode; labelKey: TranslationKey }[] = [
+  { id: "S", labelKey: "mode.S" },
+  { id: "H", labelKey: "mode.H" },
+  { id: "F", labelKey: "mode.F" },
 ];
 
 interface NavbarProps {
@@ -32,8 +35,10 @@ export default function Navbar({
   const router = useRouter();
   const user = useAuthStore((s) => s.user);
   const logout = useLogout();
+  const t = useT();
+  const language = useSettingsStore((s) => s.language);
 
-  const today = new Date().toLocaleDateString("en-US", {
+  const today = new Date().toLocaleDateString(language === "tr" ? "tr-TR" : "en-US", {
     weekday: "short",
     month: "short",
     day: "numeric",
@@ -65,7 +70,7 @@ export default function Navbar({
                   : "text-ink-soft hover:bg-surface-hover"
               }`}
             >
-              {m.label}
+              {t(m.labelKey)}
             </button>
           ))}
         </div>
@@ -76,13 +81,13 @@ export default function Navbar({
             href="/discover"
             className="hidden rounded-pill border border-line bg-surface px-3 py-1.5 text-xs font-extrabold uppercase text-ink shadow-sm hover:bg-surface-hover sm:block"
           >
-            Discover
+            {t("nav.discover")}
           </Link>
           <button
             onClick={onShare}
             className="hidden rounded-pill border border-line bg-surface px-3 py-1.5 text-xs font-extrabold uppercase text-ink shadow-sm hover:bg-surface-hover sm:block"
           >
-            Share
+            {t("nav.share")}
           </button>
 
           {/* Edit toggle switch */}
@@ -91,7 +96,7 @@ export default function Navbar({
             className="flex items-center gap-2"
             aria-pressed={editMode}
           >
-            <span className="text-xs font-extrabold uppercase text-ink-soft">Edit</span>
+            <span className="text-xs font-extrabold uppercase text-ink-soft">{t("nav.edit")}</span>
             <span
               className={`relative h-[22px] w-[42px] rounded-pill transition-colors ${
                 editMode ? "bg-brand" : "bg-surface-hover border border-line"

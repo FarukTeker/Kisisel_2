@@ -35,4 +35,8 @@ export class SaveDashboardDto {
   @IsOptional()
   @IsString()
   font?: string;
+
+  @IsOptional()
+  @IsIn(['en', 'tr'])
+  language?: 'en' | 'tr';
 }
