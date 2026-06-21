@@ -16,11 +16,19 @@ export class ArticlesController {
     return { sources: this.articles.sourcesList() };
   }
 
+  // Available daily editions (newest first) for the history picker.
+  @Get('editions')
+  async editions() {
+    const editions = await this.articles.editions();
+    return { editions };
+  }
+
   @Get('popular')
   async popular(@Query() query: PopularQuery) {
     const articles = await this.articles.popular(
       query.limit ?? 8,
       resolveLang(query.lang),
+      query.date,
     );
     return { articles, total: articles.length };
   }
@@ -30,6 +38,7 @@ export class ArticlesController {
     const articles = await this.articles.random(
       query.count ?? 5,
       resolveLang(query.lang),
+      query.date,
     );
     return { articles, total: articles.length };
   }
@@ -49,10 +58,11 @@ export class ArticlesController {
         query.sourceId,
         limit,
         lang,
+        query.date,
       );
       return { articles, source };
     }
-    const articles = await this.articles.listAll(limit, lang);
+    const articles = await this.articles.listAll(limit, lang, query.date);
     return { articles, total: articles.length };
   }
 }

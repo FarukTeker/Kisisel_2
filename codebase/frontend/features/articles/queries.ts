@@ -4,6 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useSettingsStore, type Language } from "@/features/settings/store";
 import {
   fetchArticles,
+  fetchEditions,
   fetchPopular,
   fetchRandom,
   fetchSources,
@@ -11,13 +12,14 @@ import {
 
 export const articleKeys = {
   all: ["articles"] as const,
-  list: (sourceId?: string, limit?: number, lang?: Language) =>
-    ["articles", "list", { sourceId, limit, lang }] as const,
+  list: (sourceId?: string, limit?: number, lang?: Language, date?: string) =>
+    ["articles", "list", { sourceId, limit, lang, date }] as const,
   sources: ["articles", "sources"] as const,
-  popular: (limit: number, lang?: Language) =>
-    ["articles", "popular", limit, lang] as const,
-  random: (count: number, lang?: Language) =>
-    ["articles", "random", count, lang] as const,
+  editions: ["articles", "editions"] as const,
+  popular: (limit: number, lang?: Language, date?: string) =>
+    ["articles", "popular", limit, lang, date] as const,
+  random: (count: number, lang?: Language, date?: string) =>
+    ["articles", "random", count, lang, date] as const,
 };
 
 // Article endpoints are public, so these run without a token too — required for
@@ -32,29 +34,38 @@ export function useSources() {
   });
 }
 
-export function useArticles(sourceId?: string, limit = 20) {
-  const lang = useSettingsStore((s) => s.language);
+/** Available daily editions (newest first) for the history picker. */
+export function useEditions() {
   return useQuery({
-    queryKey: articleKeys.list(sourceId, limit, lang),
-    queryFn: () => fetchArticles({ sourceId, limit, lang }),
+    queryKey: articleKeys.editions,
+    queryFn: fetchEditions,
     staleTime: 5 * 60 * 1000,
   });
 }
 
-export function usePopularArticles(limit = 8) {
+export function useArticles(sourceId?: string, limit = 20, date?: string) {
   const lang = useSettingsStore((s) => s.language);
   return useQuery({
-    queryKey: articleKeys.popular(limit, lang),
-    queryFn: () => fetchPopular(limit, lang),
+    queryKey: articleKeys.list(sourceId, limit, lang, date),
+    queryFn: () => fetchArticles({ sourceId, limit, lang, date }),
     staleTime: 5 * 60 * 1000,
   });
 }
 
-export function useRandomArticles(count = 5) {
+export function usePopularArticles(limit = 8, date?: string) {
   const lang = useSettingsStore((s) => s.language);
   return useQuery({
-    queryKey: articleKeys.random(count, lang),
-    queryFn: () => fetchRandom(count, lang),
+    queryKey: articleKeys.popular(limit, lang, date),
+    queryFn: () => fetchPopular(limit, lang, date),
+    staleTime: 5 * 60 * 1000,
+  });
+}
+
+export function useRandomArticles(count = 5, date?: string) {
+  const lang = useSettingsStore((s) => s.language);
+  return useQuery({
+    queryKey: articleKeys.random(count, lang, date),
+    queryFn: () => fetchRandom(count, lang, date),
     staleTime: 5 * 60 * 1000,
   });
 }

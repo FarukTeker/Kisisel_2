@@ -120,10 +120,33 @@ model Article {
   enrichedAt       DateTime?
   contentHash      String // hash(title+fullContent) — enrichment idempotency key
 
+  editions ArticleEdition[]
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   @@index([sourceId, date(sort: Desc)])
   @@index([date(sort: Desc)])
   @@index([enrichmentStatus, enrichRetries])
+}
+
+// A daily edition: the set of articles fetched on a given morning (Istanbul day).
+// Articles are deduped (one Article row), but can belong to many editions via the
+// join below — that is what makes day-by-day history possible.
+model Edition {
+  date      String           @id // yyyy-mm-dd (Europe/Istanbul)
+  createdAt DateTime         @default(now())
+  articles  ArticleEdition[]
+}
+
+model ArticleEdition {
+  editionDate String
+  articleId   String
+  sourceId    String
+  edition     Edition  @relation(fields: [editionDate], references: [date], onDelete: Cascade)
+  article     Article  @relation(fields: [articleId], references: [id], onDelete: Cascade)
+  createdAt   DateTime @default(now())
+
+  @@id([editionDate, articleId])
+  @@index([editionDate])
 }

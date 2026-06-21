@@ -19,5 +19,7 @@ export interface NormalizedArticle {
 export interface IngestionItem {
   source: RssSource;
   rawItem: Record<string, unknown>;
+  /** The daily edition (yyyy-mm-dd, Istanbul) this item is being ingested into. */
+  editionDate: string;
   article?: NormalizedArticle;
 }

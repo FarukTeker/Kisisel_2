@@ -25,8 +25,37 @@ export class ArticlesService {
     return this.sources.all();
   }
 
-  async listAll(limit: number, lang: ContentLang): Promise<ArticleResponse[]> {
+  /** Available edition dates (newest first) with article counts, for history. */
+  async editions() {
+    const editions = await this.prisma.edition.findMany({
+      orderBy: { date: 'desc' },
+      include: { _count: { select: { articles: true } } },
+    });
+    return editions.map((e) => ({ date: e.date, count: e._count.articles }));
+  }
+
+  /** Resolve a date to filter by: the given one, else the latest edition (null = none). */
+  private async resolveEditionDate(date?: string): Promise<string | null> {
+    if (date) return date;
+    const latest = await this.prisma.edition.findFirst({ orderBy: { date: 'desc' } });
+    return latest?.date ?? null;
+  }
+
+  /** Prisma `where` that scopes to an edition when one exists. */
+  private editionWhere(editionDate: string | null, extra: object = {}) {
+    return editionDate
+      ? { editions: { some: { editionDate } }, ...extra }
+      : { ...extra };
+  }
+
+  async listAll(
+    limit: number,
+    lang: ContentLang,
+    date?: string,
+  ): Promise<ArticleResponse[]> {
+    const editionDate = await this.resolveEditionDate(date);
     const articles = await this.prisma.article.findMany({
+      where: this.editionWhere(editionDate),
       orderBy: { date: 'desc' },
       take: 100,
       include: { publisher: { select: { name: true } } },
@@ -38,9 +67,11 @@ export class ArticlesService {
     sourceId: string,
     limit: number,
     lang: ContentLang,
+    date?: string,
   ): Promise<ArticleResponse[]> {
+    const editionDate = await this.resolveEditionDate(date);
     const articles = await this.prisma.article.findMany({
-      where: { sourceId },
+      where: this.editionWhere(editionDate, { sourceId }),
       orderBy: { date: 'desc' },
       take: limit,
       include: { publisher: { select: { name: true } } },
@@ -48,8 +79,14 @@ export class ArticlesService {
     return articles.map((a) => this.toResponse(a, lang));
   }
 
-  async popular(limit: number, lang: ContentLang): Promise<ArticleResponse[]> {
+  async popular(
+    limit: number,
+    lang: ContentLang,
+    date?: string,
+  ): Promise<ArticleResponse[]> {
+    const editionDate = await this.resolveEditionDate(date);
     const articles = await this.prisma.article.findMany({
+      where: this.editionWhere(editionDate),
       orderBy: { date: 'desc' },
       take: 100,
       include: { publisher: { select: { name: true } } },
@@ -78,8 +115,14 @@ export class ArticlesService {
       .slice(0, limit);
   }
 
-  async random(count: number, lang: ContentLang): Promise<ArticleResponse[]> {
+  async random(
+    count: number,
+    lang: ContentLang,
+    date?: string,
+  ): Promise<ArticleResponse[]> {
+    const editionDate = await this.resolveEditionDate(date);
     const articles = await this.prisma.article.findMany({
+      where: this.editionWhere(editionDate),
       orderBy: { date: 'desc' },
       take: 100,
       include: { publisher: { select: { name: true } } },

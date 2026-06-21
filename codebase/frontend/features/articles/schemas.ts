@@ -54,3 +54,12 @@ export const articleCollectionSchema = z.object({
   articles: z.array(articleSchema),
   total: z.number(),
 });
+
+export const editionSchema = z.object({
+  date: z.string(),
+  count: z.number(),
+});
+export const editionsResponseSchema = z.object({
+  editions: z.array(editionSchema),
+});
+export type Edition = z.infer<typeof editionSchema>;

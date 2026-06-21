@@ -41,12 +41,12 @@ export class TranslateStage implements PipelineStage<EnrichmentJob> {
     });
     if (!src) throw new Error(`Article ${articleId} vanished before translation`);
 
-    const title = (src as Record<string, string | null>)[`aiTitle${from}`] ?? '';
-    const summary = (src as Record<string, string | null>)[`aiSummary${from}`] ?? '';
-    const headings = this.parseHeadings(
-      (src as Record<string, string | null>)[`aiHeadings${from}`],
-    );
-    const full = (src as Record<string, string | null>)[`aiFull${from}`] ?? '';
+    // The dynamic-key select returns a wide type; index it as a string→string map.
+    const row = src as unknown as Record<string, string | null>;
+    const title = row[`aiTitle${from}`] ?? '';
+    const summary = row[`aiSummary${from}`] ?? '';
+    const headings = this.parseHeadings(row[`aiHeadings${from}`]);
+    const full = row[`aiFull${from}`] ?? '';
 
     // 1) Short fields together as JSON to save a round-trip.
     const shortRaw = await this.groq.complete(

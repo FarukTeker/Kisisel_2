@@ -6,9 +6,11 @@ import { Responsive, useContainerWidth, type Layout } from "react-grid-layout";
 import Navbar from "@/components/layout/Navbar";
 import Widget from "@/components/news/Widget";
 import SettingsModal from "@/components/dashboard/SettingsModal";
+import EditionPicker from "@/components/dashboard/EditionPicker";
 import Toast from "@/components/ui/Toast";
 import { useAuthStore } from "@/features/auth/store";
 import { useSettingsStore } from "@/features/settings/store";
+import { useEditions } from "@/features/articles/queries";
 import {
   useDashboard,
   useSaveDashboard,
@@ -48,6 +50,9 @@ export default function Dashboard() {
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [hydrated, setHydrated] = useState(false);
   const [toast, setToast] = useState<string | null>(null);
+  // History: which daily edition to view (undefined = latest/today).
+  const [selectedDate, setSelectedDate] = useState<string | undefined>(undefined);
+  const { data: editions } = useEditions();
 
   const { width, containerRef, mounted } = useContainerWidth({ initialWidth: 1200 });
 
@@ -173,6 +178,12 @@ export default function Dashboard() {
         }}
       />
 
+      <EditionPicker
+        editions={editions ?? []}
+        value={selectedDate}
+        onChange={setSelectedDate}
+      />
+
       <main ref={containerRef} className="mx-auto max-w-6xl px-4 py-6">
         {mounted && (
           <Responsive
@@ -197,6 +208,7 @@ export default function Dashboard() {
                 <Widget
                   config={w}
                   mode={readingMode}
+                  editionDate={selectedDate}
                   editMode={editMode}
                   selected={selectedId === w.id}
                   onSelect={() => setSelectedId(w.id)}

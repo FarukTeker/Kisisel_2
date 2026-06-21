@@ -16,6 +16,8 @@ import ListenButton from "@/components/news/ListenButton";
 interface WidgetProps {
   config: WidgetConfig;
   mode: ReadingMode;
+  /** Which daily edition to read articles from (undefined = latest/today). */
+  editionDate?: string;
   editMode?: boolean;
   selected?: boolean;
   onSelect?: () => void;
@@ -28,6 +30,7 @@ const IMAGE_LAYOUTS = new Set(["card1", "card2", "card5", "card6"]);
 export default function Widget({
   config,
   mode,
+  editionDate,
   editMode,
   selected,
   onSelect,
@@ -62,17 +65,29 @@ export default function Widget({
             {config.editorialBody || "Add your editorial note in widget settings."}
           </p>
         ) : (
-          <ArticleBody config={config} mode={mode} />
+          <ArticleBody config={config} mode={mode} editionDate={editionDate} />
         )}
       </div>
     </div>
   );
 }
 
-function ArticleBody({ config, mode }: { config: WidgetConfig; mode: ReadingMode }) {
-  const news = useArticles(config.kind === "news" ? config.publisherId : undefined, 10);
-  const popular = usePopularArticles(8);
-  const random = useRandomArticles(8);
+function ArticleBody({
+  config,
+  mode,
+  editionDate,
+}: {
+  config: WidgetConfig;
+  mode: ReadingMode;
+  editionDate?: string;
+}) {
+  const news = useArticles(
+    config.kind === "news" ? config.publisherId : undefined,
+    10,
+    editionDate,
+  );
+  const popular = usePopularArticles(8, editionDate);
+  const random = useRandomArticles(8, editionDate);
 
   const source =
     config.kind === "popular" ? popular : config.kind === "random" ? random : news;

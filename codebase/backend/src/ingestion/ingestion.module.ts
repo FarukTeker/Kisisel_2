@@ -8,6 +8,7 @@ import { IngestionService } from './ingestion.service';
 import { EnrichmentWorker } from './enrichment.worker';
 import { NormalizeStage } from './stages/normalize.stage';
 import { PersistStage } from './stages/persist.stage';
+import { EditionTagStage } from './stages/edition-tag.stage';
 import { AiSummaryStage } from './stages/ai-summary.stage';
 import { AiHeadingsStage } from './stages/ai-headings.stage';
 import { AiFullStage } from './stages/ai-full.stage';
@@ -24,6 +25,7 @@ import { TranslateStage } from './stages/translate.stage';
     // Stages (DI providers)
     NormalizeStage,
     PersistStage,
+    EditionTagStage,
     AiSummaryStage,
     AiHeadingsStage,
     AiFullStage,
@@ -31,11 +33,12 @@ import { TranslateStage } from './stages/translate.stage';
     // Ordered stage arrays — reorder/add a stage here, nothing else changes.
     {
       provide: INGESTION_STAGES,
-      useFactory: (normalize: NormalizeStage, persist: PersistStage) => [
-        normalize,
-        persist,
-      ],
-      inject: [NormalizeStage, PersistStage],
+      useFactory: (
+        normalize: NormalizeStage,
+        persist: PersistStage,
+        editionTag: EditionTagStage,
+      ) => [normalize, persist, editionTag],
+      inject: [NormalizeStage, PersistStage, EditionTagStage],
     },
     {
       provide: ENRICHMENT_STAGES,
