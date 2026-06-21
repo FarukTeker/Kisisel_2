@@ -13,6 +13,23 @@ import { GoogleTtsService } from './google-tts.service';
 
 const CACHE_DIR = join(process.cwd(), 'cache', 'tts');
 
+/** Rejects if the promise doesn't settle within `ms` so narration can fall back. */
+function withTimeout<T>(promise: Promise<T>, ms: number): Promise<T> {
+  return new Promise<T>((resolve, reject) => {
+    const timer = setTimeout(() => reject(new Error('timeout')), ms);
+    promise.then(
+      (value) => {
+        clearTimeout(timer);
+        resolve(value);
+      },
+      (err) => {
+        clearTimeout(timer);
+        reject(err);
+      },
+    );
+  });
+}
+
 /**
  * Orchestrates the two-stage "Sesli Anlatım" flow, lazily and once per article:
  *   1. Groq rewrites the article into a natural spoken narration script
@@ -74,20 +91,39 @@ export class NarrationService {
     const source = (fullSource ?? '').slice(0, 1200);
 
     this.logger.log(`Generating ${lang} narration script for article ${article.id}`);
-    const script = await this.groq.complete(
-      'You are a professional television news anchor delivering a broadcast bulletin.',
-      [
-        'Rewrite the following article into a spoken news bulletin script.',
-        `Write the script in ${langName(lang)}.`,
-        'Adopt the serious, authoritative, composed tone of a professional news anchor reading the headlines.',
-        'Keep it concise and to the point — cover only the key facts, no filler. Aim for roughly 4 to 6 sentences.',
-        'Open by stating the core news directly; do not add greetings, sign-offs, or self-references.',
-        'Plain flowing sentences only — no markdown, headings, bullet points, or stage directions.',
-        'Stay factual and neutral; do not invent information.',
-        `Content: ${source}`,
-      ].join('\n'),
-      400,
-    );
+    // Try a Groq anchor-style rewrite, but never let a slow/over-quota free-tier
+    // call block playback: if it doesn't return quickly, narrate the existing
+    // summary text directly so audio still works.
+    let script: string;
+    try {
+      const generated = await withTimeout(
+        this.groq.complete(
+          'You are a professional television news anchor delivering a broadcast bulletin.',
+          [
+            'Rewrite the following article into a spoken news bulletin script.',
+            `Write the script in ${langName(lang)}.`,
+            'Adopt the serious, authoritative, composed tone of a professional news anchor reading the headlines.',
+            'Keep it concise and to the point — cover only the key facts, no filler. Aim for roughly 4 to 6 sentences.',
+            'Open by stating the core news directly; do not add greetings, sign-offs, or self-references.',
+            'Plain flowing sentences only — no markdown, headings, bullet points, or stage directions.',
+            'Stay factual and neutral; do not invent information.',
+            `Content: ${source}`,
+          ].join('\n'),
+          400,
+        ),
+        9000,
+      );
+      script = generated?.trim() ? generated.trim() : source;
+    } catch {
+      this.logger.warn(
+        `Groq narration unavailable for ${article.id} (${lang}); narrating summary directly`,
+      );
+      script = source;
+    }
+
+    if (!script) {
+      throw new NotFoundException(`No narratable content for article '${article.id}'`);
+    }
 
     await this.prisma.article.update({
       where: { id: article.id },

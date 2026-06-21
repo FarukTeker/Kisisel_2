@@ -71,10 +71,7 @@ export default function LoginPage() {
   return (
     <div className="flex min-h-screen items-center justify-center p-4">
       <div className="animate-fade-in w-full max-w-[460px] rounded-[28px] border border-line bg-surface px-6 py-9 shadow-[0_22px_50px_rgba(17,24,39,0.12)]">
-        <div className="mb-5 flex items-center justify-between">
-          <span className="rounded-full border border-line bg-[#f5efe4] px-2.5 py-1.5 text-[0.7rem] font-extrabold uppercase text-[#5f5b54]">
-            Mobile ready
-          </span>
+        <div className="mb-5 flex items-center justify-end">
           <span className="text-[0.78rem] font-bold text-zinc-500">
             {mode === "login" ? t("login.welcomeBack") : t("login.newCurator")}
           </span>
