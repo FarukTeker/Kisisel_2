@@ -95,6 +95,86 @@ export const DICTIONARY = {
     en: "No account found for that email.",
     tr: "Bu e-postayla bir hesap bulunamadı.",
   },
+
+  // General Action buttons / States
+  "action.open": { en: "Open ↗", tr: "Aç ↗" },
+  "action.back": { en: "← Back", tr: "← Geri" },
+  "action.myNewspaper": { en: "My newspaper", tr: "Gazetem" },
+  "action.loading": { en: "Loading…", tr: "Yükleniyor…" },
+  "action.newspaperNotFound": { en: "Newspaper not found.", tr: "Gazete bulunamadı." },
+  "action.by": { en: "by", tr: "yazan" },
+
+  // Follow actions
+  "follow.following": { en: "✓ Following", tr: "✓ Takip Ediliyor" },
+  "follow.follow": { en: "Follow", tr: "Takip Et" },
+  "follow.title": { en: "Following", tr: "Takip Edilenler" },
+  "follow.dailyNewspapers": { en: "Your daily newspapers", tr: "Günlük gazeteleriniz" },
+  "follow.emptyTitle": { en: "No newspapers yet", tr: "Henüz gazete yok" },
+  "follow.emptySubtitle": {
+    en: "Follow curators in Discover to build your daily list.",
+    tr: "Günlük listenizi oluşturmak için Keşfet sayfasındaki küratörleri takip edin.",
+  },
+  "follow.goDiscover": { en: "Go to Discover", tr: "Keşfet'e Git" },
+
+  // Navigation additions
+  "nav.following": { en: "Following", tr: "Takip Edilenler" },
+
+  // Widget templates and properties
+  "widget.template": { en: "Template", tr: "Şablon" },
+  "widget.source": { en: "Source", tr: "Kaynak" },
+  "widget.mode": { en: "Mode", tr: "Mod" },
+  "widget.title": { en: "Title", tr: "Başlık" },
+  "widget.titleOptional": { en: "Title (optional)", tr: "Başlık (isteğe bağlı)" },
+  "widget.titlePlaceholder": { en: "Widget title", tr: "Bileşen başlığı" },
+  "widget.add": { en: "Add widget", tr: "Bileşen ekle" },
+  "widget.delete": { en: "Delete widget", tr: "Bileşeni sil" },
+  "widget.editorialNote": { en: "Editorial note", tr: "Editör notu" },
+  "widget.editorialPlaceholder": { en: "Write your curator commentary…", tr: "Küratör yorumunuzu yazın…" },
+  "widget.categoryFilter": { en: "Category filter", tr: "Kategori filtresi" },
+  "widget.popularHint": { en: "Shows trending stories scored across all sources.", tr: "Tüm kaynaklardaki popüler haberleri gösterir." },
+  "widget.randomHint": { en: "Surfaces unexpected stories sampled outside your usual feed.", tr: "Alışılmış akışınızın dışından beklenmedik haberler sunar." },
+  "widget.label": { en: "Widget", tr: "Bileşen" },
+  
+  // Widget default names
+  "widget.default.editorial": { en: "Editorial Note", tr: "Editör Notu" },
+  "widget.default.popular": { en: "Popular Picks", tr: "Popüler Seçimler" },
+  "widget.default.random": { en: "Serendipity", tr: "Rastgele Keşif" },
+  "widget.widgetsCount": { en: "widgets", tr: "bileşen" },
+  "widget.newsTag": { en: "News", tr: "Haber" },
+
+  // Widget templates labels & descriptions
+  "template.card1.label": { en: "Feature", tr: "Öne Çıkan" },
+  "template.card1.desc": { en: "Large story with image and long body.", tr: "Görselli ve uzun metinli büyük haber." },
+  "template.card2.label": { en: "Wide Brief", tr: "Geniş Özet" },
+  "template.card2.desc": { en: "Horizontal image and short summary.", tr: "Yatay görsel ve kısa özet." },
+  "template.card3.label": { en: "Compact", tr: "Kompakt" },
+  "template.card3.desc": { en: "Small image with concise body text.", tr: "Küçük görsel ve kısa metin." },
+  "template.card4.label": { en: "Text Column", tr: "Metin Sütunu" },
+  "template.card4.desc": { en: "Text-first column for reading.", tr: "Okuma odaklı metin sütunu." },
+  "template.card5.label": { en: "Visual Story", tr: "Görsel Haber" },
+  "template.card5.desc": { en: "Title, large image, and body.", tr: "Başlık, büyük görsel ve metin." },
+  "template.card6.label": { en: "Gallery", tr: "Galeri" },
+  "template.card6.desc": { en: "Wide feature with image strip.", tr: "Görsel şeritli geniş öne çıkan." },
+  "template.editorial.label": { en: "Editorial", tr: "Editör Yazısı" },
+  "template.editorial.desc": { en: "Curator commentary block.", tr: "Küratör yorum alanı." },
+  "template.discovery.label": { en: "Discovery", tr: "Keşif" },
+  "template.discovery.desc": { en: "Popular or random high-signal stories.", tr: "Popüler veya rastgele yüksek etkileşimli haberler." },
+
+  // Discover page items
+  "discover.newspapersCount": { en: "newspapers", tr: "gazete" },
+  "discover.emptyState": { en: "No shared newspapers yet. Share yours from the dashboard to see it here.", tr: "Henüz paylaşılan gazete yok. Burada görmek için panodan sizinkini paylaşın." },
+  "discover.instructions": { en: "Drag background to explore · Grab cards to rearrange", tr: "Keşfetmek için arka planı sürükleyin · Yeniden düzenlemek için kartları tutun" },
+
+  // Shared card items
+  "card.shared": { en: "Shared", tr: "Paylaşıldı" },
+
+  // Categories
+  "category.All": { en: "All", tr: "Hepsi" },
+  "category.Technology": { en: "Technology", tr: "Teknoloji" },
+  "category.Science": { en: "Science", tr: "Bilim" },
+  "category.Food": { en: "Food", tr: "Yemek" },
+  "category.Finance": { en: "Finance", tr: "Finans" },
+  "category.Culture": { en: "Culture", tr: "Kültür" },
 } as const;
 
 export type TranslationKey = keyof typeof DICTIONARY;

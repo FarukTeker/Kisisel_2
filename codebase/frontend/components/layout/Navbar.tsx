@@ -128,7 +128,7 @@ export default function Navbar({
             href="/following"
             className="hidden rounded-pill border border-line bg-surface px-3 py-1.5 text-xs font-extrabold uppercase text-ink shadow-sm hover:bg-surface-hover sm:block"
           >
-            Following
+            {t("nav.following")}
           </Link>
           <button
             onClick={onShare}

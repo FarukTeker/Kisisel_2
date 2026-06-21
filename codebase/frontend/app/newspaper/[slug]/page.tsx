@@ -8,6 +8,7 @@ import { fetchSharedNewspaper, type SharedNewspaper } from "@/features/dashboard
 import { useAuthStore } from "@/features/auth/store";
 import { useSettingsStore } from "@/features/settings/store";
 import { useFollow, useFollowingIds, useUnfollow } from "@/features/follow/queries";
+import { useT } from "@/features/i18n/useT";
 
 export default function SharedNewspaperPage({
   params,
@@ -15,6 +16,7 @@ export default function SharedNewspaperPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = use(params);
+  const t = useT();
   const [paper, setPaper] = useState<SharedNewspaper | null>(null);
   const [error, setError] = useState(false);
   const { width, containerRef, mounted } = useContainerWidth({ initialWidth: 1200 });
@@ -42,14 +44,14 @@ export default function SharedNewspaperPage({
   if (error) {
     return (
       <main className="flex min-h-screen items-center justify-center">
-        <p className="text-sm font-semibold text-muted">Newspaper not found.</p>
+        <p className="text-sm font-semibold text-muted">{t("action.newspaperNotFound")}</p>
       </main>
     );
   }
   if (!paper) {
     return (
       <main className="flex min-h-screen items-center justify-center">
-        <p className="text-sm font-semibold text-muted">Loading…</p>
+        <p className="text-sm font-semibold text-muted">{t("action.loading")}</p>
       </main>
     );
   }
@@ -70,14 +72,14 @@ export default function SharedNewspaperPage({
               href="/discover"
               className="flex items-center gap-1.5 rounded-full border border-line bg-surface px-3 py-1.5 text-xs font-extrabold uppercase tracking-tight text-ink transition-colors hover:bg-surface-hover"
             >
-              <span aria-hidden>←</span> Back
+              {t("action.back")}
             </Link>
             <div>
               <h1 className="flex items-center gap-1.5 font-serif text-xl font-black tracking-tight text-ink">
                 <span className="h-2 w-2 rounded-full bg-brand" />
                 {paper.name}
               </h1>
-              <p className="text-xs font-bold text-muted">by {paper.curatorName}</p>
+              <p className="text-xs font-bold text-muted">{t("action.by")} {paper.curatorName}</p>
             </div>
           </div>
 
@@ -97,7 +99,7 @@ export default function SharedNewspaperPage({
                     : { backgroundColor: "var(--foreground)", color: "var(--surface)" }
                 }
               >
-                {isFollowing ? "✓ Following" : "Follow"}
+                {isFollowing ? t("follow.following") : t("follow.follow")}
               </button>
             )}
             {token && (
@@ -105,7 +107,7 @@ export default function SharedNewspaperPage({
                 href="/"
                 className="hidden rounded-pill border border-line bg-surface px-3 py-1.5 text-xs font-extrabold uppercase text-ink hover:bg-surface-hover sm:block"
               >
-                My newspaper
+                {t("action.myNewspaper")}
               </Link>
             )}
           </div>

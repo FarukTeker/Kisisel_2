@@ -8,11 +8,13 @@ import { useSettingsStore } from "@/features/settings/store";
 import { useDiscover } from "@/features/dashboard/queries";
 import { useFollow, useFollowingIds, useUnfollow } from "@/features/follow/queries";
 import NewspaperCard from "@/components/news/NewspaperCard";
+import { useT } from "@/features/i18n/useT";
 
 const ROTATIONS = [-0.8, 0.6, -0.5, 0.9, -0.4, 0.7, -0.6, 0.5];
 
 export default function DiscoverPage() {
   const router = useRouter();
+  const t = useT();
   const token = useAuthStore((s) => s.token);
   const user = useAuthStore((s) => s.user);
   const applySettings = useSettingsStore((s) => s.apply);
@@ -124,11 +126,11 @@ export default function DiscoverPage() {
         style={{ backgroundColor: "var(--surface)", borderColor: "var(--foreground)", boxShadow: "2px 2px 0 var(--foreground)" }}
       >
         <span className="text-[0.65rem] font-black uppercase tracking-[0.1em]" style={{ color: "var(--primary)" }}>
-          Discover
+          {t("nav.discover")}
         </span>
         <span className="h-[3px] w-[3px] rounded-full" style={{ backgroundColor: "var(--border)" }} />
         <span className="text-[0.65rem] font-bold" style={{ color: "var(--text-muted)" }}>
-          {newspapers?.length ?? 0} newspapers
+          {newspapers?.length ?? 0} {t("discover.newspapersCount")}
         </span>
       </div>
 
@@ -139,7 +141,7 @@ export default function DiscoverPage() {
           className="flex items-center gap-1.5 rounded-full border-[1.5px] px-3.5 py-2 text-[0.75rem] font-extrabold"
           style={{ backgroundColor: "var(--surface)", borderColor: "var(--foreground)", color: "var(--foreground)", boxShadow: "2px 2px 0 var(--foreground)" }}
         >
-          ← My newspaper
+          ← {t("action.myNewspaper")}
         </Link>
         <Link
           href="/following"
@@ -147,14 +149,14 @@ export default function DiscoverPage() {
           className="flex items-center gap-1.5 rounded-full border-[1.5px] px-3.5 py-2 text-[0.75rem] font-extrabold"
           style={{ backgroundColor: "var(--surface)", borderColor: "var(--foreground)", color: "var(--foreground)", boxShadow: "2px 2px 0 var(--foreground)" }}
         >
-          Following →
+          {t("nav.following")} →
         </Link>
       </div>
 
       {!isLoading && (newspapers?.length ?? 0) === 0 && (
         <div className="pointer-events-none fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-center">
           <p className="text-sm font-bold" style={{ color: "var(--text-muted)" }}>
-            No shared newspapers yet. Share yours from the dashboard to see it here.
+            {t("discover.emptyState")}
           </p>
         </div>
       )}
@@ -164,7 +166,7 @@ export default function DiscoverPage() {
           className="pointer-events-none fixed bottom-7 left-1/2 z-40 flex -translate-x-1/2 items-center gap-2 rounded-full px-4 py-2 text-[0.72rem] font-bold text-white"
           style={{ backgroundColor: "rgba(17,24,39,0.8)" }}
         >
-          Drag background to explore · Grab cards to rearrange
+          {t("discover.instructions")}
         </div>
       )}
     </div>

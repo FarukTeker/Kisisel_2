@@ -1,6 +1,8 @@
 "use client";
 
-const MODE_LABEL: Record<string, string> = { S: "Scan", H: "Skim", F: "Full" };
+import { useT } from "@/features/i18n/useT";
+import { useSettingsStore } from "@/features/settings/store";
+
 const MODE_COLOR: Record<string, string> = { S: "#2647d6", H: "#7c3aed", F: "#059669" };
 
 export interface NewspaperCardData {
@@ -21,13 +23,13 @@ function slotColor(kind: string): string {
   return "#dcfce7";
 }
 
-function tagsFor(np: NewspaperCardData): string[] {
+function tagsFor(np: NewspaperCardData, t: any): string[] {
   const tags = new Set<string>();
   np.widgets.forEach((wgt) => {
-    if (wgt.kind === "editorial") tags.add("Editorial");
-    if (wgt.kind === "popular") tags.add("Popular");
-    if (wgt.kind === "random") tags.add("Serendipity");
-    if (wgt.kind === "news") tags.add("News");
+    if (wgt.kind === "editorial") tags.add(t("template.editorial.label"));
+    if (wgt.kind === "popular") tags.add(t("widget.default.popular"));
+    if (wgt.kind === "random") tags.add(t("widget.default.random"));
+    if (wgt.kind === "news") tags.add(t("widget.newsTag"));
   });
   return [...tags].slice(0, 3);
 }
@@ -64,9 +66,13 @@ export default function NewspaperCard({
   style,
   onMouseDown,
 }: NewspaperCardProps) {
+  const t = useT();
+  const language = useSettingsStore((s) => s.language);
+  const locale = language === "tr" ? "tr-TR" : "en-US";
+
   const mode = MODE_COLOR[np.readingMode] ?? "#2647d6";
   const dateLabel = np.createdAt
-    ? new Date(np.createdAt).toLocaleDateString("en-US", { month: "short", day: "numeric" })
+    ? new Date(np.createdAt).toLocaleDateString(locale, { month: "short", day: "numeric" })
     : null;
 
   return (
@@ -87,13 +93,13 @@ export default function NewspaperCard({
         style={{ backgroundColor: "#111827", color: "#fff" }}
       >
         <span className="text-[0.62rem] font-black uppercase tracking-[0.12em] opacity-70">
-          {dateLabel ? `Shared ${dateLabel}` : "Kişisel"}
+          {dateLabel ? `${t("card.shared")} ${dateLabel}` : "Kişisel"}
         </span>
         <span
           className="rounded-full px-1.5 py-0.5 text-[0.58rem] font-black uppercase text-white"
           style={{ backgroundColor: mode }}
         >
-          {MODE_LABEL[np.readingMode]}
+          {t(`mode.${np.readingMode}` as any)}
         </span>
       </div>
 
@@ -104,7 +110,7 @@ export default function NewspaperCard({
         <div className="mb-2 flex items-center gap-1.5">
           <Avatar name={np.curator} />
           <span className="text-[0.74rem] font-bold" style={{ color: "var(--text-muted)" }}>
-            by {np.curator}
+            {t("action.by")} {np.curator}
           </span>
         </div>
         {np.description && (
@@ -138,20 +144,20 @@ export default function NewspaperCard({
         </div>
 
         <div className="mb-3 flex flex-wrap gap-1.5">
-          {tagsFor(np).map((t) => (
+          {tagsFor(np, t).map((tagStr) => (
             <span
-              key={t}
+              key={tagStr}
               className="rounded-full border px-2 py-0.5 text-[0.64rem] font-bold"
               style={{ borderColor: "var(--border)", color: "var(--text-soft)" }}
             >
-              {t}
+              {tagStr}
             </span>
           ))}
           <span
             className="rounded-full px-2 py-0.5 text-[0.64rem] font-bold"
             style={{ border: `1px solid ${mode}40`, color: mode, backgroundColor: `${mode}0f` }}
           >
-            {np.widgetCount} widgets
+            {np.widgetCount} {t("widget.widgetsCount")}
           </span>
         </div>
       </div>
@@ -167,7 +173,7 @@ export default function NewspaperCard({
           className="py-3 text-center text-[0.8rem] font-extrabold"
           style={{ color: "var(--foreground)", borderRight: follow ? "1px solid var(--foreground)" : undefined }}
         >
-          Open ↗
+          {t("action.open")}
         </button>
         {follow && (
           <button
@@ -184,7 +190,7 @@ export default function NewspaperCard({
                 : { backgroundColor: "var(--foreground)", color: "var(--surface)" }
             }
           >
-            {follow.isFollowing ? "✓ Following" : "Follow"}
+            {follow.isFollowing ? t("follow.following") : t("follow.follow")}
           </button>
         )}
       </div>

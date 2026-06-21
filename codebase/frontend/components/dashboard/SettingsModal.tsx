@@ -45,7 +45,7 @@ export default function SettingsModal(props: SettingsModalProps) {
   const t = useT();
   const { isOpen, onClose, selectedWidget } = props;
   const title = selectedWidget
-    ? `Widget — ${selectedWidget.title}`
+    ? `${t("widget.label")} — ${selectedWidget.title}`
     : t("settings.page");
 
   return (
@@ -90,7 +90,7 @@ function GlobalSettings({
         ))}
       </nav>
 
-      <div className="min-h-[260px] flex-1">
+      <div className="min-h-[380px] flex-1">
         {tab === "Design" && (
           <div className="flex flex-col gap-5">
             <Field label={t("settings.theme")}>
@@ -183,6 +183,7 @@ function AddWidgetForm({
 }: {
   onAddWidget: SettingsModalProps["onAddWidget"];
 }) {
+  const t = useT();
   const { data: sources } = useSources();
   const [template, setTemplate] = useState<WidgetLayoutType>("card3");
   const [publisherId, setPublisherId] = useState("");
@@ -194,10 +195,10 @@ function AddWidgetForm({
 
   function add() {
     if (isEditorial) {
-      onAddWidget({ title: title || "Editorial Note", kind: "editorial", layoutType: "editorial" });
+      onAddWidget({ title: title || t("widget.default.editorial"), kind: "editorial", layoutType: "editorial" });
     } else if (isDiscovery) {
       onAddWidget({
-        title: title || (discoveryKind === "popular" ? "Popular Picks" : "Serendipity"),
+        title: title || (discoveryKind === "popular" ? t("widget.default.popular") : t("widget.default.random")),
         kind: discoveryKind,
         layoutType: "discovery",
       });
@@ -211,22 +212,22 @@ function AddWidgetForm({
 
   return (
     <div className="flex flex-col gap-4">
-      <Field label="Template">
+      <Field label={t("widget.template")}>
         <select
           value={template}
           onChange={(e) => setTemplate(e.target.value as WidgetLayoutType)}
           className="rounded-lg border border-line bg-surface px-3 py-2 text-sm text-ink"
         >
-          {WIDGET_TEMPLATES.map((t) => (
-            <option key={t.id} value={t.id}>
-              {t.label} — {t.description}
+          {WIDGET_TEMPLATES.map((w) => (
+            <option key={w.id} value={w.id}>
+              {t(`template.${w.id}.label` as any)} — {t(`template.${w.id}.desc` as any)}
             </option>
           ))}
         </select>
       </Field>
 
       {!isEditorial && !isDiscovery && (
-        <Field label="Source">
+        <Field label={t("widget.source")}>
           <select
             value={publisherId}
             onChange={(e) => setPublisherId(e.target.value)}
@@ -234,7 +235,7 @@ function AddWidgetForm({
           >
             {(sources ?? []).map((s) => (
               <option key={s.id} value={s.id}>
-                {s.name} ({s.category})
+                {s.name} ({t(`category.${s.category}` as any)})
               </option>
             ))}
           </select>
@@ -242,7 +243,7 @@ function AddWidgetForm({
       )}
 
       {isDiscovery && (
-        <Field label="Mode">
+        <Field label={t("widget.mode")}>
           <div className="flex gap-2">
             {(["popular", "random"] as const).map((k) => (
               <button
@@ -252,18 +253,18 @@ function AddWidgetForm({
                   discoveryKind === k ? "border-brand bg-brand text-white" : "border-line text-ink hover:bg-surface-hover"
                 }`}
               >
-                {k}
+                {k === "popular" ? t("widget.default.popular") : t("widget.default.random")}
               </button>
             ))}
           </div>
         </Field>
       )}
 
-      <Field label="Title (optional)">
+      <Field label={t("widget.titleOptional")}>
         <input
           value={title}
           onChange={(e) => setTitle(e.target.value)}
-          placeholder="Widget title"
+          placeholder={t("widget.titlePlaceholder")}
           className="rounded-lg border border-line bg-surface px-3 py-2 text-sm text-ink"
         />
       </Field>
@@ -272,7 +273,7 @@ function AddWidgetForm({
         onClick={add}
         className="self-start rounded-pill bg-brand px-5 py-2 text-sm font-extrabold uppercase text-white"
       >
-        Add widget
+        {t("widget.add")}
       </button>
     </div>
   );
@@ -284,9 +285,10 @@ function WidgetSettings({
   onDeleteWidget,
   onClose,
 }: SettingsModalProps & { widget: WidgetConfig }) {
+  const t = useT();
   return (
     <div className="flex flex-col gap-5">
-      <Field label="Title">
+      <Field label={t("widget.title")}>
         <input
           value={widget.title}
           onChange={(e) => onUpdateWidget(widget.id, { title: e.target.value })}
@@ -295,19 +297,19 @@ function WidgetSettings({
       </Field>
 
       {widget.kind === "editorial" && (
-        <Field label="Editorial note">
+        <Field label={t("widget.editorialNote")}>
           <textarea
             value={widget.editorialBody ?? ""}
             onChange={(e) => onUpdateWidget(widget.id, { editorialBody: e.target.value })}
             rows={5}
-            placeholder="Write your curator commentary…"
+            placeholder={t("widget.editorialPlaceholder")}
             className="rounded-lg border border-line bg-surface px-3 py-2 text-sm text-ink"
           />
         </Field>
       )}
 
       {widget.kind === "news" && (
-        <Field label="Category filter">
+        <Field label={t("widget.categoryFilter")}>
           <div className="flex flex-wrap gap-2">
             {CATEGORIES.map((c) => {
               const active =
@@ -324,7 +326,7 @@ function WidgetSettings({
                     active ? "border-brand bg-brand text-white" : "border-line text-ink hover:bg-surface-hover"
                   }`}
                 >
-                  {c}
+                  {t(`category.${c}` as any)}
                 </button>
               );
             })}
@@ -335,8 +337,8 @@ function WidgetSettings({
       {(widget.kind === "popular" || widget.kind === "random") && (
         <p className="rounded-lg border border-line bg-surface-hover px-3 py-2 text-sm text-ink-soft">
           {widget.kind === "popular"
-            ? "Shows trending stories scored across all sources."
-            : "Surfaces unexpected stories sampled outside your usual feed."}
+            ? t("widget.popularHint")
+            : t("widget.randomHint")}
         </p>
       )}
 
@@ -347,7 +349,7 @@ function WidgetSettings({
         }}
         className="self-start rounded-pill border border-red-300 bg-red-50 px-5 py-2 text-sm font-extrabold uppercase text-red-600"
       >
-        Delete widget
+        {t("widget.delete")}
       </button>
     </div>
   );
