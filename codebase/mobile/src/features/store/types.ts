@@ -1,11 +1,11 @@
 /** Domain model — ported from the archive's Models.swift, adapted for the hybrid app. */
 
-export type ReadingMode = 'S' | 'H' | 'F'; // Scan | Skim(H) | Full
+export type ReadingMode = 'S' | 'H' | 'F'; // Header(S) | Summary(H) | Full(F)
 
 export const READING_MODES: { value: ReadingMode; label: string; detail: string; icon: string }[] = [
-  { value: 'S', label: 'Scan', detail: 'Headlines only — fastest pass', icon: 'list-outline' },
-  { value: 'H', label: 'Skim', detail: 'Short summaries with metadata', icon: 'reorder-four-outline' },
-  { value: 'F', label: 'Full read', detail: 'One story at a time, in depth', icon: 'document-text-outline' },
+  { value: 'S', label: 'Header', detail: 'Headlines only — fastest pass', icon: 'list-outline' },
+  { value: 'H', label: 'Summary', detail: 'Short summaries with metadata', icon: 'reorder-four-outline' },
+  { value: 'F', label: 'Full', detail: 'One story at a time, in depth', icon: 'document-text-outline' },
 ];
 
 export type WidgetKind = 'news' | 'editorial' | 'popular' | 'random';

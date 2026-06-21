@@ -3,6 +3,9 @@
 /node_modules
 /build
 
+# generated TTS audio cache
+/cache
+
 # Logs
 logs
 *.log

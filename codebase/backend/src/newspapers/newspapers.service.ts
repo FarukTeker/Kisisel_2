@@ -27,6 +27,7 @@ export class NewspapersService {
         curator: p.curator.name,
         curatorId: p.curatorId,
         readingMode: p.readingMode,
+        language: p.language,
         widgetCount: p.widgets.length,
         widgets: p.widgets.map((w) => ({ kind: w.kind, layoutType: w.layoutType })),
       })),
@@ -61,6 +62,7 @@ export class NewspapersService {
       ...(dto.columns ? { columns: dto.columns } : {}),
       ...(dto.theme ? { theme: dto.theme } : {}),
       ...(dto.font ? { font: dto.font } : {}),
+      ...(dto.language ? { language: dto.language } : {}),
     };
 
     const newspaper = existing
@@ -99,6 +101,7 @@ export class NewspapersService {
         columns: dto.columns ?? 3,
         theme: dto.theme ?? 'Light',
         font: dto.font ?? 'Sans-Serif (Modern Clean)',
+        language: dto.language ?? 'en',
         curatorId: userId,
       },
     });

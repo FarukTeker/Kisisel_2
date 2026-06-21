@@ -69,6 +69,7 @@ export class FollowsService {
         curator: p.curator.name,
         curatorId: p.curatorId,
         readingMode: p.readingMode,
+        language: p.language,
         widgetCount: p.widgets.length,
         widgets: p.widgets.map((w) => ({ kind: w.kind, layoutType: w.layoutType })),
         createdAt: p.createdAt.toISOString(),

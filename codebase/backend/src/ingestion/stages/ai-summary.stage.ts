@@ -2,9 +2,9 @@ import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../prisma/prisma.service';
 import { GroqService } from '../groq/groq.service';
 import type { PipelineStage, StageContext } from '../pipeline/pipeline-stage.interface';
-import type { EnrichmentJob } from '../pipeline/enrichment-job.type';
+import { langSuffix, type EnrichmentJob } from '../pipeline/enrichment-job.type';
 
-/** Scan mode (S): a neutral 2-sentence summary. */
+/** Scan mode (S): a neutral 2-sentence summary, written in the source language. */
 @Injectable()
 export class AiSummaryStage implements PipelineStage<EnrichmentJob> {
   readonly name = 'ai-summary';
@@ -15,13 +15,15 @@ export class AiSummaryStage implements PipelineStage<EnrichmentJob> {
   ) {}
 
   async process(ctx: StageContext<EnrichmentJob>): Promise<void> {
-    const { articleId, title, fullContent, category, publisherName } = ctx.payload;
+    const { articleId, title, fullContent, category, publisherName, language } =
+      ctx.payload;
 
     const summary = await this.groq.complete(
       'You are a helpful assistant that summarizes news articles.',
       [
         'Summarize the following news article into 2 short sentences.',
         'Keep it neutral, factual, and easy to scan.',
+        'Write the summary in the same language as the article.',
         'Do not add opinions, bullet points, or markdown.',
         `Title: ${title}`,
         `Publisher: ${publisherName}`,
@@ -31,9 +33,15 @@ export class AiSummaryStage implements PipelineStage<EnrichmentJob> {
       120,
     );
 
+    // Source-language column; the TranslateStage fills the other language. The
+    // source-language title needs no AI, so mirror it into aiTitle{Lang} here.
+    const suffix = langSuffix(language);
     await this.prisma.article.update({
       where: { id: articleId },
-      data: { aiSummary: summary },
+      data: {
+        [`aiSummary${suffix}`]: summary,
+        [`aiTitle${suffix}`]: title,
+      },
     });
   }
 }

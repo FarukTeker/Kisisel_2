@@ -1,7 +1,7 @@
 "use client";
 
-import { use, useEffect, useState } from "react";
 import Link from "next/link";
+import { use, useEffect, useState } from "react";
 import { Responsive, useContainerWidth, type Layout } from "react-grid-layout";
 import Widget from "@/components/news/Widget";
 import { fetchSharedNewspaper, type SharedNewspaper } from "@/features/dashboard/api";
@@ -22,14 +22,22 @@ export default function SharedNewspaperPage({
   const token = useAuthStore((s) => s.token);
   const user = useAuthStore((s) => s.user);
   const applySettings = useSettingsStore((s) => s.apply);
+  const setLanguage = useSettingsStore((s) => s.setLanguage);
   const { ids: followedIds } = useFollowingIds();
   const follow = useFollow();
   const unfollow = useUnfollow();
 
-  useEffect(() => {
-    fetchSharedNewspaper(slug).then(setPaper).catch(() => setError(true));
-  }, [slug]);
   useEffect(() => applySettings(), [applySettings]);
+  useEffect(() => {
+    fetchSharedNewspaper(slug)
+      .then((np) => {
+        // Render the shared paper in the language it was published in, so its
+        // widgets fetch the matching localized article text.
+        setLanguage(np.language);
+        setPaper(np);
+      })
+      .catch(() => setError(true));
+  }, [slug, setLanguage]);
 
   if (error) {
     return (
@@ -57,12 +65,20 @@ export default function SharedNewspaperPage({
     <div className="min-h-screen">
       <header className="sticky top-0 z-20 border-b border-line bg-surface/85 px-5 py-3 backdrop-blur">
         <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-3">
-          <div>
-            <h1 className="flex items-center gap-1.5 font-serif text-xl font-black tracking-tight text-ink">
-              <span className="h-2 w-2 rounded-full bg-brand" />
-              {paper.name}
-            </h1>
-            <p className="text-xs font-bold text-muted">by {paper.curatorName}</p>
+          <div className="flex items-center gap-3">
+            <Link
+              href="/discover"
+              className="flex items-center gap-1.5 rounded-full border border-line bg-surface px-3 py-1.5 text-xs font-extrabold uppercase tracking-tight text-ink transition-colors hover:bg-surface-hover"
+            >
+              <span aria-hidden>←</span> Back
+            </Link>
+            <div>
+              <h1 className="flex items-center gap-1.5 font-serif text-xl font-black tracking-tight text-ink">
+                <span className="h-2 w-2 rounded-full bg-brand" />
+                {paper.name}
+              </h1>
+              <p className="text-xs font-bold text-muted">by {paper.curatorName}</p>
+            </div>
           </div>
 
           <div className="flex items-center gap-2">
@@ -84,12 +100,6 @@ export default function SharedNewspaperPage({
                 {isFollowing ? "✓ Following" : "Follow"}
               </button>
             )}
-            <Link
-              href="/discover"
-              className="rounded-pill border border-line bg-surface px-3 py-1.5 text-xs font-extrabold uppercase text-ink hover:bg-surface-hover"
-            >
-              Discover
-            </Link>
             {token && (
               <Link
                 href="/"

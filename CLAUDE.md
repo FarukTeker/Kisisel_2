@@ -43,6 +43,9 @@ Backend env (`backend/.env`, not committed):
 - `GROQ_API_KEY` — required for AI summaries (`/summaries/preview`)
 - `GROQ_MODEL` — defaults to `llama3-8b-8192`
 - `JWT_SECRET` — falls back to a dev default if unset
+- `GOOGLE_TTS_API_KEY` — required for "Sesli Anlatım" TTS (`/articles/:id/audio?lang=`)
+- `GOOGLE_TTS_VOICE_EN` / `GOOGLE_TTS_LANG_EN` — default `en-US-Neural2-D` / `en-US`
+- `GOOGLE_TTS_VOICE_TR` / `GOOGLE_TTS_LANG_TR` — default `tr-TR-Standard-A` / `tr-TR`
 - `PORT` — defaults to `4000`
 
 Frontend reads `NEXT_PUBLIC_API_URL` (defaults to `http://localhost:4000`).

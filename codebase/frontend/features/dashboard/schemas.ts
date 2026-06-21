@@ -1,6 +1,7 @@
 import { z } from "zod";
 
 export const readingModeSchema = z.enum(["S", "H", "F"]);
+export const languageSchema = z.enum(["en", "tr"]);
 
 /** A widget row as stored/returned by the backend (geometry inline). */
 export const widgetRowSchema = z.object({
@@ -29,6 +30,7 @@ export const newspaperSchema = z.object({
   theme: z.string(),
   font: z.string(),
   curatorId: z.string(),
+  language: languageSchema.default("en"),
   widgets: z.array(widgetRowSchema),
   curator: z.object({ name: z.string() }).optional(),
 });
@@ -45,6 +47,7 @@ export const discoverNewspaperSchema = z.object({
   curator: z.string(),
   curatorId: z.string(),
   readingMode: readingModeSchema,
+  language: languageSchema.default("en"),
   widgetCount: z.number(),
   widgets: z.array(z.object({ kind: z.string(), layoutType: z.string() })),
 });

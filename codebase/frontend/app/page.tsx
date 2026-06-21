@@ -33,8 +33,10 @@ export default function Dashboard() {
 
   const theme = useSettingsStore((s) => s.theme);
   const font = useSettingsStore((s) => s.font);
+  const language = useSettingsStore((s) => s.language);
   const setTheme = useSettingsStore((s) => s.setTheme);
   const setFont = useSettingsStore((s) => s.setFont);
+  const setLanguage = useSettingsStore((s) => s.setLanguage);
   const applySettings = useSettingsStore((s) => s.apply);
 
   const [widgets, setWidgets] = useState<WidgetConfig[]>(DEFAULT_WIDGETS);
@@ -70,8 +72,9 @@ export default function Dashboard() {
     setColumns(loaded.columns);
     setTheme(loaded.theme);
     setFont(loaded.font);
+    setLanguage(loaded.language);
     setHydrated(true);
-  }, [loaded, hydrated, setTheme, setFont]);
+  }, [loaded, hydrated, setTheme, setFont, setLanguage]);
 
   // Debounced autosave. `stateRef` always holds the latest state so we can flush
   // it on unmount (otherwise a quick navigation within the debounce window drops
@@ -80,15 +83,15 @@ export default function Dashboard() {
   saveRef.current = save;
   const stateRef = useRef<DashboardState | null>(null);
   stateRef.current = hydrated
-    ? { widgets, layout, readingMode, columns, theme, font }
+    ? { widgets, layout, readingMode, columns, theme, font, language }
     : null;
 
   useEffect(() => {
     if (!hydrated) return;
-    const state: DashboardState = { widgets, layout, readingMode, columns, theme, font };
+    const state: DashboardState = { widgets, layout, readingMode, columns, theme, font, language };
     const t = setTimeout(() => saveRef.current.mutate(state), 500);
     return () => clearTimeout(t);
-  }, [widgets, layout, readingMode, columns, theme, font, hydrated]);
+  }, [widgets, layout, readingMode, columns, theme, font, language, hydrated]);
 
   // Flush the latest state when leaving the page.
   useEffect(() => {
@@ -131,7 +134,7 @@ export default function Dashboard() {
 
   async function handleShare() {
     try {
-      const state: DashboardState = { widgets, layout, readingMode, columns, theme, font };
+      const state: DashboardState = { widgets, layout, readingMode, columns, theme, font, language };
       const slug = await share.mutateAsync({ state, name: "My Newspaper", description: "" });
       const url = `${window.location.origin}/newspaper/${slug}`;
       await navigator.clipboard.writeText(url).catch(() => {});

@@ -40,6 +40,7 @@ model Newspaper {
   columns     Int      @default(3)
   theme       String   @default("Light") // 'Light' | 'Dark' | 'Sepia'
   font        String   @default("Sans-Serif (Modern Clean)")
+  language    String   @default("en") // 'en' | 'tr'
   curatorId   String
   curator     User     @relation(fields: [curatorId], references: [id], onDelete: Cascade)
   widgets     Widget[]
@@ -87,10 +88,22 @@ model Article {
   summary     String // RSS excerpt (~280 chars)
   fullContent String
 
-  // AI enrichment outputs — generated once, shared by all users.
-  aiSummary  String? // Scan mode (S): 2 short sentences
-  aiHeadings String? // Skim mode (H): JSON string of string[]
-  aiFull     String? // Full mode (F): cleaned/rewritten full read
+  // AI enrichment outputs — generated once, shared by all users. Each dimension is
+  // stored in both English and Turkish: enrichment writes the source language, the
+  // TranslateStage fills the other. The DTO serves the field matching ?lang=.
+  aiTitleEn   String? // localized title (English)
+  aiTitleTr   String? // localized title (Turkish)
+  aiSummaryEn String? // Scan mode (S): 2 short sentences (English)
+  aiSummaryTr String? // Scan mode (S): 2 short sentences (Turkish)
+  aiHeadingsEn String? // Skim mode (H): JSON string of string[] (English)
+  aiHeadingsTr String? // Skim mode (H): JSON string of string[] (Turkish)
+  aiFullEn    String? // Full mode (F): cleaned/rewritten full read (English)
+  aiFullTr    String? // Full mode (F): cleaned/rewritten full read (Turkish)
+
+  // Text-to-speech: Groq-generated spoken narration script per language (cached on
+  // first request, then reused). The synthesized MP3 is cached on disk under cache/tts/.
+  narrationScriptEn String?
+  narrationScriptTr String?
 
   author    String
   date      String // ISO yyyy-mm-dd
