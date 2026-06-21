@@ -64,6 +64,7 @@ function GlobalSettings({
   onColumnsChange,
   onAddWidget,
   onShare,
+  onClose,
 }: SettingsModalProps) {
   const t = useT();
   const [tab, setTab] = useState<(typeof GLOBAL_TABS)[number]>("Design");
@@ -75,104 +76,115 @@ function GlobalSettings({
   const setFont = useSettingsStore((s) => s.setFont);
 
   return (
-    <div className="flex flex-col gap-4 sm:flex-row">
-      <nav className="flex shrink-0 gap-1 sm:w-32 sm:flex-col">
-        {GLOBAL_TABS.map((tabId) => (
-          <button
-            key={tabId}
-            onClick={() => setTab(tabId)}
-            className={`rounded-lg px-3 py-2 text-left text-sm font-bold ${
-              tab === tabId ? "bg-brand text-white" : "text-ink-soft hover:bg-surface-hover"
-            }`}
-          >
-            {t(TAB_LABEL_KEY[tabId])}
-          </button>
-        ))}
-      </nav>
-
-      <div className="min-h-[380px] flex-1">
-        {tab === "Design" && (
-          <div className="flex flex-col gap-5">
-            <Field label={t("settings.theme")}>
-              <div className="flex gap-2">
-                {THEMES.map((th) => (
-                  <button
-                    key={th}
-                    onClick={() => setTheme(th as Theme)}
-                    className={`rounded-lg border px-3 py-2 text-sm font-bold ${
-                      theme === th ? "border-brand bg-brand text-white" : "border-line text-ink hover:bg-surface-hover"
-                    }`}
-                  >
-                    {th}
-                  </button>
-                ))}
-              </div>
-            </Field>
-            <Field label={t("settings.language")}>
-              <div className="flex gap-2">
-                {LANGUAGES.map((l) => (
-                  <button
-                    key={l.id}
-                    onClick={() => setLanguage(l.id as Language)}
-                    className={`rounded-lg border px-3 py-2 text-sm font-bold ${
-                      language === l.id ? "border-brand bg-brand text-white" : "border-line text-ink hover:bg-surface-hover"
-                    }`}
-                  >
-                    {l.label}
-                  </button>
-                ))}
-              </div>
-            </Field>
-            <Field label={t("settings.font")}>
-              <div className="flex flex-col gap-2">
-                {FONT_OPTIONS.map((f) => (
-                  <button
-                    key={f.label}
-                    onClick={() => setFont(f.label)}
-                    className={`rounded-lg border px-3 py-2 text-left text-sm font-semibold ${
-                      font === f.label ? "border-brand bg-brand/10 text-ink" : "border-line text-ink hover:bg-surface-hover"
-                    }`}
-                  >
-                    {f.label}
-                  </button>
-                ))}
-              </div>
-            </Field>
-          </div>
-        )}
-
-        {tab === "Layout" && (
-          <Field label={t("settings.columns")}>
-            <div className="flex gap-2">
-              {[1, 2, 3, 4].map((n) => (
-                <button
-                  key={n}
-                  onClick={() => onColumnsChange(n)}
-                  className={`h-12 w-12 rounded-lg border text-lg font-extrabold ${
-                    columns === n ? "border-brand bg-brand text-white" : "border-line text-ink hover:bg-surface-hover"
-                  }`}
-                >
-                  {n}
-                </button>
-              ))}
-            </div>
-            <p className="mt-2 text-xs text-muted">{t("settings.columnsHint")}</p>
-          </Field>
-        )}
-
-        {tab === "Widgets" && <AddWidgetForm onAddWidget={onAddWidget} />}
-
-        {tab === "Share" && (
-          <div className="flex flex-col gap-3">
-            <p className="text-sm text-ink-soft">{t("settings.shareHint")}</p>
+    <div className="flex flex-col gap-5">
+      <div className="flex flex-col gap-4 sm:flex-row">
+        <nav className="flex shrink-0 gap-1 sm:w-32 sm:flex-col">
+          {GLOBAL_TABS.map((tabId) => (
             <button
-              onClick={onShare}
-              className="self-start rounded-pill bg-brand px-5 py-2 text-sm font-extrabold uppercase text-white"
+              key={tabId}
+              onClick={() => setTab(tabId)}
+              className={`rounded-lg px-3 py-2 text-left text-sm font-bold ${
+                tab === tabId ? "bg-brand text-white" : "text-ink-soft hover:bg-surface-hover"
+              }`}
             >
-              {t("settings.shareButton")}
+              {t(TAB_LABEL_KEY[tabId])}
             </button>
-          </div>
-        )}
+          ))}
+        </nav>
+
+        <div className="min-h-[380px] flex-1">
+          {tab === "Design" && (
+            <div className="flex flex-col gap-5">
+              <Field label={t("settings.theme")}>
+                <div className="flex gap-2">
+                  {THEMES.map((th) => (
+                    <button
+                      key={th}
+                      onClick={() => setTheme(th as Theme)}
+                      className={`rounded-lg border px-3 py-2 text-sm font-bold ${
+                        theme === th ? "border-brand bg-brand text-white" : "border-line text-ink hover:bg-surface-hover"
+                      }`}
+                    >
+                      {th}
+                    </button>
+                  ))}
+                </div>
+              </Field>
+              <Field label={t("settings.language")}>
+                <div className="flex gap-2">
+                  {LANGUAGES.map((l) => (
+                    <button
+                      key={l.id}
+                      onClick={() => setLanguage(l.id as Language)}
+                      className={`rounded-lg border px-3 py-2 text-sm font-bold ${
+                        language === l.id ? "border-brand bg-brand text-white" : "border-line text-ink hover:bg-surface-hover"
+                      }`}
+                    >
+                      {l.label}
+                    </button>
+                  ))}
+                </div>
+              </Field>
+              <Field label={t("settings.font")}>
+                <div className="flex flex-col gap-2">
+                  {FONT_OPTIONS.map((f) => (
+                    <button
+                      key={f.label}
+                      onClick={() => setFont(f.label)}
+                      className={`rounded-lg border px-3 py-2 text-left text-sm font-semibold ${
+                        font === f.label ? "border-brand bg-brand/10 text-ink" : "border-line text-ink hover:bg-surface-hover"
+                      }`}
+                    >
+                      {f.label}
+                    </button>
+                  ))}
+                </div>
+              </Field>
+            </div>
+          )}
+
+          {tab === "Layout" && (
+            <Field label={t("settings.columns")}>
+              <div className="flex gap-2">
+                {[1, 2, 3, 4].map((n) => (
+                  <button
+                    key={n}
+                    onClick={() => onColumnsChange(n)}
+                    className={`h-12 w-12 rounded-lg border text-lg font-extrabold ${
+                      columns === n ? "border-brand bg-brand text-white" : "border-line text-ink hover:bg-surface-hover"
+                    }`}
+                  >
+                    {n}
+                  </button>
+                ))}
+              </div>
+              <p className="mt-2 text-xs text-muted">{t("settings.columnsHint")}</p>
+            </Field>
+          )}
+
+          {tab === "Widgets" && <AddWidgetForm onAddWidget={onAddWidget} />}
+
+          {tab === "Share" && (
+            <div className="flex flex-col gap-3">
+              <p className="text-sm text-ink-soft">{t("settings.shareHint")}</p>
+              <button
+                onClick={onShare}
+                className="self-start rounded-pill bg-brand px-5 py-2 text-sm font-extrabold uppercase text-white"
+              >
+                {t("settings.shareButton")}
+              </button>
+            </div>
+          )}
+        </div>
+      </div>
+
+      <div className="flex justify-end border-t border-line pt-4 mt-2">
+        <button
+          onClick={onClose}
+          className="rounded-pill bg-brand px-6 py-2 text-sm font-extrabold uppercase text-white hover:opacity-95"
+        >
+          {t("action.done")}
+        </button>
       </div>
     </div>
   );
@@ -286,6 +298,9 @@ function WidgetSettings({
   onClose,
 }: SettingsModalProps & { widget: WidgetConfig }) {
   const t = useT();
+  const { data: sources } = useSources();
+  const newsTemplates = WIDGET_TEMPLATES.filter((w) => w.id !== "editorial" && w.id !== "discovery");
+
   return (
     <div className="flex flex-col gap-5">
       <Field label={t("widget.title")}>
@@ -295,6 +310,62 @@ function WidgetSettings({
           className="rounded-lg border border-line bg-surface px-3 py-2 text-sm text-ink"
         />
       </Field>
+
+      {widget.kind === "news" && (
+        <>
+          <Field label={t("widget.template")}>
+            <select
+              value={widget.layoutType}
+              onChange={(e) => onUpdateWidget(widget.id, { layoutType: e.target.value as WidgetLayoutType })}
+              className="rounded-lg border border-line bg-surface px-3 py-2 text-sm text-ink"
+            >
+              {newsTemplates.map((w) => (
+                <option key={w.id} value={w.id}>
+                  {t(`template.${w.id}.label` as any)} — {t(`template.${w.id}.desc` as any)}
+                </option>
+              ))}
+            </select>
+          </Field>
+
+          <Field label={t("widget.source")}>
+            <select
+              value={widget.publisherId ?? ""}
+              onChange={(e) => onUpdateWidget(widget.id, { publisherId: e.target.value })}
+              className="rounded-lg border border-line bg-surface px-3 py-2 text-sm text-ink"
+            >
+              {(sources ?? []).map((s) => (
+                <option key={s.id} value={s.id}>
+                  {s.name} ({t(`category.${s.category}` as any)})
+                </option>
+              ))}
+            </select>
+          </Field>
+
+          <Field label={t("widget.categoryFilter")}>
+            <div className="flex flex-wrap gap-2">
+              {CATEGORIES.map((c) => {
+                const active =
+                  (widget.categoryFilter ?? "All") === c || (c === "All" && !widget.categoryFilter);
+                return (
+                  <button
+                    key={c}
+                    onClick={() =>
+                      onUpdateWidget(widget.id, {
+                        categoryFilter: c === "All" ? undefined : c,
+                      })
+                    }
+                    className={`rounded-pill border px-3 py-1 text-xs font-bold ${
+                      active ? "border-brand bg-brand text-white" : "border-line text-ink hover:bg-surface-hover"
+                    }`}
+                  >
+                    {t(`category.${c}` as any)}
+                  </button>
+                );
+              })}
+            </div>
+          </Field>
+        </>
+      )}
 
       {widget.kind === "editorial" && (
         <Field label={t("widget.editorialNote")}>
@@ -308,52 +379,52 @@ function WidgetSettings({
         </Field>
       )}
 
-      {widget.kind === "news" && (
-        <Field label={t("widget.categoryFilter")}>
-          <div className="flex flex-wrap gap-2">
-            {CATEGORIES.map((c) => {
-              const active =
-                (widget.categoryFilter ?? "All") === c || (c === "All" && !widget.categoryFilter);
-              return (
+      {(widget.kind === "popular" || widget.kind === "random") && (
+        <>
+          <Field label={t("widget.mode")}>
+            <div className="flex gap-2">
+              {(["popular", "random"] as const).map((k) => (
                 <button
-                  key={c}
-                  onClick={() =>
-                    onUpdateWidget(widget.id, {
-                      categoryFilter: c === "All" ? undefined : c,
-                    })
-                  }
-                  className={`rounded-pill border px-3 py-1 text-xs font-bold ${
-                    active ? "border-brand bg-brand text-white" : "border-line text-ink hover:bg-surface-hover"
+                  key={k}
+                  onClick={() => onUpdateWidget(widget.id, { kind: k })}
+                  className={`rounded-lg border px-3 py-2 text-sm font-bold capitalize ${
+                    widget.kind === k ? "border-brand bg-brand text-white" : "border-line text-ink hover:bg-surface-hover"
                   }`}
                 >
-                  {t(`category.${c}` as any)}
+                  {k === "popular" ? t("widget.default.popular") : t("widget.default.random")}
                 </button>
-              );
-            })}
-          </div>
-        </Field>
+              ))}
+            </div>
+          </Field>
+          <p className="rounded-lg border border-line bg-surface-hover px-3 py-2 text-sm text-ink-soft">
+            {widget.kind === "popular"
+              ? t("widget.popularHint")
+              : t("widget.randomHint")}
+          </p>
+        </>
       )}
 
-      {(widget.kind === "popular" || widget.kind === "random") && (
-        <p className="rounded-lg border border-line bg-surface-hover px-3 py-2 text-sm text-ink-soft">
-          {widget.kind === "popular"
-            ? t("widget.popularHint")
-            : t("widget.randomHint")}
-        </p>
-      )}
-
-      <button
-        onClick={() => {
-          onDeleteWidget(widget.id);
-          onClose();
-        }}
-        className="self-start rounded-pill border border-red-300 bg-red-50 px-5 py-2 text-sm font-extrabold uppercase text-red-600"
-      >
-        {t("widget.delete")}
-      </button>
+      <div className="flex items-center justify-between border-t border-line pt-4 mt-2">
+        <button
+          onClick={() => {
+            onDeleteWidget(widget.id);
+            onClose();
+          }}
+          className="rounded-pill border border-red-300 bg-red-50 px-5 py-2 text-sm font-extrabold uppercase text-red-600 hover:bg-red-100"
+        >
+          {t("widget.delete")}
+        </button>
+        <button
+          onClick={onClose}
+          className="rounded-pill bg-brand px-6 py-2 text-sm font-extrabold uppercase text-white hover:opacity-95"
+        >
+          {t("action.done")}
+        </button>
+      </div>
     </div>
   );
 }
+
 
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
   return (

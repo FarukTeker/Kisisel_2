@@ -103,6 +103,7 @@ export const DICTIONARY = {
   "action.loading": { en: "Loading…", tr: "Yükleniyor…" },
   "action.newspaperNotFound": { en: "Newspaper not found.", tr: "Gazete bulunamadı." },
   "action.by": { en: "by", tr: "yazan" },
+  "action.done": { en: "Done", tr: "Tamam" },
 
   // Follow actions
   "follow.following": { en: "✓ Following", tr: "✓ Takip Ediliyor" },

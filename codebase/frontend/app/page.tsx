@@ -110,6 +110,24 @@ export default function Dashboard() {
 
   const updateWidget = useCallback((id: string, patch: Partial<WidgetConfig>) => {
     setWidgets((prev) => prev.map((w) => (w.id === id ? { ...w, ...patch } : w)));
+    if (patch.layoutType) {
+      setLayout((prev) =>
+        prev.map((item) => {
+          if (item.i === id) {
+            const isWide = patch.layoutType === "card2" || patch.layoutType === "card6";
+            const isTall = patch.layoutType === "card1" || patch.layoutType === "card5";
+            const isEditorial = patch.layoutType === "editorial";
+            const isDiscovery = patch.layoutType === "discovery";
+            return {
+              ...item,
+              w: isEditorial || isWide || isDiscovery ? 2 : 1,
+              h: isEditorial ? 3 : isDiscovery ? 2 : isTall ? 4 : 3,
+            };
+          }
+          return item;
+        })
+      );
+    }
   }, []);
 
   const deleteWidget = useCallback((id: string) => {
