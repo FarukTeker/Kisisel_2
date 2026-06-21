@@ -25,6 +25,7 @@ export class NewspapersService {
         name: p.name,
         description: p.description,
         curator: p.curator.name,
+        curatorId: p.curatorId,
         readingMode: p.readingMode,
         language: p.language,
         widgetCount: p.widgets.length,
