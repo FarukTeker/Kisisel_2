@@ -4,9 +4,11 @@ import { useEffect, useRef, useState } from "react";
 import { useAudioStore } from "@/features/audio/store";
 import { useSettingsStore } from "@/features/settings/store";
 import { useAuthStore } from "@/features/auth/store";
+import { useT } from "@/features/i18n/useT";
 import { env } from "@/lib/env";
 
 export default function GlobalAudioPlayer() {
+  const t = useT();
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const preloadedRef = useRef<Set<string>>(new Set());
   const language = useSettingsStore((s) => s.language);
@@ -286,7 +288,7 @@ export default function GlobalAudioPlayer() {
             onClick={playNext}
             disabled={queue.length === 0}
             className="flex h-8 w-8 items-center justify-center rounded-full border border-line bg-surface text-ink transition-all hover:bg-surface-hover active:scale-95 disabled:opacity-40 disabled:hover:bg-surface"
-            title="Skip to next"
+            title={t("audio.player.skipNext")}
           >
             <svg viewBox="0 0 24 24" fill="currentColor" className="h-4 w-4">
               <path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z" />
@@ -301,7 +303,7 @@ export default function GlobalAudioPlayer() {
                 ? "border-brand bg-brand/10 text-brand"
                 : "border-line bg-surface text-ink hover:bg-surface-hover"
             }`}
-            title="Up Next Queue"
+            title={t("audio.player.queueToggle")}
           >
             <svg
               viewBox="0 0 24 24"
@@ -330,7 +332,7 @@ export default function GlobalAudioPlayer() {
           <button
             onClick={stop}
             className="flex h-8 w-8 items-center justify-center rounded-full border border-line bg-surface text-ink transition-all hover:bg-surface-hover active:scale-95"
-            title="Close Player"
+            title={t("audio.player.close")}
           >
             <svg
               viewBox="0 0 24 24"
@@ -352,18 +354,18 @@ export default function GlobalAudioPlayer() {
       {showQueue && (
         <div className="mt-4 border-t border-line pt-3 animate-fade-in max-h-48 overflow-y-auto">
           <div className="flex items-center justify-between mb-2 px-1">
-            <h5 className="text-[0.68rem] font-extrabold uppercase tracking-wider text-muted">Up Next ({queue.length})</h5>
+            <h5 className="text-[0.68rem] font-extrabold uppercase tracking-wider text-muted">{t("audio.player.upNext")} ({queue.length})</h5>
             {queue.length > 0 && (
               <button
                 onClick={clearQueue}
                 className="text-[0.65rem] font-extrabold uppercase text-red-500 hover:underline"
               >
-                Clear All
+                {t("audio.player.clearAll")}
               </button>
             )}
           </div>
           {queue.length === 0 ? (
-            <p className="text-xs text-ink-soft py-3 text-center italic">No articles in queue.</p>
+            <p className="text-xs text-ink-soft py-3 text-center italic">{t("audio.player.emptyQueue")}</p>
           ) : (
             <div className="flex flex-col gap-2 pr-1">
               {queue.map((item, idx) => (
@@ -380,7 +382,7 @@ export default function GlobalAudioPlayer() {
                   <button
                     onClick={() => removeFromQueue(item.id)}
                     className="text-ink-soft hover:text-red-500 transition-colors p-1"
-                    title="Remove from queue"
+                    title={t("audio.removeFromQueue")}
                   >
                     <svg
                       viewBox="0 0 24 24"
