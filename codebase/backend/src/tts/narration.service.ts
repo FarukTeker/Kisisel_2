@@ -61,25 +61,32 @@ export class NarrationService {
 
     // Prefer the AI full read in the target language; fall back to the other
     // language / raw content so narration still works pre-translation.
-    const source =
+    const fullSource =
       (article[`aiFull${suffix}`] as string | null) ??
       article.aiFullEn ??
       article.aiFullTr ??
       article.fullContent ??
       article.summary;
 
+    // A concise bulletin only needs the lede, not the whole article. Capping the
+    // input keeps each request well under Groq's free-tier per-minute token
+    // budget so narration doesn't fail when ingestion is also using the quota.
+    const source = (fullSource ?? '').slice(0, 1200);
+
     this.logger.log(`Generating ${lang} narration script for article ${article.id}`);
     const script = await this.groq.complete(
-      'You convert news articles into a natural spoken narration script for a news podcast.',
+      'You are a professional television news anchor delivering a broadcast bulletin.',
       [
-        'Rewrite the following article into a spoken narration script.',
+        'Rewrite the following article into a spoken news bulletin script.',
         `Write the script in ${langName(lang)}.`,
-        'Use a natural, conversational tone as if a presenter is reading it aloud.',
+        'Adopt the serious, authoritative, composed tone of a professional news anchor reading the headlines.',
+        'Keep it concise and to the point — cover only the key facts, no filler. Aim for roughly 4 to 6 sentences.',
+        'Open by stating the core news directly; do not add greetings, sign-offs, or self-references.',
         'Plain flowing sentences only — no markdown, headings, bullet points, or stage directions.',
         'Stay factual and neutral; do not invent information.',
         `Content: ${source}`,
       ].join('\n'),
-      700,
+      400,
     );
 
     await this.prisma.article.update({

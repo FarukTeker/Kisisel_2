@@ -33,7 +33,7 @@ export class GoogleTtsService {
     this.apiKey = config.get<string>('GOOGLE_TTS_API_KEY', '');
     this.voices = {
       en: {
-        voice: config.get<string>('GOOGLE_TTS_VOICE_EN', 'en-US-Neural2-D'),
+        voice: config.get<string>('GOOGLE_TTS_VOICE_EN', 'en-US-Standard-C'),
         languageCode: config.get<string>('GOOGLE_TTS_LANG_EN', 'en-US'),
       },
       tr: {
